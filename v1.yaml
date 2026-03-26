@@ -1,0 +1,1396 @@
+openapi: 3.1.0
+info:
+  title: Compabase API
+  version: 1.0.0
+  description: |
+    ### Introduction
+    Versioned JSON API for company search, company counts, full company profiles by KRS,
+    legal status checks, financial statements, and ownership/roles structure data.
+
+    ### Base URL
+    `https://compabase.com/api/v1/`
+
+    ### Authentication
+    Send your key in header `X-API-Key: <key>` or `Authorization: Bearer <key>`.
+    For security, API keys are issued individually on request through
+    <a href="/api" target="_blank" rel="noopener noreferrer">contact form</a>.
+
+    ### Error Model
+    `{ "error": { "code": "...", "message": "...", "details": { ... } } }`
+
+    ### Validation Rules
+    - invalid numeric ranges (`*_min > *_max`) -> `400 INVALID_RANGE`
+    - invalid booleans (`primary_only`, `has_email`, `has_website`, `status_active`) -> `400 INVALID_BOOLEAN`
+    - invalid cursor UUID -> `400 INVALID_CURSOR`
+    - invalid KRS format -> `400 INVALID_KRS`
+    - too-short keyword token (<2 chars) -> `400 INVALID_KEYWORDS`
+    - mutually exclusive parameters supplied together (e.g. `cursor` and `offset`) -> `400 CONFLICTING_PARAMETERS`
+
+    ### Quota Accounting
+    Each key has a maximum number of requests per **UTC calendar month** (Monthly Quota), set when the key is created.
+    The count resets on the first day of each month (UTC).
+
+    - quota is consumed by authenticated `/api/v1` requests, except `GET /usage`
+    - requests that fail before authentication succeeds (`401`) do not consume quota
+    - requests rejected because quota is already exhausted (`429`) do not consume additional quota
+    - other authenticated responses, including `200`, `400`, and `404`, consume quota
+
+servers:
+- url: https://compabase.com/api/v1
+  description: Full URL
+tags:
+- name: Health
+- name: Usage
+- name: Companies
+paths:
+  /health:
+    get:
+      tags:
+      - Health
+      summary: API v1 health
+      description: Public uptime/status endpoint for API v1 (no API key required).
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  api:
+                    type: string
+                    example: v1
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: '2026-03-25T12:00:00Z'
+  /companies:
+    get:
+      tags:
+      - Companies
+      summary: Search and list companies
+      description: |
+        Uses the same search dataset as the public site. Filters combine with **AND** where applicable.
+
+        **Response:** `data` is one page of rows; `pagination` has `limit`, `offset`, `total`, `hasMore`, and optionally `cursor` when cursor-based paging is used.
+
+        For a single company’s full profile, use `GET /companies/krs/{krs}` (KRS court number).
+
+        Parameter details are documented on each query field below.
+
+        **Pagination mode**
+
+        `offset` and `cursor` are mutually exclusive in client usage. If both are sent, the server returns `400 CONFLICTING_PARAMETERS`.
+
+        Use `offset` for shallow interactive browsing and `cursor` for deep paging/export flows.
+
+        Cursor pagination is ordered by `entity_id` ascending; `cursor` is the last `entity_id` from the prior page.
+
+        Because datasets can change between requests, deep paging may still observe occasional duplicates or skips.
+
+        With cursor mode, `pagination.total` may be unavailable and returned as `-1`; rely on `hasMore`.
+
+        **Default ordering (offset mode)**
+
+        - without `q`: `has_email` desc, then `has_website` desc, then `revenue_total` desc, then `extracted_at` desc, then `entity_id` asc.
+        - with `q`: same ordering as above (not TF-IDF/full-text relevance ranking).
+        - offset pagination is intended for interactive browsing; for deterministic deep traversal use cursor mode.
+
+        **Financial filter semantics** (for `/companies` and `/companies/count`)
+
+        - financial range filters are evaluated on the latest indexed financial snapshot per company (search index row).
+        - companies with `null` value for a filtered metric do not match that metric filter.
+        - when `last_report_year_*` is combined with financial metric filters, both are evaluated against the same indexed reporting snapshot.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/CompanyFilterQ'
+      - $ref: '#/components/parameters/CompanyFilterKeywords'
+      - $ref: '#/components/parameters/CompanyFilterLimit'
+      - $ref: '#/components/parameters/CompanyFilterOffset'
+      - $ref: '#/components/parameters/CompanyFilterCursor'
+      - $ref: '#/components/parameters/CompanyFilterPkd'
+      - $ref: '#/components/parameters/CompanyFilterPrimaryOnly'
+      - $ref: '#/components/parameters/CompanyFilterCurrency'
+      - $ref: '#/components/parameters/CompanyFilterVoivodeship'
+      - $ref: '#/components/parameters/CompanyFilterPostalCode'
+      - $ref: '#/components/parameters/CompanyFilterCity'
+      - $ref: '#/components/parameters/CompanyFilterRevenueMin'
+      - $ref: '#/components/parameters/CompanyFilterRevenueMax'
+      - $ref: '#/components/parameters/CompanyFilterRevenueOperatingMin'
+      - $ref: '#/components/parameters/CompanyFilterRevenueOperatingMax'
+      - $ref: '#/components/parameters/CompanyFilterProfitOperatingMin'
+      - $ref: '#/components/parameters/CompanyFilterProfitOperatingMax'
+      - $ref: '#/components/parameters/CompanyFilterProfitNetMin'
+      - $ref: '#/components/parameters/CompanyFilterProfitNetMax'
+      - $ref: '#/components/parameters/CompanyFilterIncomeTaxMin'
+      - $ref: '#/components/parameters/CompanyFilterIncomeTaxMax'
+      - $ref: '#/components/parameters/CompanyFilterCostWagesMin'
+      - $ref: '#/components/parameters/CompanyFilterCostWagesMax'
+      - $ref: '#/components/parameters/CompanyFilterCostAmortizationMin'
+      - $ref: '#/components/parameters/CompanyFilterCostAmortizationMax'
+      - $ref: '#/components/parameters/CompanyFilterTotalAssetsMin'
+      - $ref: '#/components/parameters/CompanyFilterTotalAssetsMax'
+      - $ref: '#/components/parameters/CompanyFilterEbitdaMin'
+      - $ref: '#/components/parameters/CompanyFilterEbitdaMax'
+      - $ref: '#/components/parameters/CompanyFilterCapitalMin'
+      - $ref: '#/components/parameters/CompanyFilterCapitalMax'
+      - $ref: '#/components/parameters/CompanyFilterEstimatedValueMin'
+      - $ref: '#/components/parameters/CompanyFilterEstimatedValueMax'
+      - $ref: '#/components/parameters/CompanyFilterRegistrationYearMin'
+      - $ref: '#/components/parameters/CompanyFilterRegistrationYearMax'
+      - $ref: '#/components/parameters/CompanyFilterLastReportYearMin'
+      - $ref: '#/components/parameters/CompanyFilterLastReportYearMax'
+      - $ref: '#/components/parameters/CompanyFilterStatusActive'
+      - $ref: '#/components/parameters/CompanyFilterLegalForm'
+      - $ref: '#/components/parameters/CompanyFilterHasEmail'
+      - $ref: '#/components/parameters/CompanyFilterHasWebsite'
+      responses:
+        '200':
+          description: 'Paginated search results: **`data`** is an array of companies (one object per row on this page).
+
+            Fields per row depend on filters and internal path; optional keys may be omitted or null.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyListResponse'
+              example:
+                data:
+                - entity_id: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                  company_name: ORLEN SPÓŁKA AKCYJNA
+                  company_name_display: Orlen
+                  nip: null
+                  regon: null
+                  registry_number: '0000028860'
+                  legal_form: SPÓŁKA AKCYJNA
+                  is_active: true
+                  latest_snapshot_id: 1956bcf0-34f4-4ab1-98af-eddf75c0d40a
+                  extracted_at: '2026-03-19T13:41:20.998732+00:00'
+                  state_date: null
+                  postal_code: 09-411
+                  city: PŁOCK
+                  region: mazowieckie
+                  revenue_total: 304668000000
+                  revenue_total_usd: 76338762214.98372
+                  profit_net: 1383000000
+                  profit_net_usd: 346529691.80656475
+                  operating_costs_total: 301809000000
+                  operating_costs_total_usd: 75622400400.90202
+                  total_assets: 255368000000
+                  total_assets_usd: 63985968428.96517
+                  fixed_assets: 186761000000
+                  fixed_assets_usd: 46795539964.921074
+                  current_assets: 68607000000
+                  current_assets_usd: 17190428464.044098
+                  equity: 146689000000
+                  equity_usd: 36754948634.42746
+                  liabilities_and_provisions: 108679000000
+                  liabilities_and_provisions_usd: 27231019794.53771
+                  has_email: true
+                  has_website: true
+                  full_address: 09-411 Płock, Poland
+                  email: zarzad@orlen.pl
+                  website: orlen.pl
+                  logo_url: https://emjsevwafjsrwhpdijje.supabase.co/storage/v1/object/public/company-logos/ad2ae683-ccbd-49c6-a85c-648024435cb5.ico
+                  currency: PLN
+                  period_to: null
+                - entity_id: e51db361-6d35-4e91-af8c-5cb8115e1475
+                  company_name: TAURON POLSKA ENERGIA SPÓŁKA AKCYJNA
+                  company_name_display: Tauron Polska Energia
+                  nip: null
+                  regon: null
+                  registry_number: '0000271562'
+                  legal_form: SPÓŁKA AKCYJNA
+                  is_active: true
+                  latest_snapshot_id: 3742a994-dfd1-49a7-bb76-033bf524373d
+                  extracted_at: '2026-03-16T23:08:00.733285+00:00'
+                  state_date: null
+                  postal_code: 40-202
+                  city: KATOWICE
+                  region: śląskie
+                  revenue_total: 35573000000
+                  revenue_total_usd: 8913304936.10624
+                  profit_net: 590000000
+                  profit_net_usd: 147832623.402656
+                  operating_costs_total: 32922000000
+                  operating_costs_total_usd: 8249060385.868203
+                  total_assets: 45714000000
+                  total_assets_usd: 11454272112.25257
+                  fixed_assets: 38069000000
+                  fixed_assets_usd: 9538712102.230017
+                  current_assets: 7645000000
+                  current_assets_usd: 1915560010.0225508
+                  equity: 17754000000
+                  equity_usd: 4448509145.57755
+                  liabilities_and_provisions: 27960000000
+                  liabilities_and_provisions_usd: 7005762966.675019
+                  has_email: true
+                  has_website: true
+                  full_address: 40-202 Katowice, Poland
+                  email: kancelaria@tauron.pl
+                  website: tauron.pl
+                  logo_url: https://emjsevwafjsrwhpdijje.supabase.co/storage/v1/object/public/company-logos/e51db361-6d35-4e91-af8c-5cb8115e1475.ico
+                  currency: PLN
+                  period_to: null
+                - entity_id: 264b49ba-4c4d-4a04-9eb1-1010a57fecdf
+                  company_name: GRUPA LOTOS SPÓŁKA AKCYJNA
+                  company_name_display: Grupa Lotos
+                  nip: '5830000960'
+                  regon: '19054163600000'
+                  registry_number: '0000106150'
+                  legal_form: SPÓŁKA AKCYJNA
+                  is_active: true
+                  latest_snapshot_id: a368e255-5022-4f02-998b-379609886f51
+                  extracted_at: '2025-12-13T21:23:49.997737+00:00'
+                  state_date: '2025-11-20'
+                  postal_code: 80-718
+                  city: GDAŃSK
+                  region: pomorskie
+                  revenue_total: 33616400000
+                  revenue_total_usd: 8697870578.798935
+                  profit_net: 3211800000
+                  profit_net_usd: 831017620.1195374
+                  operating_costs_total: 28871200000
+                  operating_costs_total_usd: 7470102719.345908
+                  total_assets: 25964800000
+                  total_assets_usd: 6718103961.29266
+                  fixed_assets: 14525600000
+                  fixed_assets_usd: 3758337861.2641983
+                  current_assets: 11439200000
+                  current_assets_usd: 2959766100.0284615
+                  equity: 14793900000
+                  equity_usd: 3827757509.8967633
+                  liabilities_and_provisions: 11170900000
+                  liabilities_and_provisions_usd: 2890346451.3958964
+                  has_email: true
+                  has_website: true
+                  full_address: 80-718 Gdańsk, Poland
+                  email: lotos@grupalotos.pl
+                  website: lotos.pl
+                  logo_url: https://emjsevwafjsrwhpdijje.supabase.co/storage/v1/object/public/company-logos/264b49ba-4c4d-4a04-9eb1-1010a57fecdf.png
+                  currency: PLN
+                  period_to: null
+                pagination:
+                  limit: 3
+                  offset: 0
+                  total: 1045904
+                  hasMore: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/count:
+    get:
+      tags:
+      - Companies
+      summary: Count companies for current filters
+      description: |
+        Returns how many companies match the same **filter set** as `GET /companies`, without returning rows.
+        Use the **same query parameters** as list/search (except pagination: no `limit`, `offset`, or `cursor`).
+        Filters combine with **AND** where applicable.
+
+        **Response:** a single integer `count` — total matching companies for the current filters.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/CompanyFilterQ'
+      - $ref: '#/components/parameters/CompanyFilterKeywords'
+      - $ref: '#/components/parameters/CompanyFilterPkd'
+      - $ref: '#/components/parameters/CompanyFilterPrimaryOnly'
+      - $ref: '#/components/parameters/CompanyFilterCurrency'
+      - $ref: '#/components/parameters/CompanyFilterVoivodeship'
+      - $ref: '#/components/parameters/CompanyFilterPostalCode'
+      - $ref: '#/components/parameters/CompanyFilterCity'
+      - $ref: '#/components/parameters/CompanyFilterRevenueMin'
+      - $ref: '#/components/parameters/CompanyFilterRevenueMax'
+      - $ref: '#/components/parameters/CompanyFilterRevenueOperatingMin'
+      - $ref: '#/components/parameters/CompanyFilterRevenueOperatingMax'
+      - $ref: '#/components/parameters/CompanyFilterProfitOperatingMin'
+      - $ref: '#/components/parameters/CompanyFilterProfitOperatingMax'
+      - $ref: '#/components/parameters/CompanyFilterProfitNetMin'
+      - $ref: '#/components/parameters/CompanyFilterProfitNetMax'
+      - $ref: '#/components/parameters/CompanyFilterIncomeTaxMin'
+      - $ref: '#/components/parameters/CompanyFilterIncomeTaxMax'
+      - $ref: '#/components/parameters/CompanyFilterCostWagesMin'
+      - $ref: '#/components/parameters/CompanyFilterCostWagesMax'
+      - $ref: '#/components/parameters/CompanyFilterCostAmortizationMin'
+      - $ref: '#/components/parameters/CompanyFilterCostAmortizationMax'
+      - $ref: '#/components/parameters/CompanyFilterTotalAssetsMin'
+      - $ref: '#/components/parameters/CompanyFilterTotalAssetsMax'
+      - $ref: '#/components/parameters/CompanyFilterEbitdaMin'
+      - $ref: '#/components/parameters/CompanyFilterEbitdaMax'
+      - $ref: '#/components/parameters/CompanyFilterCapitalMin'
+      - $ref: '#/components/parameters/CompanyFilterCapitalMax'
+      - $ref: '#/components/parameters/CompanyFilterEstimatedValueMin'
+      - $ref: '#/components/parameters/CompanyFilterEstimatedValueMax'
+      - $ref: '#/components/parameters/CompanyFilterRegistrationYearMin'
+      - $ref: '#/components/parameters/CompanyFilterRegistrationYearMax'
+      - $ref: '#/components/parameters/CompanyFilterLastReportYearMin'
+      - $ref: '#/components/parameters/CompanyFilterLastReportYearMax'
+      - $ref: '#/components/parameters/CompanyFilterStatusActive'
+      - $ref: '#/components/parameters/CompanyFilterLegalForm'
+      - $ref: '#/components/parameters/CompanyFilterHasEmail'
+      - $ref: '#/components/parameters/CompanyFilterHasWebsite'
+      responses:
+        '200':
+          description: Total number of companies matching the request filters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyCountResponse'
+              example:
+                count: 1045904
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}:
+    get:
+      tags:
+      - Companies
+      summary: Full company profile
+      description: |
+        Returns full company profile addressed by **KRS** (Polish court registry number).
+        Digits only; leading zeros are optional (normalized to 10 digits server-side).
+
+        Prefer this in integrations that only know KRS from external sources.
+        The payload includes:
+        - `company` (core identifiers, address, activity data, display fields),
+        - `details` (contacts, suspension/deletion flags, attributes, filings),
+        - `financials` (full rows from `entity_financial_metrics` grouped by year, including PLN/USD/EUR values),
+        - optional analytical sections such as `pkdRankings`, `similarCompanies`.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+          After normalization, KRS must contain exactly 10 digits; otherwise request fails with `400 INVALID_KRS`.
+        example: "0000028860"
+      responses:
+        '200':
+          description: Full company profile object resolved from KRS.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                company:
+                  entity_id: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                  registry_number: "0000028860"
+                  company_name: ORLEN SPÓŁKA AKCYJNA
+                  company_name_display: Orlen
+                  logo_url: https://emjsevwafjsrwhpdijje.supabase.co/storage/v1/object/public/company-logos/ad2ae683-ccbd-49c6-a85c-648024435cb5.ico
+                  nip: "7740001454"
+                  regon: "61018820100000"
+                  full_address: CHEMIKÓW 7, 09-411 Płock, PL
+                  street: CHEMIKÓW
+                  building_no: "7"
+                  city: PŁOCK
+                  region: mazowieckie
+                  country: PL
+                  legal_form: SPÓŁKA AKCYJNA
+                  activities:
+                  - code_full: "19.20.Z"
+                    is_primary: true
+                    description: Manufacture of refined petroleum products
+                  - code_full: "20.1"
+                    is_primary: false
+                    description: Manufacture of basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms
+                  - code_full: "35.1"
+                    is_primary: false
+                    description: Electric power generation, transmission, distribution and trade
+                details:
+                  legalForm: SPÓŁKA AKCYJNA
+                  contacts:
+                    email: zarzad@orlen.pl
+                    website: orlen.pl
+                companySummary:
+                  pl: ORLEN S.A. to jedna z największych zintegrowanych grup multienergetycznych w Europie Środkowej.
+                  en: ORLEN S.A. is one of the largest integrated multi-energy groups in Central Europe.
+                  de: ORLEN S.A. ist eine der größten integrierten Multi-Energie-Gruppen in Mitteleuropa.
+                roles:
+                - party:
+                    name: "ALEJANDRO  MARTINEZ RUIZ"
+                    display_name: Alejandro Martinez Ruiz
+                  role_name: President of the Management Board
+                - party:
+                    name: MARCIN ANDRZEJ DREKSLER
+                    display_name: Marcin Andrzej Dreksler
+                  role_name: Management Board Member
+                - party:
+                    name: "IVÁN  LIRÓN PORTILLA"
+                    display_name: Iván Lirón Portilla
+                  role_name: Management Board Member
+                ownership:
+                - owner:
+                    name: RYSZARD CIEŚLAR
+                    type: person
+                    display_name: Ryszard Cieślar
+                  holding_text: 100 shares with a total value of PLN 5,000.00
+                  has_all_shares: true
+                  holding_percent: 100
+                  holding_value_pln: 5000
+                  holding_value_usd: 1350.621285791464
+                  holding_value_eur: 1204.2389210019267
+                  holding_share_count: 100
+                financials:
+                  years:
+                  - "2024"
+                  - "2023"
+                  - "2022"
+                  byYear:
+                    "2024":
+                    - sf_period_from: "2024-01-01"
+                      sf_period_to: "2024-12-31"
+                      currency: PLN
+                      roa: 0.5415713793427525
+                      asset_turnover: 1.1930547288618778
+                      revenue_total: 304668000000
+                      revenue_total_usd: 76338762214.98372
+                      revenue_total_eur: 70672233820.45929
+                      profit_net: 1383000000
+                      profit_net_usd: 346529691.80656475
+                      profit_net_eur: 320807237.2999304
+                      total_assets: 255368000000
+                      total_assets_usd: 63985968428.96517
+                      total_assets_eur: 59236372071.44514
+                      fixed_assets_eur: 43321967061.00673
+                      current_assets_eur: 15914405010.438414
+                      equity_eur: 34026675945.25632
+                      liabilities_and_provisions_eur: 25209696126.18882
+                    "2023":
+                    - sf_period_from: "2023-01-01"
+                      sf_period_to: "2023-12-31"
+                      currency: PLN
+                      roa: 7.845846361165577
+                      asset_turnover: 1.4862592645867558
+                      revenue_total: 392637000000
+                      revenue_total_usd: 93438280859.57022
+                      revenue_total_eur: 86430615479.43999
+                      profit_net: 20727000000
+                      profit_net_usd: 4932533733.133433
+                      profit_net_eur: 4562604561.063662
+                      total_assets: 264178000000
+                      total_assets_usd: 62868089764.64149
+                      total_assets_eur: 58153121422.91098
+                      fixed_assets_eur: 37596856564.23351
+                      current_assets_eur: 20556264858.677467
+                      equity_eur: 33719292066.566875
+                      liabilities_and_provisions_eur: 24433829356.344105
+                similarCompanies:
+                - entity_id: 39c4a3d7-144c-45c2-9713-ecd3e8895d4a
+                  registry_number: "0000287699"
+                  company_name: WARTER FUELS SPÓŁKA AKCYJNA
+                  company_name_display: Warter Fuels
+                  legal_form: SPÓŁKA AKCYJNA
+                  website: warterfuels.pl
+                  logo_url: https://emjsevwafjsrwhpdijje.supabase.co/storage/v1/object/public/company-logos/39c4a3d7-144c-45c2-9713-ecd3e8895d4a.png
+                  revenue_total: 224545986
+                  revenue_total_usd: 56263088.449010275
+                  revenue_total_eur: 52086751.565762006
+                  revenue_operating: 223609024
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/financial-statements:
+    get:
+      tags:
+      - Companies
+      summary: Financial statements
+      description: |
+        Returns financial metrics only (without company profile, documents, or metadata),
+        grouped by statement year. Values include all available PLN/USD/EUR columns from
+        `entity_financial_metrics`.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+          After normalization, KRS must contain exactly 10 digits; otherwise request fails with `400 INVALID_KRS`.
+        example: "0000028860"
+      responses:
+        '200':
+          description: Financial metrics grouped by year.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                financials:
+                  years:
+                  - "2024"
+                  - "2023"
+                  byYear:
+                    "2024":
+                    - sf_period_from: "2024-01-01"
+                      sf_period_to: "2024-12-31"
+                      currency: PLN
+                      ebit: 2484000000
+                      ebitda: 0
+                      roa: 0.5415713793427525
+                      net_margin: 0.4538198626668145
+                      asset_turnover: 1.1930547288618778
+                      revenue_operating: 303192000000
+                      revenue_total: 304668000000
+                      operating_costs_total: 301809000000
+                      financial_income: 1476000000
+                      financial_costs: 1908000000
+                      profit_gross: 1571000000
+                      income_tax: null
+                      revenue_total_usd: 76338762214.98372
+                      revenue_total_eur: 70672233820.45929
+                      revenue_operating_usd: 75969071685.3297
+                      revenue_operating_eur: 70329936094.86815
+                      operating_costs_total_usd: 75622400400.90202
+                      operating_costs_total_eur: 70009128857.56822
+                      profit_net: 1383000000
+                      profit_net_usd: 346529691.80656475
+                      profit_net_eur: 320807237.2999304
+                      financial_income_usd: 369869938.4584869
+                      financial_income_eur: 342297725.591141
+                      financial_costs_usd: 478544714.9568987
+                      financial_costs_eur: 442881221.5274784
+                      total_assets: 255368000000
+                      total_assets_usd: 63985968428.96517
+                      total_assets_eur: 59236372071.44514
+                      fixed_assets_eur: 43321967061.00673
+                      current_assets_eur: 15914405010.438414
+                      equity_eur: 34026675945.25632
+                      liabilities_and_provisions_eur: 25209696126.18882
+                    "2023":
+                    - sf_period_from: "2023-01-01"
+                      sf_period_to: "2023-12-31"
+                      currency: PLN
+                      roa: 7.845846361165577
+                      asset_turnover: 1.4862592645867558
+                      revenue_operating: 389584000000
+                      revenue_total: 392637000000
+                      operating_costs_total: 362463000000
+                      profit_gross: 26365000000
+                      income_tax: null
+                      revenue_total_usd: 93438280859.57022
+                      revenue_total_eur: 86430615479.43999
+                      revenue_operating_usd: 92711915658.9751
+                      revenue_operating_eur: 85758485784.99783
+                      operating_costs_total_usd: 86223593016.49176
+                      operating_costs_total_eur: 79759037499.87363
+                      profit_net: 20727000000
+                      profit_net_usd: 4932533733.133433
+                      profit_net_eur: 4562604561.063662
+                      total_assets: 264178000000
+                      total_assets_usd: 62868089764.64149
+                      total_assets_eur: 58153121422.91098
+                      fixed_assets_eur: 37596856564.23351
+                      current_assets_eur: 20556264858.677467
+                      equity_eur: 33719292066.566875
+                      liabilities_and_provisions_eur: 24433829356.344105
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/structure-people:
+    get:
+      tags:
+      - Companies
+      summary: Structure & People
+      description: |
+        Returns ownership and management structure only (without profile or financial data):
+        `roles` and `ownership`.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+          After normalization, KRS must contain exactly 10 digits; otherwise request fails with `400 INVALID_KRS`.
+        example: "0000028860"
+      responses:
+        '200':
+          description: Roles and ownership structure.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                roles:
+                - party:
+                    name: "ALEJANDRO  MARTINEZ RUIZ"
+                    display_name: Alejandro Martinez Ruiz
+                  role_name: President of the Management Board
+                - party:
+                    name: MARCIN ANDRZEJ DREKSLER
+                    display_name: Marcin Andrzej Dreksler
+                  role_name: Management Board Member
+                ownership:
+                - owner:
+                    name: RYSZARD CIEŚLAR
+                    type: person
+                    display_name: Ryszard Cieślar
+                  holding_text: 100 shares with a total value of PLN 5,000.00
+                  has_all_shares: true
+                  holding_percent: 100
+                  holding_value_pln: 5000
+                  holding_value_usd: 1350.621285791464
+                  holding_value_eur: 1204.2389210019267
+                  holding_share_count: 100
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/status:
+    get:
+      tags:
+      - Companies
+      summary: Legal status
+      description: Quick legal-status check (Active, Bankruptcy, Liquidation).
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+          After normalization, KRS must contain exactly 10 digits; otherwise request fails with `400 INVALID_KRS`.
+        example: "0000028860"
+      responses:
+        '200':
+          description: Legal status for a company.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                krs: "0000028860"
+                status: active
+                label: Active
+                is_open: true
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /usage:
+    get:
+      tags:
+      - Usage
+      summary: Monthly quota usage for this API key
+      description: 'Returns how many requests this key has used in the current UTC calendar month against its limit.
+
+        This endpoint does not consume quota (usage counter is not incremented).
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      responses:
+        '200':
+          description: Usage snapshot
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - used
+                - limit
+                - remaining
+                - monthUtc
+                - resetsAtUtc
+                properties:
+                  used:
+                    type: integer
+                  limit:
+                    type: integer
+                  remaining:
+                    type: integer
+                  monthUtc:
+                    type: string
+                    example: 2026-03
+                  resetsAtUtc:
+                    type: string
+                    format: date-time
+                    example: '2026-04-01T00:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    BadRequest:
+      description: Invalid request parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            invalidKrs:
+              summary: Invalid KRS value
+              value:
+                error:
+                  code: INVALID_KRS
+                  message: KRS must contain 10 digits after normalization.
+                  details:
+                    parameter: krs
+                    reason: invalid_format
+            invalidCursor:
+              summary: Invalid cursor format
+              value:
+                error:
+                  code: INVALID_CURSOR
+                  message: Cursor must be a valid UUID.
+                  details:
+                    parameter: cursor
+                    reason: invalid_uuid
+            invalidRange:
+              summary: Invalid numeric range
+              value:
+                error:
+                  code: INVALID_RANGE
+                  message: revenue_min cannot be greater than revenue_max.
+                  details:
+                    parameter: revenue_min,revenue_max
+                    reason: min_greater_than_max
+    Unauthorized:
+      description: Missing, invalid, or revoked API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: UNAUTHORIZED
+              message: Missing or invalid API key.
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: NOT_FOUND
+              message: Company not found.
+    TooManyRequests:
+      description: Monthly quota exceeded for this API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              code: QUOTA_EXCEEDED
+              message: Monthly quota exceeded for this API key.
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: object
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: string
+              description: Domain error code.
+              enum:
+              - INVALID_KRS
+              - INVALID_CURSOR
+              - INVALID_RANGE
+              - INVALID_PARAMETER
+              - CONFLICTING_PARAMETERS
+              - INVALID_BOOLEAN
+              - INVALID_KEYWORDS
+              - UNAUTHORIZED
+              - NOT_FOUND
+              - QUOTA_EXCEEDED
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    CompanyListPagination:
+      type: object
+      required:
+      - limit
+      - offset
+      - total
+      - hasMore
+      properties:
+        limit:
+          type: integer
+          description: Page size (capped at 100 for normal requests; export may allow higher).
+        offset:
+          type: integer
+        total:
+          type: integer
+          description: Total rows matching filters. May be `-1` when not computed (e.g. some cursor-based responses).
+        hasMore:
+          type: boolean
+        cursor:
+          type: string
+          description: Last `entity_id` from this page; pass as `cursor` query param for the next page when supported.
+    CompanyListItem:
+      type: object
+      description: 'Row from `company_search` (fields depend on query path) plus enrichment: `email`, `website`, `logo_url`,
+
+        `currency`, `period_to`, and normalized `company_name_display`. `full_address` is derived from postal data when present.
+
+        '
+      properties:
+        entity_id:
+          type: string
+          format: uuid
+        company_name:
+          type: string
+        company_name_display:
+          type: string
+          nullable: true
+        registry_number:
+          type: string
+          nullable: true
+        nip:
+          type: string
+          nullable: true
+        regon:
+          type: string
+          nullable: true
+        legal_form:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        postal_code:
+          type: string
+          nullable: true
+        county:
+          type: string
+          nullable: true
+        municipality:
+          type: string
+          nullable: true
+        region:
+          type: string
+          nullable: true
+        full_address:
+          type: string
+          nullable: true
+        primary_pkd:
+          type: string
+          nullable: true
+        all_pkd_codes:
+          type: array
+          items:
+            type: string
+        is_active:
+          type: boolean
+          nullable: true
+        latest_snapshot_id:
+          type: string
+          format: uuid
+          nullable: true
+        revenue_total:
+          type: number
+          nullable: true
+        revenue_total_usd:
+          type: number
+          nullable: true
+        revenue_operating:
+          type: number
+          nullable: true
+        profit_operating:
+          type: number
+          nullable: true
+        profit_net:
+          type: number
+          nullable: true
+        profit_net_usd:
+          type: number
+          nullable: true
+        operating_costs_total:
+          type: number
+          nullable: true
+        income_tax:
+          type: number
+          nullable: true
+        cost_wages:
+          type: number
+          nullable: true
+        cost_amortization:
+          type: number
+          nullable: true
+        total_assets:
+          type: number
+          nullable: true
+        capital_total:
+          type: number
+          nullable: true
+        has_email:
+          type: boolean
+          nullable: true
+        has_website:
+          type: boolean
+          nullable: true
+        extracted_at:
+          type: string
+          format: date-time
+          nullable: true
+        state_date:
+          type: string
+          format: date
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        website:
+          type: string
+          nullable: true
+        logo_url:
+          type: string
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        period_to:
+          type: string
+          nullable: true
+    CompanyListResponse:
+      type: object
+      description: Search/list response — **multiple** companies in `data`, not a single profile.
+      required:
+      - data
+      - pagination
+      properties:
+        data:
+          type: array
+          description: One page of result rows (same filters as the request); length ≤ `pagination.limit`.
+          items:
+            $ref: '#/components/schemas/CompanyListItem'
+        pagination:
+          $ref: '#/components/schemas/CompanyListPagination'
+    CompanyCountResponse:
+      type: object
+      required:
+      - count
+      properties:
+        count:
+          type: integer
+          minimum: 0
+          description: Number of companies matching the filters.
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    BearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    CompanyFilterQ:
+      name: q
+      in: query
+      description: 'Free-text search (company name and identifiers). **Digits** are treated as a possible KRS/NIP/REGON
+
+        lookup. Whitespace is trimmed.
+
+        Matching strategy:
+        - identifier-like numeric input: identifier lookup path is used first.
+          For 10-digit numeric values, exact match is attempted against KRS (`registry_number`) and NIP;
+          an exact match is also attempted against REGON as stored in the index.
+          For other numeric lengths, prefix matching is used for those identifier fields.
+        - textual input: case-insensitive substring match on company name (`ILIKE %q%`).
+
+        Numeric lookup has priority over text-name matching when `q` contains only digits.
+        Example: `q=0000028860` is treated as identifier lookup (not generic relevance search).
+
+        '
+      schema:
+        type: string
+      example: orlen
+    CompanyFilterKeywords:
+      name: keywords
+      in: query
+      description: 'Keyword filter with **OR** semantics. Pass a comma-separated list, or repeat the parameter.
+
+        Each keyword must be at least **2** characters after trimming.
+        Empty tokens are ignored.
+        Duplicate tokens may appear and are not guaranteed to be deduplicated server-side.
+        Mixing repeated params and CSV is supported (e.g. `keywords=a,b&keywords=c`).
+
+        '
+      schema:
+        type: string
+      example: logistics,energy
+    CompanyFilterLimit:
+      name: limit
+      in: query
+      description: 'Page size. **Default:** `20`. For normal browsing the server caps at **100** per request.
+
+        Values **greater than 100** are treated as bulk/export-style requests and are capped at **50000**.
+        For interactive API clients, batches up to **5000** are recommended to reduce timeout risk and payload size.
+
+        **Quota accounting:** monthly quota is counted per HTTP request, not per returned company row.
+        Example: `limit=50000` still consumes **1** request from monthly quota.
+
+        '
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+    CompanyFilterOffset:
+      name: offset
+      in: query
+      description: 'Zero-based row offset for classic **offset** pagination.
+
+        Client contract: use either `offset` or `cursor` (not both).
+        If both are provided, the server returns `400 CONFLICTING_PARAMETERS`.
+
+        '
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    CompanyFilterCursor:
+      name: cursor
+      in: query
+      description: 'Optional **cursor** for pagination: `entity_id` of the last row from the previous page.
+
+        Cursor paging is ordered by `entity_id` ascending. Use it for deep paging/export-style traversal.
+        Do not combine with `offset`; if both are sent, request fails with `400 CONFLICTING_PARAMETERS`.
+
+        When present, the server may return `pagination.total: -1` and include `pagination.cursor` for the next page.
+
+        '
+      schema:
+        type: string
+        format: uuid
+    CompanyFilterPkd:
+      name: pkd
+      in: query
+      description: 'PKD code (Polish business activity classification). **Case-insensitive**; trimmed and uppercased server-side.
+
+        By default only the **primary** PKD (`primary_only=true`) is matched; set `primary_only=false` to match any code in
+        `all_pkd_codes`.
+
+        '
+      schema:
+        type: string
+      example: '62.01'
+    CompanyFilterPrimaryOnly:
+      name: primary_only
+      in: query
+      description: 'Boolean filter syntax is accepted (`true`/`false`).
+
+        Semantics: `true` (default) means `pkd` matches `primary_pkd` only.
+        `false` means `pkd` can match any entry in `all_pkd_codes`.
+
+        '
+      schema:
+        type: boolean
+        default: true
+    CompanyFilterCurrency:
+      name: currency
+      in: query
+      description: 'Display/filter currency context for financial threshold filters.
+
+        Allowed values: `PLN`, `USD`, `EUR` (case-insensitive).
+        Default is `PLN`.
+
+        For `revenue_min` / `revenue_max`, the API applies thresholds against:
+        - `revenue_total` when `currency=PLN`
+        - `revenue_total_usd` when `currency=USD`
+        - `revenue_total_eur` when `currency=EUR`
+
+        '
+      schema:
+        type: string
+        enum: [PLN, USD, EUR]
+        default: PLN
+    CompanyFilterVoivodeship:
+      name: voivodeship
+      in: query
+      description: 'Voivodeship / region filter. Compared to `company_search.region` **case-insensitively** (lowercased on
+        the server).
+
+        Use the same spelling as stored in data (e.g. Polish voivodeship names such as `mazowieckie`, `śląskie`).
+        Common values include: `dolnośląskie`, `małopolskie`, `mazowieckie`, `pomorskie`, `śląskie`, `wielkopolskie`.
+
+        '
+      schema:
+        type: string
+      example: mazowieckie
+    CompanyFilterPostalCode:
+      name: postal_code
+      in: query
+      description: 'Exact postal code match (trimmed). Format depends on source data (e.g. `00-001`).
+
+        '
+      schema:
+        type: string
+    CompanyFilterCity:
+      name: city
+      in: query
+      description: 'City substring filter (case-insensitive **ILIKE** `%city%`).
+
+        '
+      schema:
+        type: string
+      example: Warszawa
+    CompanyFilterRevenueMin:
+      name: revenue_min
+      in: query
+      description: 'Minimum **total revenue** (`revenue_total`).
+
+        Currency depends on `currency` query param (`PLN`/`USD`/`EUR`).
+        If `currency` is omitted, PLN is used.
+        Values are in **full currency units** (not thousands), e.g. `1000000` = one million PLN.
+        Evaluated against the latest indexed financial snapshot per company.
+        Companies with `null` in the selected revenue column do not match this filter.
+
+        '
+      schema:
+        type: number
+    CompanyFilterRevenueMax:
+      name: revenue_max
+      in: query
+      description: 'Maximum **total revenue** threshold in full units.
+
+        Currency depends on `currency` query param (`PLN`/`USD`/`EUR`).
+        If `currency` is omitted, PLN is used.
+
+        If `revenue_min > revenue_max`, the API returns `400` with code `INVALID_RANGE`.
+        Evaluated against the latest indexed financial snapshot per company.
+        Companies with `null` in the selected revenue column do not match this filter.
+
+        '
+      schema:
+        type: number
+    CompanyFilterRevenueOperatingMin:
+      name: revenue_operating_min
+      in: query
+      description: Minimum operating revenue (net sales / operating revenue field from financials).
+      schema:
+        type: number
+    CompanyFilterRevenueOperatingMax:
+      name: revenue_operating_max
+      in: query
+      schema:
+        type: number
+    CompanyFilterProfitOperatingMin:
+      name: profit_operating_min
+      in: query
+      schema:
+        type: number
+    CompanyFilterProfitOperatingMax:
+      name: profit_operating_max
+      in: query
+      schema:
+        type: number
+    CompanyFilterProfitNetMin:
+      name: profit_net_min
+      in: query
+      schema:
+        type: number
+    CompanyFilterProfitNetMax:
+      name: profit_net_max
+      in: query
+      schema:
+        type: number
+    CompanyFilterIncomeTaxMin:
+      name: income_tax_min
+      in: query
+      schema:
+        type: number
+    CompanyFilterIncomeTaxMax:
+      name: income_tax_max
+      in: query
+      schema:
+        type: number
+    CompanyFilterCostWagesMin:
+      name: cost_wages_min
+      in: query
+      schema:
+        type: number
+    CompanyFilterCostWagesMax:
+      name: cost_wages_max
+      in: query
+      schema:
+        type: number
+    CompanyFilterCostAmortizationMin:
+      name: cost_amortization_min
+      in: query
+      schema:
+        type: number
+    CompanyFilterCostAmortizationMax:
+      name: cost_amortization_max
+      in: query
+      schema:
+        type: number
+    CompanyFilterTotalAssetsMin:
+      name: total_assets_min
+      in: query
+      schema:
+        type: number
+    CompanyFilterTotalAssetsMax:
+      name: total_assets_max
+      in: query
+      schema:
+        type: number
+    CompanyFilterEbitdaMin:
+      name: ebitda_min
+      in: query
+      schema:
+        type: number
+    CompanyFilterEbitdaMax:
+      name: ebitda_max
+      in: query
+      schema:
+        type: number
+    CompanyFilterCapitalMin:
+      name: capital_min
+      in: query
+      description: Minimum **share capital** (`capital_total`).
+      schema:
+        type: number
+    CompanyFilterCapitalMax:
+      name: capital_max
+      in: query
+      schema:
+        type: number
+    CompanyFilterEstimatedValueMin:
+      name: estimated_value_min
+      in: query
+      description: Minimum **estimated company value** (`estimated_value`), when present in search index.
+      schema:
+        type: number
+    CompanyFilterEstimatedValueMax:
+      name: estimated_value_max
+      in: query
+      schema:
+        type: number
+    CompanyFilterRegistrationYearMin:
+      name: registration_year_min
+      in: query
+      description: 'Earliest **registration** year (`state_date` filter): companies with `state_date` on or after `YYYY-01-01`.
+
+        '
+      schema:
+        type: integer
+      example: 2015
+    CompanyFilterRegistrationYearMax:
+      name: registration_year_max
+      in: query
+      description: Latest registration year (`state_date` on or before `YYYY-12-31`).
+      schema:
+        type: integer
+    CompanyFilterLastReportYearMin:
+      name: last_report_year_min
+      in: query
+      description: 'Earliest **financial report period** (`financial_period_to` on or after `YYYY-01-01`).
+
+        When combined with financial metric filters, both are evaluated against the same indexed reporting snapshot.
+
+        '
+      schema:
+        type: integer
+    CompanyFilterLastReportYearMax:
+      name: last_report_year_max
+      in: query
+      description: 'Latest financial report period (`financial_period_to` on or before `YYYY-12-31`).
+
+        When combined with financial metric filters, both are evaluated against the same indexed reporting snapshot.
+
+        '
+      schema:
+        type: integer
+    CompanyFilterStatusActive:
+      name: status_active
+      in: query
+      description: 'Boolean filter syntax is accepted (`true`/`false`).
+
+        Semantics: `true` applies positive filter (only active companies).
+        `false` is syntactically valid and treated as no filter.
+
+        '
+      schema:
+        type: boolean
+    CompanyFilterLegalForm:
+      name: legal_form
+      in: query
+      description: 'Legal form substring filter (case-insensitive **ILIKE** `%legal_form%`).
+
+        Common values/phrases:
+        `spółka z ograniczoną odpowiedzialnością`, `spółka akcyjna`, `prosta spółka akcyjna`,
+        `spółka komandytowa`, `jednoosobowa działalność gospodarcza`.
+
+        '
+      schema:
+        type: string
+      example: spółka akcyjna
+    CompanyFilterHasEmail:
+      name: has_email
+      in: query
+      description: 'Boolean filter syntax is accepted (`true`/`false`).
+
+        Semantics: `true` applies positive filter (only companies with email).
+        `false` is syntactically valid and treated as no filter.
+
+        '
+      schema:
+        type: boolean
+    CompanyFilterHasWebsite:
+      name: has_website
+      in: query
+      description: 'Boolean filter syntax is accepted (`true`/`false`).
+
+        Semantics: `true` applies positive filter (only companies with website).
+        `false` is syntactically valid and treated as no filter.
+
+        '
+      schema:
+        type: boolean
