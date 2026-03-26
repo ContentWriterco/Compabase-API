@@ -6,7 +6,7 @@ and ownership – all in one API.
 ## Quick Example
 
 ``` bash
-curl "https://compabase.com/api/v1/companies?q=orlen&limit=1" \
+curl "https://compabase.com/api/v1/companies/krs/0000028860" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
