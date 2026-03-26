@@ -1,7 +1,7 @@
 # Compabase API
 
 Search and analyze Polish companies with financial data, legal status,
-and ownership --- all in one API.
+and ownership – all in one API.
 
 ## Quick Example
 
@@ -63,10 +63,10 @@ curl "https://compabase.com/api/v1/companies?q=orlen&limit=1" \
 ## What you can do
 
 -   Search and filter companies by location, industry (PKD), and
-    financial metrics\
--   Retrieve full company profiles\
--   Access financial statements and key performance metrics\
--   Check legal status (active, liquidation, bankruptcy)\
+    financial metrics
+-   Retrieve full company profiles
+-   Access financial statements and key performance metrics
+-   Check legal status (active, liquidation, bankruptcy)
 -   Explore ownership and management structure
 
 ## Use cases
