@@ -30,8 +30,8 @@ info:
     - mutually exclusive parameters supplied together (e.g. `cursor` and `offset`) -> `400 CONFLICTING_PARAMETERS`
 
     ### Quota Accounting
-    Each key is tied to your account plan and has a monthly request limit that resets on the
-    first day of each month (UTC). Limits by plan: Free 100, Pro 5 000, Scale 100 000,
+    Each key is tied to your account plan and has a request limit that resets every
+    30 days from your billing start date. Limits by plan: Free 100, Pro 5 000, Scale 100 000,
     Enterprise – custom.
 
     - quota is consumed by authenticated `/api/v1` requests, except `GET /usage`
