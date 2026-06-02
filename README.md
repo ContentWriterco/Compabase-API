@@ -240,7 +240,7 @@ Authorization: Bearer <your_key>
 
 ## Quota & Plans
 
-Each API key has a monthly request limit that resets on the 1st of each month (UTC).
+Each API key has a request limit that resets every 30 days from your billing start date.
 
 | Plan | Requests / month |
 |------|-----------------|
