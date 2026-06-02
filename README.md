@@ -7,7 +7,7 @@
 
 **Compabase** is a developer-first REST API to search, filter, and analyze over **3 million Polish companies** from the **KRS (Krajowy Rejestr Sądowy — National Court Register)** and **CEIDG (Centralna Ewidencja i Informacja o Działalności Gospodarczej)**. Access normalized company profiles, multi-year financial statements (P&L, balance sheet, ratios), KRS ownership structures, and management roles — all from a single consistent JSON API.
 
-> Looking for a **Polish company register API**, **KRS JSON API**, or a way to run **active company verification in Poland**? You're in the right place.
+![Compabase API Data Flow](sankey-chart.png)
 
 ---
 
