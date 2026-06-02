@@ -5,7 +5,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-orange)](v1.yaml)
 [![Free Tier](https://img.shields.io/badge/Free_Tier-100_req%2Fmo-brightgreen)](https://compabase.com/api-keys)
 
-**Compabase** is a developer-first REST API to search, filter, and analyze over **1 million Polish companies** registered in the **KRS (Krajowy Rejestr Sądowy — National Court Register)**. Access normalized company profiles, multi-year financial statements (P&L, balance sheet, ratios), KRS ownership structures, and management roles — all from a single consistent JSON API.
+**Compabase** is a developer-first REST API to search, filter, and analyze over **3 million Polish companies** from the **KRS (Krajowy Rejestr Sądowy — National Court Register)** and **CEIDG (Centralna Ewidencja i Informacja o Działalności Gospodarczej)**. Access normalized company profiles, multi-year financial statements (P&L, balance sheet, ratios), KRS ownership structures, and management roles — all from a single consistent JSON API.
 
 > Looking for a **Polish company register API**, **KRS JSON API**, or a way to run **active company verification in Poland**? You're in the right place.
 
@@ -88,7 +88,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/companies` | Search & filter Polish companies (1M+ records) |
+| `GET` | `/companies` | Search & filter Polish companies (3M+ records, KRS & CEIDG) |
 | `GET` | `/companies/count` | Count matching companies without fetching rows |
 | `GET` | `/companies/krs/{krs}` | Full company profile by KRS number |
 | `GET` | `/companies/krs/{krs}/financial-statements` | Multi-year financial statements only |
@@ -101,7 +101,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 
 ### `GET /companies` — Search & Filter Polish Companies
 
-Search over **1 million KRS-registered Polish companies** using combined AND filters.
+Search over **3 million Polish companies** from KRS and CEIDG using combined AND filters.
 Returns paginated results with financial metrics per row. Supports both offset and cursor-based pagination.
 
 ```bash
@@ -281,7 +281,7 @@ Authorization: Bearer <your_key>
 
 ## Plans & Quota
 
-Each API key has a monthly request quota that resets on the 1st of each month (UTC).
+Each API key has a monthly request quota that resets every 30 days from your billing start date.
 
 | Plan | Requests / month |
 |------|-----------------|
