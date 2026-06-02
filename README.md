@@ -108,8 +108,7 @@ Supported headers: - `X-API-Key: <your_key>` -
 Create a free account and generate your API keys instantly:\
 https://compabase.com/api-keys
 
-Free tier: 100 requests/month. Paid plans start at 99 PLN/month (5,000 requests).\
-See the [pricing page](https://compabase.com/pricing) for details.
+Free tier includes 100 requests/month. See the [pricing page](https://compabase.com/pricing) for paid plans.
 
 ## License
 
