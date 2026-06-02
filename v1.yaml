@@ -12,8 +12,12 @@ info:
 
     ### Authentication
     Send your key in header `X-API-Key: <key>` or `Authorization: Bearer <key>`.
-    For security, API keys are issued individually on request through
-    <a href="/api" target="_blank" rel="noopener noreferrer">contact form</a>.
+
+    API keys are self-service: create a free account, then generate and manage your keys in the
+    <a href="/api-keys" target="_blank" rel="noopener noreferrer">API key dashboard</a>.
+    Usage is billed according to your plan. The free tier includes 100 requests/month;
+    paid plans start at 99 PLN/month for 5,000 requests. See the
+    <a href="/pricing" target="_blank" rel="noopener noreferrer">pricing page</a> for details.
 
     ### Error Model
     `{ "error": { "code": "...", "message": "...", "details": { ... } } }`
@@ -27,8 +31,9 @@ info:
     - mutually exclusive parameters supplied together (e.g. `cursor` and `offset`) -> `400 CONFLICTING_PARAMETERS`
 
     ### Quota Accounting
-    Each key has a maximum number of requests per **UTC calendar month** (Monthly Quota), set when the key is created.
-    The count resets on the first day of each month (UTC).
+    Each key is tied to your account plan and has a monthly request limit that resets on the
+    first day of each month (UTC). Limits by plan: Free 100, Pro 5 000, Scale 100 000,
+    Enterprise – custom.
 
     - quota is consumed by authenticated `/api/v1` requests, except `GET /usage`
     - requests that fail before authentication succeeds (`401`) do not consume quota
