@@ -306,6 +306,12 @@ Each API key has a monthly request quota that resets every 30 days from your bil
 
 ---
 
+## Related
+
+- **[Compabase MCP Server](https://github.com/ContentWriterco/Compabase-MCP)** — connect Claude, Cursor, and other AI assistants directly to Polish company data via the Model Context Protocol
+
+---
+
 ## License
 
 MIT
