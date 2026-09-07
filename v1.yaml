@@ -51,7 +51,7 @@ info:
     ### Bulk pulls
     Use `GET /companies/export` (or `GET /companies` with `limit` up to **500**) plus cursor
     pagination (`cursor` = last `entity_id`) to enrich large lists. Each page consumes **one**
-    `api_requests` unit — not the portal/MCP `export_companies` meter. For a full profile,
+    `api_requests` unit – not the portal/MCP `export_companies` meter. For a full profile,
     call `GET /companies/krs/{krs}` once per company.
 
 servers:
@@ -399,7 +399,7 @@ paths:
         - `bzp` (public procurement summary when present),
         - `ure` (URE energy concessions when checked),
         - `bdo` (BDO waste/packaging register when present),
-        - `gpw` (Warsaw Stock Exchange listing snapshot when the NIP is matched — no full OHLCV; use `/companies/krs/{krs}/gpw`),
+        - `gpw` (Warsaw Stock Exchange listing snapshot when the NIP is matched – no full OHLCV; use `/companies/krs/{krs}/gpw`),
         - `crbr` (beneficial owners when present and RODO-eligible),
         - `changeHistory` when non-empty,
         - `similarCompanies`, `subsidiaryCompanies`, `pkdRankings`, `faq`, `insightsByYear`,
@@ -1048,9 +1048,9 @@ paths:
 
         Not an official GPW licensed feed. `gpw` is `null` when the company is not listed / not matched.
 
-        Optional history (still capped — never the full MAX chart):
-        - `include=series` — daily OHLCV, default 250 bars, max 2000 (`series_limit`)
-        - `include=intraday` — 1-minute bars for the last 10 calendar days
+        Optional history (still capped – never the full MAX chart):
+        - `include=series` – daily OHLCV, default 250 bars, max 2000 (`series_limit`)
+        - `include=intraday` – 1-minute bars for the last 10 calendar days
         - combine as `include=series,intraday`
       security:
       - ApiKeyAuth: []

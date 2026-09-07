@@ -1,11 +1,11 @@
-# 🇵🇱 Polish Companies Data API (KRS & CEIDG) — Compabase
+# 🇵🇱 Polish Companies Data API (KRS & CEIDG) – Compabase
 
 [![API Docs](https://img.shields.io/badge/Docs-Interactive_Redoc-blue)](https://compabase.com/docs/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-orange)](v1.yaml)
 [![Free Tier](https://img.shields.io/badge/Free_Tier-100_req%2Fmo-brightgreen)](https://compabase.com/api-keys)
 
-**Compabase** is a developer-first REST API to search, filter, and analyze over **3 million Polish companies** from the **KRS (Krajowy Rejestr Sądowy — National Court Register)** and **CEIDG (Centralna Ewidencja i Informacja o Działalności Gospodarczej)**. Access normalized company profiles, multi-year financial statements (P&L, balance sheet, ratios), KRS ownership structures, management roles, peer rankings, company connections, GPW listings, and watchlists — all from a single consistent JSON API.
+**Compabase** is a developer-first REST API to search, filter, and analyze over **3 million Polish companies** from the **KRS (Krajowy Rejestr Sądowy – National Court Register)** and **CEIDG (Centralna Ewidencja i Informacja o Działalności Gospodarczej)**. Access normalized company profiles, multi-year financial statements (P&L, balance sheet, ratios), KRS ownership structures, management roles, peer rankings, company connections, GPW listings, and watchlists – all from a single consistent JSON API.
 
 ![Compabase API Data Flow](sankey-chart.png)
 
@@ -73,14 +73,14 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 
 ## What You Can Build
 
-- **Polish B2B database API** — search and filter the full KRS company register by industry, location, revenue, and legal form
-- **KRS search by PKD code** — find all active companies in a specific industry sector across Poland
-- **Validate KRS number** — check legal status (active, bankruptcy, liquidation) in a single lightweight call
-- **Polish companies financial statements API** — pull multi-year P&L, balance sheet, and ratio data (PLN / USD / EUR)
-- **KRS ownership structure API** — explore shareholder structures and management boards for due diligence
-- **Company revenue data Poland** — rank companies by revenue, EBITDA, or total assets within any sector or region
-- **Active company verification Poland** — integrate status checks into onboarding or KYC flows
-- **Lead generation & B2B enrichment** — filter by `has_email`, `has_website`, voivodeship, and financial thresholds
+- **Polish B2B database API** – search and filter the full KRS company register by industry, location, revenue, and legal form
+- **KRS search by PKD code** – find all active companies in a specific industry sector across Poland
+- **Validate KRS number** – check legal status (active, bankruptcy, liquidation) in a single lightweight call
+- **Polish companies financial statements API** – pull multi-year P&L, balance sheet, and ratio data (PLN / USD / EUR)
+- **KRS ownership structure API** – explore shareholder structures and management boards for due diligence
+- **Company revenue data Poland** – rank companies by revenue, EBITDA, or total assets within any sector or region
+- **Active company verification Poland** – integrate status checks into onboarding or KYC flows
+- **Lead generation & B2B enrichment** – filter by `has_email`, `has_website`, voivodeship, and financial thresholds
 
 ---
 
@@ -111,7 +111,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 
 ---
 
-### `GET /companies` — Search & Filter Polish Companies
+### `GET /companies` – Search & Filter Polish Companies
 
 Search over **3 million Polish companies** from KRS and CEIDG using combined AND filters.
 Returns paginated results with financial metrics per row. Supports both offset and cursor-based pagination.
@@ -129,7 +129,7 @@ curl "https://compabase.com/api/v1/companies?pkd=28&voivodeship=mazowieckie&reve
 | Offset | `offset`, `limit` | Interactive browsing, UI tables |
 | Cursor | `cursor`, `limit` | Deep export, large dataset traversal |
 
-> `offset` and `cursor` are mutually exclusive. Use cursor mode for deterministic deep paging; `pagination.total` may be `-1` in cursor mode — rely on `hasMore` instead.
+> `offset` and `cursor` are mutually exclusive. Use cursor mode for deterministic deep paging; `pagination.total` may be `-1` in cursor mode – rely on `hasMore` instead.
 
 <details>
 <summary>📋 Show all available filter parameters</summary>
@@ -138,11 +138,11 @@ curl "https://compabase.com/api/v1/companies?pkd=28&voivodeship=mazowieckie&reve
 |-----------|------|-------------|
 | `q` | string | Full-text company name search |
 | `keywords` | string | Keyword token search |
-| `pkd` | string | PKD industry code — e.g. `46.90.Z`. Combine with `primary_only=true` to match primary activity only |
-| `voivodeship` | string | Polish voivodeship, lowercase — e.g. `mazowieckie`, `śląskie`, `wielkopolskie` |
-| `city` | string | City name, uppercase — e.g. `WARSZAWA`, `KRAKÓW` |
+| `pkd` | string | PKD industry code – e.g. `46.90.Z`. Combine with `primary_only=true` to match primary activity only |
+| `voivodeship` | string | Polish voivodeship, lowercase – e.g. `mazowieckie`, `śląskie`, `wielkopolskie` |
+| `city` | string | City name, uppercase – e.g. `WARSZAWA`, `KRAKÓW` |
 | `postal_code` | string | Postal code prefix |
-| `legal_form` | string | Legal form — e.g. `SPÓŁKA AKCYJNA`, `SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ` |
+| `legal_form` | string | Legal form – e.g. `SPÓŁKA AKCYJNA`, `SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ` |
 | `status_active` | bool | `true` = active companies only, `false` = inactive only |
 | `has_email` | bool | Filter by email presence |
 | `has_website` | bool | Filter by website presence |
@@ -167,9 +167,9 @@ curl "https://compabase.com/api/v1/companies?pkd=28&voivodeship=mazowieckie&reve
 
 ---
 
-### `GET /companies/count` — Count Matching Companies
+### `GET /companies/count` – Count Matching Companies
 
-Returns a single `count` integer for the same filter set as `/companies` — without fetching rows.
+Returns a single `count` integer for the same filter set as `/companies` – without fetching rows.
 Ideal for faceted search UIs, dashboards, and estimating export volume before paginating.
 
 ```bash
@@ -180,10 +180,10 @@ curl "https://compabase.com/api/v1/companies/count?pkd=46.90.Z&voivodeship=ślą
 
 ---
 
-### `GET /companies/krs/{krs}` — Full Company Profile
+### `GET /companies/krs/{krs}` – Full Company Profile
 
 Returns the complete profile for a **Polish company identified by KRS number**.
-Leading zeros are optional — the API normalizes the value to 10 digits server-side.
+Leading zeros are optional – the API normalizes the value to 10 digits server-side.
 
 **Response sections:**
 
@@ -193,7 +193,7 @@ Leading zeros are optional — the API normalizes the value to 10 digits server-
 | `details` | Contacts (email, website), suspension/deletion flags, filings |
 | `financials` | Multi-year P&L + balance sheet metrics in PLN / USD / EUR |
 | `roles` | Management board, supervisory board, proxies |
-| `ownership` | Shareholder structure — holding %, share count, values in PLN / USD / EUR |
+| `ownership` | Shareholder structure – holding %, share count, values in PLN / USD / EUR |
 | `companySummary` | AI-generated short description (PL / EN / DE) |
 | `similarCompanies` | Related companies by industry and size |
 
@@ -204,9 +204,9 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 
 ---
 
-### `GET /companies/krs/{krs}/financial-statements` — Financial Statements
+### `GET /companies/krs/{krs}/financial-statements` – Financial Statements
 
-**Polish companies financial statements API** — returns all financial metrics grouped by reporting year,
+**Polish companies financial statements API** – returns all financial metrics grouped by reporting year,
 without any profile or metadata. Values are available in PLN, USD and EUR.
 
 <details>
@@ -233,10 +233,10 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860/financial-statements
 
 ---
 
-### `GET /companies/krs/{krs}/structure-people` — Ownership & Management Structure
+### `GET /companies/krs/{krs}/structure-people` – Ownership & Management Structure
 
 Returns `roles` (management board, supervisory board, proxies) and `ownership` (shareholders
-with holding percentage, share count, and PLN / USD / EUR values) — without profile or financial data.
+with holding percentage, share count, and PLN / USD / EUR values) – without profile or financial data.
 Purpose-built for **KRS ownership structure API** integrations and corporate due diligence workflows.
 
 ```bash
@@ -246,7 +246,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860/structure-people" \
 
 ---
 
-### `GET /companies/krs/{krs}/status` — Legal Status Check
+### `GET /companies/krs/{krs}/status` – Legal Status Check
 
 Lightweight endpoint for **active company verification in Poland**. Returns `status`
 (`active`, `bankruptcy`, `liquidation`) and `is_open` flag. Validate KRS numbers or monitor
@@ -260,9 +260,9 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860/status" \
 
 ---
 
-### `GET /companies/export` — Bulk Search Page
+### `GET /companies/export` – Bulk Search Page
 
-Same filters as `GET /companies`, with page size up to **500**. Contact emails are included when available. Page with `cursor` (`cursor` = last row `entity_id`). Each page consumes **one** `api_requests` unit — not the portal/MCP `export_companies` meter.
+Same filters as `GET /companies`, with page size up to **500**. Contact emails are included when available. Page with `cursor` (`cursor` = last row `entity_id`). Each page consumes **one** `api_requests` unit – not the portal/MCP `export_companies` meter.
 
 ```bash
 curl "https://compabase.com/api/v1/companies/export?pkd=62&status_active=true&limit=500" \
@@ -271,25 +271,25 @@ curl "https://compabase.com/api/v1/companies/export?pkd=62&status_active=true&li
 
 ---
 
-### `GET /companies/krs/{krs}/financial-documents` — Document Inventory
+### `GET /companies/krs/{krs}/financial-documents` – Document Inventory
 
 Metadata list of financial documents (periods, types, names). Structured metrics stay on the profile and `/financial-statements` endpoints.
 
 ---
 
-### `GET /companies/krs/{krs}/connections` — Company Graph
+### `GET /companies/krs/{krs}/connections` – Company Graph
 
 Related companies and people linked through shared roles or ownership (same payload as the profile Connections UI).
 
 ---
 
-### `GET /companies/krs/{krs}/statistics` — Peer Rankings
+### `GET /companies/krs/{krs}/statistics` – Peer Rankings
 
 Industry / region / country peer benchmarks and the company's rank. Use when `hasStatistics` on the full profile is `true`.
 
 ---
 
-### `GET /companies/krs/{krs}/gpw` — Warsaw Stock Exchange
+### `GET /companies/krs/{krs}/gpw` – Warsaw Stock Exchange
 
 Listing snapshot for GPW Main Market, NewConnect, or GlobalConnect: ticker, ISIN, last close, market cap, EPS, P/E, dividend, recent daily bars. Quotes delayed ~15 minutes, PLN. `gpw` is `null` when the company is not listed. Not an official GPW licensed feed.
 
@@ -300,7 +300,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860/gpw" \
 
 ---
 
-### `GET /ceidg/nip/{nip}` — CEIDG Profile
+### `GET /ceidg/nip/{nip}` – CEIDG Profile
 
 Sole-proprietor profile by **NIP**. Contact email/phone are returned for authenticated API keys when present and allowed. Personal owner fields follow the same RODO gating as the website.
 
@@ -313,7 +313,7 @@ curl "https://compabase.com/api/v1/ceidg/nip/5252344078" \
 
 ### `GET /persons/search` + `GET /persons/{personId}/connections`
 
-Search natural persons by first/last name. Then load companies linked to a `person_id` (board, ownership, proxies). Identification is name-based — no PESEL.
+Search natural persons by first/last name. Then load companies linked to a `person_id` (board, ownership, proxies). Identification is name-based – no PESEL.
 
 ---
 
@@ -323,7 +323,7 @@ Search natural persons by first/last name. Then load companies linked to a `pers
 
 ---
 
-### `GET /usage` — Quota Usage
+### `GET /usage` – Quota Usage
 
 Returns current-month usage for the authenticated key. Does **not** consume quota.
 
@@ -335,7 +335,7 @@ curl "https://compabase.com/api/v1/usage" \
 
 ---
 
-### `GET /health` — API Health
+### `GET /health` – API Health
 
 Public endpoint (no API key required). Returns `{ "status": "ok", "api": "v1", "timestamp": "..." }`.
 
@@ -374,7 +374,7 @@ Each API key has a monthly `api_requests` quota that resets with the **UTC calen
 
 ## OpenAPI Specification
 
-- `v1.yaml` — source of truth for the API contract (OpenAPI 3.1)
+- `v1.yaml` – source of truth for the API contract (OpenAPI 3.1)
 - Base URL: `https://compabase.com/api/v1/`
 
 [Read the Full Interactive API Documentation →](https://compabase.com/docs/)
@@ -383,8 +383,8 @@ Each API key has a monthly `api_requests` quota that resets with the **UTC calen
 
 ## Related
 
-- **[Compabase MCP Server](https://github.com/ContentWriterco/compabase-mcp)** — connect Claude, Cursor, and other AI assistants directly to Polish company data via the Model Context Protocol
-- **[Interactive MCP docs](https://compabase.com/docs/mcp/)** — tools reference and client setup
+- **[Compabase MCP Server](https://github.com/ContentWriterco/compabase-mcp)** – connect Claude, Cursor, and other AI assistants directly to Polish company data via the Model Context Protocol
+- **[Interactive MCP docs](https://compabase.com/docs/mcp/)** – tools reference and client setup
 
 ---
 
