@@ -5,7 +5,7 @@
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-orange)](v1.yaml)
 [![Free Tier](https://img.shields.io/badge/Free_Tier-100_req%2Fmo-brightgreen)](https://compabase.com/api-keys)
 
-**Compabase** is a developer-first REST API to search, filter, and analyze over **3 million Polish companies** from the **KRS (Krajowy Rejestr Sądowy — National Court Register)** and **CEIDG (Centralna Ewidencja i Informacja o Działalności Gospodarczej)**. Access normalized company profiles, multi-year financial statements (P&L, balance sheet, ratios), KRS ownership structures, and management roles — all from a single consistent JSON API.
+**Compabase** is a developer-first REST API to search, filter, and analyze over **3 million Polish companies** from the **KRS (Krajowy Rejestr Sądowy — National Court Register)** and **CEIDG (Centralna Ewidencja i Informacja o Działalności Gospodarczej)**. Access normalized company profiles, multi-year financial statements (P&L, balance sheet, ratios), KRS ownership structures, management roles, peer rankings, company connections, GPW listings, and watchlists — all from a single consistent JSON API.
 
 ![Compabase API Data Flow](sankey-chart.png)
 
@@ -90,10 +90,22 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 |--------|------|-------------|
 | `GET` | `/companies` | Search & filter Polish companies (3M+ records, KRS & CEIDG) |
 | `GET` | `/companies/count` | Count matching companies without fetching rows |
+| `GET` | `/companies/export` | Same filters as `/companies`, page size up to **500** (cursor paging) |
 | `GET` | `/companies/krs/{krs}` | Full company profile by KRS number |
 | `GET` | `/companies/krs/{krs}/financial-statements` | Multi-year financial statements only |
+| `GET` | `/companies/krs/{krs}/financial-documents` | Inventory of filed financial documents (metadata) |
 | `GET` | `/companies/krs/{krs}/structure-people` | Ownership & management structure only |
+| `GET` | `/companies/krs/{krs}/connections` | Related companies and people (shared roles / ownership) |
+| `GET` | `/companies/krs/{krs}/statistics` | Peer benchmarks and rank (PKD / region / Poland) |
+| `GET` | `/companies/krs/{krs}/news` | Company news and UGC (where published) |
+| `GET` | `/companies/krs/{krs}/gpw` | Warsaw Stock Exchange listing + delayed quotes |
 | `GET` | `/companies/krs/{krs}/status` | Lightweight legal status check |
+| `GET` | `/ceidg/nip/{nip}` | CEIDG sole-proprietor profile by NIP |
+| `GET` | `/persons/search` | Search natural persons by name |
+| `GET` | `/persons/{personId}/connections` | Companies linked to a person |
+| `GET` | `/watchlist` | List watchlist for the account on the API key |
+| `POST` | `/watchlist/krs/{krs}` | Add a company to the watchlist |
+| `DELETE` | `/watchlist/krs/{krs}` | Remove a company from the watchlist |
 | `GET` | `/usage` | Monthly quota usage for the current API key |
 | `GET` | `/health` | Public uptime check (no key required) |
 
@@ -248,6 +260,69 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860/status" \
 
 ---
 
+### `GET /companies/export` — Bulk Search Page
+
+Same filters as `GET /companies`, with page size up to **500**. Contact emails are included when available. Page with `cursor` (`cursor` = last row `entity_id`). Each page consumes **one** `api_requests` unit — not the portal/MCP `export_companies` meter.
+
+```bash
+curl "https://compabase.com/api/v1/companies/export?pkd=62&status_active=true&limit=500" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+---
+
+### `GET /companies/krs/{krs}/financial-documents` — Document Inventory
+
+Metadata list of financial documents (periods, types, names). Structured metrics stay on the profile and `/financial-statements` endpoints.
+
+---
+
+### `GET /companies/krs/{krs}/connections` — Company Graph
+
+Related companies and people linked through shared roles or ownership (same payload as the profile Connections UI).
+
+---
+
+### `GET /companies/krs/{krs}/statistics` — Peer Rankings
+
+Industry / region / country peer benchmarks and the company's rank. Use when `hasStatistics` on the full profile is `true`.
+
+---
+
+### `GET /companies/krs/{krs}/gpw` — Warsaw Stock Exchange
+
+Listing snapshot for GPW Main Market, NewConnect, or GlobalConnect: ticker, ISIN, last close, market cap, EPS, P/E, dividend, recent daily bars. Quotes delayed ~15 minutes, PLN. `gpw` is `null` when the company is not listed. Not an official GPW licensed feed.
+
+```bash
+curl "https://compabase.com/api/v1/companies/krs/0000028860/gpw" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+---
+
+### `GET /ceidg/nip/{nip}` — CEIDG Profile
+
+Sole-proprietor profile by **NIP**. Contact email/phone are returned for authenticated API keys when present and allowed. Personal owner fields follow the same RODO gating as the website.
+
+```bash
+curl "https://compabase.com/api/v1/ceidg/nip/5252344078" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+---
+
+### `GET /persons/search` + `GET /persons/{personId}/connections`
+
+Search natural persons by first/last name. Then load companies linked to a `person_id` (board, ownership, proxies). Identification is name-based — no PESEL.
+
+---
+
+### Watchlist
+
+`GET /watchlist` lists companies followed by the **user account linked to the API key** (the key must have `user_id`). `POST` / `DELETE` `/watchlist/krs/{krs}` add or remove a company.
+
+---
+
 ### `GET /usage` — Quota Usage
 
 Returns current-month usage for the authenticated key. Does **not** consume quota.
@@ -281,7 +356,7 @@ Authorization: Bearer <your_key>
 
 ## Plans & Quota
 
-Each API key has a monthly request quota that resets every 30 days from your billing start date.
+Each API key has a monthly `api_requests` quota that resets with the **UTC calendar month** (`GET /usage` returns `monthUtc` / `resetsAtUtc`). Authenticated requests include **contact email** on profiles and search rows when available.
 
 | Plan | Requests / month |
 |------|-----------------|
@@ -308,7 +383,8 @@ Each API key has a monthly request quota that resets every 30 days from your bil
 
 ## Related
 
-- **[Compabase MCP Server](https://github.com/ContentWriterco/Compabase-MCP)** — connect Claude, Cursor, and other AI assistants directly to Polish company data via the Model Context Protocol
+- **[Compabase MCP Server](https://github.com/ContentWriterco/compabase-mcp)** — connect Claude, Cursor, and other AI assistants directly to Polish company data via the Model Context Protocol
+- **[Interactive MCP docs](https://compabase.com/docs/mcp/)** — tools reference and client setup
 
 ---
 

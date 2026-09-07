@@ -4,8 +4,9 @@ info:
   version: 1.0.0
   description: |
     ### Introduction
-    Versioned JSON API for company search, company counts, full company profiles by KRS,
-    legal status checks, financial statements, and ownership/roles structure data.
+    Versioned JSON API for Polish company data: KRS search and full profiles, CEIDG (sole
+    proprietors) by NIP, financial statements and document inventory, peer statistics,
+    company connections, news/UGC, Warsaw Stock Exchange (GPW) listings, and watchlist management.
 
     ### Base URL
     `https://compabase.com/api/v1/`
@@ -18,26 +19,40 @@ info:
     Usage is billed according to your plan. See the
     <a href="/pricing" target="_blank" rel="noopener noreferrer">pricing page</a> for details.
 
+    Authenticated requests return **contact email** on company profiles and search rows when
+    available (same data as the logged-in web UI). Public unauthenticated site pages still gate emails.
+
     ### Error Model
-    `{ "error": { "code": "...", "message": "...", "details": { ... } } }`
+    `{ "statusCode": 400, "statusMessage": "...", "message": "...", "data": { "error": { "code": "...", "message": "...", "details": { ... } } } }`
+
+    The outer envelope (`statusCode`, `statusMessage`, `message`) is set by the Nitro server framework.
+    The domain error object lives under `data.error` with a machine-readable `code`, a human-readable
+    `message`, and optional `details`.
 
     ### Validation Rules
     - invalid numeric ranges (`*_min > *_max`) -> `400 INVALID_RANGE`
     - invalid booleans (`primary_only`, `has_email`, `has_website`, `status_active`) -> `400 INVALID_BOOLEAN`
     - invalid cursor UUID -> `400 INVALID_CURSOR`
     - invalid KRS format -> `400 INVALID_KRS`
+    - invalid NIP format -> `400 INVALID_NIP`
     - too-short keyword token (<2 chars) -> `400 INVALID_KEYWORDS`
     - mutually exclusive parameters supplied together (e.g. `cursor` and `offset`) -> `400 CONFLICTING_PARAMETERS`
 
     ### Quota Accounting
-    Each key is tied to your account plan and has a request limit that resets every
-    30 days from your billing start date. Limits by plan: Free 100, Pro 5 000, Scale 100 000,
-    Enterprise – custom.
+    Each key is tied to your account plan and has a monthly `api_requests` limit that resets
+    with the UTC calendar month (see `GET /usage` for `monthUtc` / `resetsAtUtc`). Limits by
+    plan: Free 100, Pro 5 000, Scale 100 000, Enterprise – custom.
 
     - quota is consumed by authenticated `/api/v1` requests, except `GET /usage`
     - requests that fail before authentication succeeds (`401`) do not consume quota
     - requests rejected because quota is already exhausted (`429`) do not consume additional quota
     - other authenticated responses, including `200`, `400`, and `404`, consume quota
+
+    ### Bulk pulls
+    Use `GET /companies/export` (or `GET /companies` with `limit` up to **500**) plus cursor
+    pagination (`cursor` = last `entity_id`) to enrich large lists. Each page consumes **one**
+    `api_requests` unit — not the portal/MCP `export_companies` meter. For a full profile,
+    call `GET /companies/krs/{krs}` once per company.
 
 servers:
 - url: https://compabase.com/api/v1
@@ -46,6 +61,8 @@ tags:
 - name: Health
 - name: Usage
 - name: Companies
+- name: Watchlist
+- name: Persons
 paths:
   /health:
     get:
@@ -202,7 +219,7 @@ paths:
                   full_address: 09-411 Płock, Poland
                   email: zarzad@orlen.pl
                   website: orlen.pl
-                  logo_url: https://emjsevwafjsrwhpdijje.supabase.co/storage/v1/object/public/company-logos/ad2ae683-ccbd-49c6-a85c-648024435cb5.ico
+                  logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/ad2ae683-ccbd-49c6-a85c-648024435cb5.ico
                   currency: PLN
                   period_to: null
                 - entity_id: e51db361-6d35-4e91-af8c-5cb8115e1475
@@ -240,7 +257,7 @@ paths:
                   full_address: 40-202 Katowice, Poland
                   email: kancelaria@tauron.pl
                   website: tauron.pl
-                  logo_url: https://emjsevwafjsrwhpdijje.supabase.co/storage/v1/object/public/company-logos/e51db361-6d35-4e91-af8c-5cb8115e1475.ico
+                  logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/e51db361-6d35-4e91-af8c-5cb8115e1475.ico
                   currency: PLN
                   period_to: null
                 - entity_id: 264b49ba-4c4d-4a04-9eb1-1010a57fecdf
@@ -278,7 +295,7 @@ paths:
                   full_address: 80-718 Gdańsk, Poland
                   email: lotos@grupalotos.pl
                   website: lotos.pl
-                  logo_url: https://emjsevwafjsrwhpdijje.supabase.co/storage/v1/object/public/company-logos/264b49ba-4c4d-4a04-9eb1-1010a57fecdf.png
+                  logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/264b49ba-4c4d-4a04-9eb1-1010a57fecdf.png
                   currency: PLN
                   period_to: null
                 pagination:
@@ -302,7 +319,7 @@ paths:
         Use the **same query parameters** as list/search (except pagination: no `limit`, `offset`, or `cursor`).
         Filters combine with **AND** where applicable.
 
-        **Response:** a single integer `count` — total matching companies for the current filters.
+        **Response:** a single integer `count`; total matching companies for the current filters.
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -369,12 +386,24 @@ paths:
         Returns full company profile addressed by **KRS** (Polish court registry number).
         Digits only; leading zeros are optional (normalized to 10 digits server-side).
 
-        Prefer this in integrations that only know KRS from external sources.
-        The payload includes:
-        - `company` (core identifiers, address, activity data, display fields),
-        - `details` (contacts, suspension/deletion flags, attributes, filings),
-        - `financials` (full rows from `entity_financial_metrics` grouped by year, including PLN/USD/EUR values),
-        - optional analytical sections such as `pkdRankings`, `similarCompanies`.
+        Integrations that only have a KRS number can call this directly.
+        One request typically covers enrichment for a company. The payload includes:
+        - `company` (identifiers, address, PKD, logo, capital),
+        - `details.contacts` (email, phone, website, deliverability flags; email/phone revealed for API keys),
+        - `details.vat` (VAT whitelist status + bank accounts when known),
+        - `details.filings` / attributes / operational status,
+        - `roles` and `ownership`,
+        - `financials.byYear` (metrics + `esf_statement_lines` when present; XML files are on the documents endpoint),
+        - `krz` (restructuring/insolvency proceedings summary),
+        - `sudop` (public aid / de minimis when checked),
+        - `bzp` (public procurement summary when present),
+        - `ure` (URE energy concessions when checked),
+        - `bdo` (BDO waste/packaging register when present),
+        - `gpw` (Warsaw Stock Exchange listing snapshot when the NIP is matched — no full OHLCV; use `/companies/krs/{krs}/gpw`),
+        - `crbr` (beneficial owners when present and RODO-eligible),
+        - `changeHistory` when non-empty,
+        - `similarCompanies`, `subsidiaryCompanies`, `pkdRankings`, `faq`, `insightsByYear`,
+        - `hasStatistics` (boolean; full peer benchmarks via `/statistics`).
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -400,7 +429,7 @@ paths:
                   registry_number: "0000028860"
                   company_name: ORLEN SPÓŁKA AKCYJNA
                   company_name_display: Orlen
-                  logo_url: https://emjsevwafjsrwhpdijje.supabase.co/storage/v1/object/public/company-logos/ad2ae683-ccbd-49c6-a85c-648024435cb5.ico
+                  logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/ad2ae683-ccbd-49c6-a85c-648024435cb5.ico
                   nip: "7740001454"
                   regon: "61018820100000"
                   full_address: CHEMIKÓW 7, 09-411 Płock, PL
@@ -422,9 +451,22 @@ paths:
                     description: Electric power generation, transmission, distribution and trade
                 details:
                   legalForm: SPÓŁKA AKCYJNA
+                  operational_status: active
                   contacts:
                     email: zarzad@orlen.pl
+                    emailGated: false
+                    phone: null
+                    phoneGated: false
                     website: orlen.pl
+                    emailDeliverabilityVerified: true
+                    emailInactive: false
+                    websiteInactive: false
+                  vat:
+                    status: Czynny
+                    status_date: "2024-03-01"
+                    accounts:
+                    - "25114020040000380284611780"
+                  filings: []
                 companySummary:
                   pl: ORLEN S.A. to jedna z największych zintegrowanych grup multienergetycznych w Europie Środkowej.
                   en: ORLEN S.A. is one of the largest integrated multi-energy groups in Central Europe.
@@ -498,6 +540,23 @@ paths:
                       current_assets_eur: 20556264858.677467
                       equity_eur: 33719292066.566875
                       liabilities_and_provisions_eur: 24433829356.344105
+                      has_esf_xml: true
+                      esf_statement_lines:
+                        rzis:
+                          A: 304668000000
+                        bilans:
+                          Aktywa: 255368000000
+                        statement_profile:
+                          bilans_form: jednostka_inna
+                          rzis_layout: jednostka_inna
+                hasStatistics: true
+                krz:
+                  checked_at: "2026-07-18T03:00:49.323Z"
+                  has_proceedings: false
+                  has_active_proceedings: false
+                  proceedings_count: 0
+                  proceedings: []
+                  source_url: https://krz.ms.gov.pl/
                 similarCompanies:
                 - entity_id: 39c4a3d7-144c-45c2-9713-ecd3e8895d4a
                   registry_number: "0000287699"
@@ -505,7 +564,7 @@ paths:
                   company_name_display: Warter Fuels
                   legal_form: SPÓŁKA AKCYJNA
                   website: warterfuels.pl
-                  logo_url: https://emjsevwafjsrwhpdijje.supabase.co/storage/v1/object/public/company-logos/39c4a3d7-144c-45c2-9713-ecd3e8895d4a.png
+                  logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/39c4a3d7-144c-45c2-9713-ecd3e8895d4a.png
                   revenue_total: 224545986
                   revenue_total_usd: 56263088.449010275
                   revenue_total_eur: 52086751.565762006
@@ -524,9 +583,10 @@ paths:
       - Companies
       summary: Financial statements
       description: |
-        Returns financial metrics only (without company profile, documents, or metadata),
-        grouped by statement year. Values include all available PLN/USD/EUR columns from
-        `entity_financial_metrics`.
+        Returns financial metrics only (without company profile or document files),
+        grouped by statement year. Values include PLN/USD/EUR columns from
+        `entity_financial_metrics` and structured `esf_statement_lines` when extracted.
+        XML files are on the documents endpoint.
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -680,6 +740,373 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/connections:
+    get:
+      tags:
+      - Companies
+      summary: Company connections
+      description: |
+        Graph of related companies and people linked through shared roles/ownership
+        (same payload as the profile Connections UI).
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000028860"
+      responses:
+        '200':
+          description: Connections payload.
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/statistics:
+    get:
+      tags:
+      - Companies
+      summary: Peer statistics & rankings
+      description: |
+        Industry / region / country peer benchmarks and the company's rank positions.
+        Use when `hasStatistics` on the full profile is `true`.
+
+        Response shape:
+        - `company` – latest indexed figures (PLN/EUR/USD) for the company
+        - `scopes` – rank in each peer group (`pkd_full`, `pkd_division`, `pkd_section`, `region`, `country`)
+        - `benchmarks` – peer distribution per scope key (`median`, `p25`/`p75`/`p90`, `n_companies`, …)
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        example: "0001088645"
+      - name: locale
+        in: query
+        required: false
+        schema:
+          type: string
+          default: en
+      responses:
+        '200':
+          description: |
+            Rankings (`scopes`) plus peer distributions (`benchmarks` keyed by
+            `scope_type::scope_key`). Company figures are the latest indexed snapshot.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                hasData: true
+                company:
+                  registry_number: "0001088645"
+                  primary_pkd: "73.11.Z"
+                  region: wielkopolskie
+                  period_to: "2025-12-31"
+                  revenue_total:
+                    PLN: 723679.14
+                    EUR: 171325.55
+                    USD: 181737.60
+                  profit_net:
+                    PLN: -220414.61
+                    EUR: -52181.49
+                    USD: -55352.74
+                  total_assets:
+                    PLN: 1132090.39
+                    EUR: 268013.82
+                    USD: 284301.96
+                  operating_costs_total:
+                    PLN: 932271.28
+                    EUR: 220708.16
+                    USD: 234121.37
+                scopes:
+                - scope_type: pkd_full
+                  scope_key: "73.11.Z"
+                  label: Advertising agencies
+                  rank_position: 2811
+                  total_in_scope: 6860
+                  top_percent: 40.98
+                  period_to: "2025-12-31"
+                - scope_type: pkd_division
+                  scope_key: "73"
+                  label: Advertising, market research and public relations
+                  rank_position: 3104
+                  total_in_scope: 7518
+                  top_percent: 41.29
+                  period_to: "2025-12-31"
+                - scope_type: pkd_section
+                  scope_key: N
+                  label: "N – Professional, scientific and technical activities"
+                  rank_position: 8606
+                  total_in_scope: 21505
+                  top_percent: 40.02
+                  period_to: "2025-12-31"
+                - scope_type: region
+                  scope_key: wielkopolskie
+                  label: Wielkopolskie
+                  rank_position: 24802
+                  total_in_scope: 47950
+                  top_percent: 51.72
+                  period_to: "2025-12-31"
+                - scope_type: country
+                  scope_key: PL
+                  label: Polska
+                  rank_position: 237072
+                  total_in_scope: 479838
+                  top_percent: 49.41
+                  period_to: "2025-12-31"
+                benchmarks:
+                  pkd_full::73.11.Z:
+                    label: Advertising agencies
+                    metrics:
+                      revenue_total:
+                        PLN:
+                          n_companies: 6859
+                          median: 437040.24
+                          mean: 4143982.87
+                          winsor_mean: 2544201.61
+                          p25: 108193.55
+                          p75: 1894511.26
+                          p90: 6629544.52
+                        EUR:
+                          n_companies: 6857
+                          median: 101158.92
+                          mean: 963908.02
+                          winsor_mean: 590328.70
+                          p25: 25095.97
+                          p75: 437657.96
+                          p90: 1533970.41
+                      profit_net:
+                        PLN:
+                          n_companies: 6859
+                          median: 15200.40
+                          mean: 288817.10
+                          winsor_mean: 160485.18
+                          p25: -6171.84
+                          p75: 118829.62
+                          p90: 495890.18
+                      total_assets:
+                        PLN:
+                          n_companies: 6811
+                          median: 230483.30
+                          mean: 2547678.84
+                          winsor_mean: 1277411.54
+                          p25: 52561.04
+                          p75: 930692.26
+                          p90: 3296511.39
+                  country::PL:
+                    label: Polska
+                    metrics:
+                      revenue_total:
+                        PLN:
+                          n_companies: 479837
+                          median: 695181.35
+                          mean: 15874161.59
+                          winsor_mean: 6549627.07
+                          p25: 104280.08
+                          p75: 3937961.66
+                          p90: 16531070.23
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/financial-documents:
+    get:
+      tags:
+      - Companies
+      summary: Financial document inventory
+      description: |
+        Metadata list of financial documents for the company (periods, types, names).
+        Returns metadata only. Structured metrics and `esf_statement_lines` are on the
+        profile and financial-statements endpoints.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        example: "0000028860"
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      responses:
+        '200':
+          description: Document metadata page.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                krs: "0000028860"
+                entity_id: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                documents:
+                - id: abe77c20-f518-4f20-a57a-a78cae7e135d
+                  document_type_ui: Dokument RDF (rodzaj 18)
+                  period_to: "2024-12-31"
+                  files: []
+                pagination:
+                  docsLimit: 25
+                  docsOffset: 0
+                  hasMore: false
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/news:
+    get:
+      tags:
+      - Companies
+      summary: Company news & UGC
+      description: |
+        Published news articles and optional claimed description / logo from company UGC.
+        Coverage is uneven (only companies with portal/UGC content).
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        example: "0000028860"
+      - name: locale
+        in: query
+        required: false
+        schema:
+          type: string
+          default: en
+      responses:
+        '200':
+          description: News and optional UGC fields (empty arrays/nulls when none).
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                krs: "0001088645"
+                entity_id: "00000000-0000-0000-0000-000000000000"
+                description: null
+                logo_url: null
+                newsArticles: []
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/gpw:
+    get:
+      tags:
+      - Companies
+      summary: Warsaw Stock Exchange (GPW)
+      description: |
+        Listing snapshot for a KRS company matched to GPW Main Market, NewConnect, or GlobalConnect:
+        ticker, ISIN, last close and change, market cap, shares, EPS, P/E, dividend and yield,
+        plus a few recent daily bars. Quotes delayed ~15 minutes, in PLN.
+
+        Not an official GPW licensed feed. `gpw` is `null` when the company is not listed / not matched.
+
+        Optional history (still capped — never the full MAX chart):
+        - `include=series` — daily OHLCV, default 250 bars, max 2000 (`series_limit`)
+        - `include=intraday` — 1-minute bars for the last 10 calendar days
+        - combine as `include=series,intraday`
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000028860"
+      - name: include
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Comma-separated extras. Supported values `series`, `intraday`.
+        example: series
+      - name: series_limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 2000
+          default: 250
+        description: Daily bars when `include` contains `series`. Ignored otherwise.
+      responses:
+        '200':
+          description: Listing snapshot (`gpw` may be null).
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                krs: "0000028860"
+                entity_id: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                nip: "7740001454"
+                gpw:
+                  ticker: PKN
+                  isin: PLPKN0000018
+                  market: main
+                  last_close: 78.12
+                  last_close_date: "2026-09-01"
+                  pe_ratio: 9.29
+                  currency: PLN
+                  delayed_minutes: 15
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
   /companies/krs/{krs}/status:
     get:
       tags:
@@ -718,6 +1145,653 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /companies/export:
+    get:
+      tags:
+      - Companies
+      summary: Bulk company search export page
+      description: |
+        Same filters as `GET /companies`, with page size up to **500** (vs 100 on the
+        standard list). Contact emails are included when available.
+        For large pulls, page with `cursor` (`cursor` = last row `entity_id`). Large `offset` values get slow.
+        Each page consumes **1** monthly quota request.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/CompanyFilterQ'
+      - $ref: '#/components/parameters/CompanyFilterKeywords'
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 500
+          default: 100
+        description: Page size for bulk export (max 500).
+      - $ref: '#/components/parameters/CompanyFilterOffset'
+      - $ref: '#/components/parameters/CompanyFilterCursor'
+      - $ref: '#/components/parameters/CompanyFilterPkd'
+      - $ref: '#/components/parameters/CompanyFilterPrimaryOnly'
+      - $ref: '#/components/parameters/CompanyFilterHasEmail'
+      - $ref: '#/components/parameters/CompanyFilterHasWebsite'
+      - $ref: '#/components/parameters/CompanyFilterStatusActive'
+      - $ref: '#/components/parameters/CompanyFilterRevenueMin'
+      - $ref: '#/components/parameters/CompanyFilterRevenueMax'
+      responses:
+        '200':
+          description: One page of companies (same shape as `GET /companies`).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /ceidg/nip/{nip}:
+    get:
+      tags:
+      - Companies
+      summary: CEIDG profile by NIP
+      description: |
+        Sole-proprietor (CEIDG) profile by **NIP**. Subject to public CEIDG catalog
+        visibility. Contact email/phone revealed for API-key auth when present and allowed.
+        Personal owner fields follow the same RODO gating as the website.
+
+        Typical payload:
+        - `company` – identifiers, address, PKD activities, contacts, logo, `roles` (owner)
+        - `primaryPkdDescription` – localized primary PKD label
+        - `companySummary` – AI description for the requested `locale` only (e.g. `{ "en": "…" }`)
+        - `details.vat` – VAT whitelist status + bank accounts when known
+        - `similarCompanies` – peer JDGs from the same enrichment cache
+        - `changeHistory` – CEIDG change events when available
+        - `sudop` – public-aid (SUDOP) snapshot when checked (`null` if unavailable)
+        - `bzp` – public-procurement (BZP) summary when present (`null` if none)
+        - `ure` – URE energy concessions when checked (`null` if unavailable)
+        - `bdo` – BDO waste/packaging register when present (`null` if none)
+        - `gpw` – Warsaw Stock Exchange listing snapshot when the NIP is matched (`null` if not listed)
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: nip
+        in: path
+        required: true
+        schema:
+          type: string
+        description: NIP normalized to exactly 10 digits.
+        example: "7712488697"
+      - name: locale
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [pl, en, de]
+          default: en
+        description: Language for PKD labels and `companySummary` (one locale key in the response).
+        example: en
+      responses:
+        '200':
+          description: CEIDG company profile.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                company:
+                  ceidg_id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  nip: "7712488697"
+                  regon: "022456789"
+                  company_name: Michał Ryszka MCR
+                  company_name_display: Michał Ryszka MCR
+                  legal_form: JEDNOOSOBOWA DZIAŁALNOŚĆ GOSPODARCZA
+                  status: AKTYWNY
+                  is_active: true
+                  registration_date: "2015-03-12"
+                  suspended_on: null
+                  closure_date: null
+                  deregistration_date: null
+                  resumed_on: null
+                  succession_mgmt_start_date: null
+                  succession_mgmt_end_date: null
+                  address:
+                    street: ul. Legnicka
+                    building_no: "48"
+                    building_unit: null
+                    city: Wrocław
+                    postal_code: "54-206"
+                    country: PL
+                    region: dolnośląskie
+                    county: Wrocław
+                    municipality: Wrocław-Fabryczna
+                    full: "ul. Legnicka 48, 54-206 Wrocław, PL"
+                  additional_addresses: []
+                  correspondence_address: null
+                  primary_pkd: "66.19.Z"
+                  primary_pkd_description: Other activities auxiliary to financial services, except insurance and pension funding
+                  all_pkd_codes:
+                    - "66.19.Z"
+                    - "62.01.Z"
+                  primary_activities:
+                    - code_full: "66.19.Z"
+                      description: Other activities auxiliary to financial services, except insurance and pension funding
+                      is_primary: true
+                  secondary_activities:
+                    - code_full: "62.01.Z"
+                      description: Computer programming activities
+                      is_primary: false
+                  contacts:
+                    email: kontakt@mcr-example.pl
+                    emailGated: false
+                    phone: null
+                    phoneGated: true
+                    website: mcr-example.pl
+                    websiteInactive: false
+                    emailDeliverabilityVerified: true
+                    emailInactive: false
+                    emailInactiveReason: null
+                  logo_url: null
+                  show_logo: true
+                  roles:
+                    - role_name: WŁAŚCICIEL
+                      party:
+                        type: person
+                        display_name: Michał Ryszka
+                        first_name: Michał
+                        last_name: Ryszka
+                primaryPkdDescription: Other activities auxiliary to financial services, except insurance and pension funding
+                companySummary:
+                  en: Michał Ryszka MCR provides financial intermediation and IT services for SMEs in Lower Silesia.
+                details:
+                  vat:
+                    status: Czynny
+                    status_date: "2024-06-15"
+                    removal_date: null
+                    removal_basis: null
+                    checked_at: "2026-08-01T10:15:00.000Z"
+                    accounts:
+                      - "87105014451000002364817493"
+                similarCompanies:
+                  - ceidg_id: "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+                    nip: "8171895344"
+                    company_name: EL-CAR Elżbieta Janik
+                    company_name_display: EL-CAR Elżbieta Janik
+                    legal_form: JEDNOOSOBOWA DZIAŁALNOŚĆ GOSPODARCZA
+                    city: Złotniki
+                    region: podkarpackie
+                    postal_code: "36-060"
+                    primary_pkd: "46.90.Z"
+                    website: null
+                    logo_url: null
+                    show_logo: true
+                    status: AKTYWNY
+                changeHistory:
+                  - id: "c3d4e5f6-a7b8-9012-cdef-123456789012"
+                    history_entry_id: "CEIDG-HIST-20231102-001"
+                    operation_type: zmiana
+                    application_number: "W/1234567/2023"
+                    author: CEIDG
+                    change_effective_on: "2023-11-02"
+                    entry_at: "2023-11-02T14:22:11.000Z"
+                    has_diff: true
+                    details:
+                      - section: Adres wykonywania działalności
+                        section_operation: zmiana
+                        field: ulica
+                        operation: zmiana
+                        old_value: ul. Stara 1
+                        new_value: ul. Legnicka 48
+                sudop:
+                  checked_at: "2026-07-20T08:00:00.000Z"
+                  has_aid: false
+                  cases_count: 0
+                  total_nominal_pln: null
+                  total_gross_pln: null
+                  total_nominal_usd: null
+                  total_gross_usd: null
+                  total_nominal_eur: null
+                  total_gross_eur: null
+                  beneficiary_name: null
+                  source_url: https://sudop.uokik.gov.pl
+                  cases: []
+                bzp:
+                  checked_at: "2026-07-22T12:30:00.000Z"
+                  as_contractor_awards_count: 2
+                  as_contractor_notices_count: 3
+                  as_buyer_notices_count: 0
+                  as_contractor_awards_total_pln: 185000
+                  as_contractor_awards_total_usd: 46250
+                  as_contractor_awards_total_eur: 42500
+                  first_publication_date: "2022-04-11"
+                  last_publication_date: "2025-09-03"
+                  source_url: https://ezamowienia.gov.pl
+                  recent_awards:
+                    - object_id: "ocds-148610-example-001"
+                      lot_index: 1
+                      notice_type: ContractAwardNotice
+                      notice_number: "2025/BZP 00012345/01"
+                      bzp_number: "2025/BZP 00012345"
+                      publication_date: "2025-09-03T10:00:00.000Z"
+                      order_object: Delivery of IT equipment
+                      cpv_code: "30200000-1"
+                      procedure_result: awarded
+                      role: contractor
+                      is_award: true
+                      award_value_pln: 120000
+                      award_value_usd: 30000
+                      award_value_eur: 27600
+                      estimated_value_pln: 130000
+                      estimated_value_usd: 32500
+                      estimated_value_eur: 29900
+                      amounts_currency: PLN
+                      counterparty_name: Gmina Example
+                      counterparty_nip: "5250000000"
+                      counterparty_krs: "0000123456"
+                      counterparty_ceidg: false
+                      source_url: https://ezamowienia.gov.pl
+                  recent_as_buyer: []
+                ure:
+                  checked_at: "2026-08-16T12:00:00.000Z"
+                  has_concessions: false
+                  concessions_count: 0
+                  applications_count: 0
+                  active_count: 0
+                  items_count: 0
+                  dkn: null
+                  company_name: null
+                  source_url: https://www.ure.gov.pl
+                  items: []
+                bdo:
+                  checked_at: "2026-08-20T12:00:00.000Z"
+                  has_entry: true
+                  bdo_number: "000007103"
+                  company_name: PKN ORLEN
+                  application_id: "045fe2b9-9077-4e2e-ba62-7e07aeaba020"
+                  eup_count: 2177
+                  decisions_count: 5
+                  activity_flags: ["waste_generation", "waste_treatment"]
+                  source_url: https://rejestr-bdo.mos.gov.pl/Registry/Index
+                  items: []
+                gpw:
+                  checked_at: "2026-09-01T16:30:00.000Z"
+                  ticker: PKN
+                  isin: PLPKN0000018
+                  market: main
+                  listed_name: ORLEN
+                  shares_outstanding: 1163856079
+                  last_close: 78.12
+                  last_close_date: "2026-09-01"
+                  prev_close: 77.40
+                  change_abs: 0.72
+                  change_pct: 0.93
+                  market_cap: 90919000000
+                  last_volume: 1250000
+                  eps: 8.41
+                  pe_ratio: 9.29
+                  dividend_per_share: 4.15
+                  dividend_yield: 5.31
+                  dividend_year: 2025
+                  dividend_ex_date: "2025-08-13"
+                  source_url: https://www.gpw.pl/list-of-companies
+                  currency: PLN
+                  delayed_minutes: 15
+                  recent:
+                    - trade_date: "2026-09-01"
+                      open: 77.50
+                      high: 78.40
+                      low: 77.20
+                      close: 78.12
+                      volume: 1250000
+                msig:
+                  checked_at: "2026-08-24T12:00:00.000Z"
+                  notices_count: 1
+                  first_publication_date: "2026-08-24"
+                  last_publication_date: "2026-08-24"
+                  source_url: https://wyszukiwarka-msig.ms.gov.pl/
+                  items:
+                    - id: 19396258
+                      issue_id: 8958
+                      notice_number: "39248"
+                      publication_date: "2026-08-24"
+                      monitor_number: "163/2026"
+                      notice_type: dissolution_without_liquidation
+                      entity_name: AGS TEAM POLAND SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+                      krs: "0000813406"
+                      source_url: https://wyszukiwarka-msig.ms.gov.pl/
+                      pdf_url: https://wyszukiwarka-msig.ms.gov.pl/api/Monitor/Download?id=8958&fileId=true
+                ted:
+                  checked_at: "2026-08-17T12:00:00.000Z"
+                  as_winner_awards_count: 2
+                  as_winner_notices_count: 2
+                  as_buyer_notices_count: 0
+                  as_winner_awards_total_pln: 64504059.09
+                  as_winner_awards_total_usd: 16126014.77
+                  as_winner_awards_total_eur: 14828526.00
+                  first_publication_date: "2022-03-11"
+                  last_publication_date: "2026-08-10"
+                  source_url: https://ted.europa.eu/
+                  recent_awards:
+                    - publication_number: "564833-2026"
+                      notice_type: can-standard
+                      title: Przebudowa drogi startowej
+                      role: winner
+                      is_award: true
+                      award_value: 64504059.09
+                      award_value_usd: 16126014.77
+                      award_value_eur: 14828526.00
+                      amounts_currency: PLN
+                      counterparty_name: Port Lotniczy Gdynia
+                      source_url: https://ted.europa.eu/pl/notice/-/detail/564833-2026
+                  recent_as_buyer: []
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /watchlist:
+    get:
+      tags:
+      - Watchlist
+      summary: List watchlist
+      description: |
+        Lists companies on the watchlist of the **user account linked to the API key**.
+        Requires `user_id` on the key.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 20
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      responses:
+        '200':
+          description: Watchlist page.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data: []
+                pagination:
+                  total: 0
+                  hasMore: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: API key is not linked to a user account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /watchlist/krs/{krs}:
+    post:
+      tags:
+      - Watchlist
+      summary: Add company to watchlist
+      description: |
+        Adds a company to the **watchlist of the user account linked to the API key**.
+
+        The company is identified by **KRS** (Polish court registry number). Digits only;
+        leading zeros are optional (normalized to 10 digits server-side).
+
+        If the company is already on the watchlist, the response returns `already_following: true`
+        and does not create a duplicate entry.
+
+        Requires an API key associated with a Compabase portal user account (`user_id` on the key).
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+          After normalization, KRS must contain exactly 10 digits; otherwise request fails with `400 INVALID_KRS`.
+        example: "0000028860"
+      responses:
+        '200':
+          description: Company added to watchlist (or already followed).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchlistAddResponse'
+              examples:
+                added:
+                  summary: Newly added
+                  value:
+                    krs: "0000028860"
+                    entity_id: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                    already_following: false
+                    created_at: "2026-05-20T14:30:00Z"
+                alreadyFollowing:
+                  summary: Already on watchlist
+                  value:
+                    krs: "0000028860"
+                    entity_id: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                    already_following: true
+                    created_at: "2026-05-15T09:00:00Z"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: API key is not linked to a user account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error:
+                  code: INVALID_API_KEY
+                  message: This API key is not linked to a user account.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+    delete:
+      tags:
+      - Watchlist
+      summary: Remove company from watchlist
+      description: |
+        Removes a KRS company from the watchlist of the user linked to the API key.
+        Idempotent: `removed: false` when the company was not on the list.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        example: "0000028860"
+      responses:
+        '200':
+          description: Removal result.
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                krs: "0000028860"
+                entity_id: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                removed: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: API key is not linked to a user account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /persons/search:
+    get:
+      tags:
+      - Persons
+      summary: Search persons by name
+      description: |
+        Searches for natural persons by name (first name, last name, or both).
+        Returns a deduplicated list of matching persons with their `person_id` key
+        and the number of companies they are linked to.
+
+        Use the returned `person_id` with `GET /persons/{personId}/connections`
+        to fetch full connection details.
+
+        Identification is restricted to name-based queries (first name, last name, or both).
+        Protected data, including PESEL and exact birth dates, is never exposed.
+        To assist with identification, every result includes a `birth_year` (integer).
+
+        **Result capping:** internally the search scans up to 2 000 matching link
+        rows before aggregation. For very common names the response may include
+        a `note` field indicating the result set was truncated; use a more specific
+        query to narrow results.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: q
+        in: query
+        required: true
+        schema:
+          type: string
+          minLength: 2
+        description: |
+          Name substring to search for (case-insensitive). Must be at least
+          **2 characters**. Matched against the stored display name using
+          `ILIKE %q%`.
+        example: Kowalski
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 20
+          minimum: 1
+          maximum: 50
+        description: 'Maximum number of persons to return. Capped at **50**.'
+      responses:
+        '200':
+          description: List of matching persons.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - total
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PersonSearchItem'
+                  total:
+                    type: integer
+                    description: Number of distinct persons found (before `limit` slicing).
+                  note:
+                    type: string
+                    nullable: true
+                    description: Present when the internal scan limit was reached and results may be incomplete.
+              example:
+                data:
+                - person_id: 033e6964-179b-4039-86a2-0e0590c56918
+                  display_name: Krzysztof Mateusz Kowalski
+                  birth_year: 1985
+                  company_count: 3
+                - person_id: 0063e9c1-265f-47d4-a3ad-6cb698869f7a
+                  display_name: Sebastian Piotr Kowalski
+                  birth_year: null
+                  company_count: 2
+                - person_id: 048bd9e8-8b0e-446f-8b36-e60f518d3abe
+                  display_name: Henry Kowalski
+                  birth_year: 1972
+                  company_count: 1
+                total: 3
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /persons/{personId}/connections:
+    get:
+      tags:
+      - Persons
+      summary: Company connections for a person
+      description: |
+        Returns all companies linked to the given person together with the
+        relationship type and role label for each link.
+
+        Use `GET /persons/search` to resolve a name to a `person_id` first.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: personId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: UUID of the person; obtained from `GET /persons/search`.
+        example: 033e6964-179b-4039-86a2-0e0590c56918
+      responses:
+        '200':
+          description: Person connections payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonConnectionsResponse'
+              example:
+                person_id: 033e6964-179b-4039-86a2-0e0590c56918
+                companies:
+                - entity_id: 1a2b3c4d-0000-0000-0000-000000000001
+                  registry_number: '0000123456'
+                  company_name: Example Company Ltd.
+                  relationships:
+                  - kind: management
+                    role: President of the Management Board
+                - entity_id: 1a2b3c4d-0000-0000-0000-000000000002
+                  registry_number: '0000654321'
+                  company_name: Second Company Ltd.
+                  relationships:
+                  - kind: ownership
+                    role: null
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
   /usage:
     get:
       tags:
@@ -753,11 +1827,13 @@ paths:
                     type: integer
                   monthUtc:
                     type: string
-                    example: 2026-03
+                    description: Current billing period date (ISO 8601 date).
+                    example: '2026-08-31'
                   resetsAtUtc:
                     type: string
                     format: date-time
-                    example: '2026-04-01T00:00:00Z'
+                    description: When the billing period resets (ISO 8601 datetime with timezone).
+                    example: '2026-09-01T00:00:00+00:00'
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
@@ -772,30 +1848,39 @@ components:
             invalidKrs:
               summary: Invalid KRS value
               value:
-                error:
-                  code: INVALID_KRS
-                  message: KRS must contain 10 digits after normalization.
-                  details:
-                    parameter: krs
-                    reason: invalid_format
+                statusCode: 400
+                statusMessage: Invalid krs
+                message: Invalid krs
+                data:
+                  error:
+                    code: INVALID_KRS
+                    message: After normalization, KRS must contain exactly 10 digits.
+                    details:
+                      parameter: krs
             invalidCursor:
               summary: Invalid cursor format
               value:
-                error:
-                  code: INVALID_CURSOR
-                  message: Cursor must be a valid UUID.
-                  details:
-                    parameter: cursor
-                    reason: invalid_uuid
+                statusCode: 400
+                statusMessage: Invalid cursor
+                message: Invalid cursor
+                data:
+                  error:
+                    code: INVALID_CURSOR
+                    message: Cursor must be a valid UUID.
+                    details:
+                      parameter: cursor
             invalidRange:
               summary: Invalid numeric range
               value:
-                error:
-                  code: INVALID_RANGE
-                  message: revenue_min cannot be greater than revenue_max.
-                  details:
-                    parameter: revenue_min,revenue_max
-                    reason: min_greater_than_max
+                statusCode: 400
+                statusMessage: Invalid range
+                message: Invalid range
+                data:
+                  error:
+                    code: INVALID_RANGE
+                    message: revenue_min cannot be greater than revenue_max.
+                    details:
+                      parameter: revenue_min,revenue_max
     Unauthorized:
       description: Missing, invalid, or revoked API key.
       content:
@@ -803,8 +1888,10 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
           example:
-            error:
-              code: UNAUTHORIZED
+            statusCode: 401
+            statusMessage: Unauthorized
+            message: Unauthorized
+            data:
               message: Missing or invalid API key.
     NotFound:
       description: Resource not found.
@@ -813,9 +1900,13 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
           example:
-            error:
-              code: NOT_FOUND
-              message: Company not found.
+            statusCode: 404
+            statusMessage: Not Found
+            message: Not Found
+            data:
+              error:
+                code: NOT_FOUND
+                message: Company not found.
     TooManyRequests:
       description: Monthly quota exceeded for this API key.
       content:
@@ -823,40 +1914,62 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
           example:
-            error:
-              code: QUOTA_EXCEEDED
-              message: Monthly quota exceeded for this API key.
+            statusCode: 429
+            statusMessage: Too Many Requests
+            message: Too Many Requests
+            data:
+              error:
+                code: QUOTA_EXCEEDED
+                message: Monthly quota exceeded for this API key.
   schemas:
     ErrorResponse:
       type: object
       required:
-      - error
+      - statusCode
+      - statusMessage
+      - message
       properties:
-        error:
+        statusCode:
+          type: integer
+          description: HTTP status code.
+        statusMessage:
+          type: string
+          description: HTTP status text.
+        message:
+          type: string
+          description: Short error summary (same as statusMessage for most errors).
+        data:
           type: object
-          required:
-          - code
-          - message
+          description: Domain error payload set by the handler.
           properties:
-            code:
-              type: string
-              description: Domain error code.
-              enum:
-              - INVALID_KRS
-              - INVALID_CURSOR
-              - INVALID_RANGE
-              - INVALID_PARAMETER
-              - CONFLICTING_PARAMETERS
-              - INVALID_BOOLEAN
-              - INVALID_KEYWORDS
-              - UNAUTHORIZED
-              - NOT_FOUND
-              - QUOTA_EXCEEDED
             message:
               type: string
-            details:
+              description: Human-readable message (used by 401 responses).
+            error:
               type: object
-              additionalProperties: true
+              description: Structured domain error (used by 400/404/429 responses).
+              properties:
+                code:
+                  type: string
+                  description: Machine-readable domain error code.
+                  enum:
+                  - INVALID_KRS
+                  - INVALID_NIP
+                  - INVALID_CURSOR
+                  - INVALID_RANGE
+                  - INVALID_PARAMETER
+                  - CONFLICTING_PARAMETERS
+                  - INVALID_BOOLEAN
+                  - INVALID_KEYWORDS
+                  - INVALID_API_KEY
+                  - UNAUTHORIZED
+                  - NOT_FOUND
+                  - QUOTA_EXCEEDED
+                message:
+                  type: string
+                details:
+                  type: object
+                  additionalProperties: true
     CompanyListPagination:
       type: object
       required:
@@ -867,7 +1980,7 @@ components:
       properties:
         limit:
           type: integer
-          description: Page size (capped at 100 for normal requests; export may allow higher).
+          description: Page size (capped at 100 for `GET /companies`; up to 500 for `GET /companies/export`).
         offset:
           type: integer
         total:
@@ -1005,7 +2118,7 @@ components:
           nullable: true
     CompanyListResponse:
       type: object
-      description: Search/list response — **multiple** companies in `data`, not a single profile.
+      description: Search/list response. `data` is an array of companies.
       required:
       - data
       - pagination
@@ -1026,6 +2139,95 @@ components:
           type: integer
           minimum: 0
           description: Number of companies matching the filters.
+    WatchlistAddResponse:
+      type: object
+      required:
+      - krs
+      - entity_id
+      - already_following
+      properties:
+        krs:
+          type: string
+          description: Normalized 10-digit KRS.
+          example: "0000028860"
+        entity_id:
+          type: string
+          format: uuid
+          description: Internal company identifier.
+        already_following:
+          type: boolean
+          description: "True if the company was already on the watchlist before this request."
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: "When the watchlist entry was created. Null when already_following is true and the original timestamp is unavailable."
+    PersonSearchItem:
+      type: object
+      required:
+      - person_id
+      - display_name
+      - birth_year
+      - company_count
+      properties:
+        person_id:
+          type: string
+          format: uuid
+          description: Stable UUID key for this person. Use with `GET /persons/{personId}/connections`.
+        display_name:
+          type: string
+          nullable: true
+          description: Full display name of the person.
+        birth_year:
+          type: integer
+          nullable: true
+          description: Year of birth when known (derived from registry data; full birth date is not exposed). `null` if unavailable.
+          example: 1985
+        company_count:
+          type: integer
+          description: Number of distinct companies this person is linked to.
+    PersonConnectionsResponse:
+      type: object
+      required:
+      - person_id
+      - companies
+      properties:
+        person_id:
+          type: string
+          format: uuid
+        companies:
+          type: array
+          items:
+            type: object
+            required:
+            - entity_id
+            - relationships
+            properties:
+              entity_id:
+                type: string
+                format: uuid
+              registry_number:
+                type: string
+                nullable: true
+                description: KRS number (10 digits), if available.
+              company_name:
+                type: string
+                nullable: true
+              relationships:
+                type: array
+                items:
+                  type: object
+                  required:
+                  - kind
+                  - role
+                  properties:
+                    kind:
+                      type: string
+                      description: Relationship type (e.g. `management`, `ownership`).
+                    role:
+                      type: string
+                      nullable: true
+                      description: Role label (e.g. `PREZES ZARZĄDU`), if available.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
@@ -1073,19 +2275,20 @@ components:
     CompanyFilterLimit:
       name: limit
       in: query
-      description: 'Page size. **Default:** `20`. For normal browsing the server caps at **100** per request.
+      description: 'Page size. **Default:** `20`. `GET /companies` caps at **100** per request.
 
-        Values **greater than 100** are treated as bulk/export-style requests and are capped at **50000**.
-        For interactive API clients, batches up to **5000** are recommended to reduce timeout risk and payload size.
+        For bulk pulls use `GET /companies/export` (or `limit` &gt; 100 on `/companies` via API key),
+        capped at **500** per page. For deep traversal, page with `cursor`.
 
-        **Quota accounting:** monthly quota is counted per HTTP request, not per returned company row.
-        Example: `limit=50000` still consumes **1** request from monthly quota.
+        **Quota accounting:** monthly quota counts each HTTP request. Row count in the page does not change the cost.
+        Example: `limit=500` still consumes **1** request from monthly quota.
 
         '
       schema:
         type: integer
         default: 20
         minimum: 1
+        maximum: 500
     CompanyFilterOffset:
       name: offset
       in: query
