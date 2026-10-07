@@ -51,7 +51,7 @@ info:
     ### Bulk pulls
     Use `GET /companies/export` (or `GET /companies` with `limit` up to **500**) plus cursor
     pagination (`cursor` = last `entity_id`) to enrich large lists. Each page consumes **one**
-    `api_requests` unit – not the portal/MCP `export_companies` meter. For a full profile,
+    `api_requests` unit — not the portal/MCP `export_companies` meter. For a full profile,
     call `GET /companies/krs/{krs}` once per company.
 
 servers:
@@ -395,11 +395,12 @@ paths:
         - `roles` and `ownership`,
         - `financials.byYear` (metrics + `esf_statement_lines` when present; XML files are on the documents endpoint),
         - `krz` (restructuring/insolvency proceedings summary),
+        - `sanctions` (MSWiA sanctions listing with measures and grounds; omitted when the company is not listed; dedicated read is `/companies/krs/{krs}/sanctions`),
         - `sudop` (public aid / de minimis when checked),
         - `bzp` (public procurement summary when present),
         - `ure` (URE energy concessions when checked),
         - `bdo` (BDO waste/packaging register when present),
-        - `gpw` (Warsaw Stock Exchange listing snapshot when the NIP is matched – no full OHLCV; use `/companies/krs/{krs}/gpw`),
+        - `gpw` (Warsaw Stock Exchange listing snapshot when the NIP is matched — no full OHLCV; use `/companies/krs/{krs}/gpw`),
         - `crbr` (beneficial owners when present and RODO-eligible),
         - `changeHistory` when non-empty,
         - `similarCompanies`, `subsidiaryCompanies`, `pkdRankings`, `faq`, `insightsByYear`,
@@ -1036,6 +1037,145 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/sanctions:
+    get:
+      tags:
+      - Companies
+      summary: MSWiA sanctions listing
+      description: |
+        Official Polish Ministry of the Interior and Administration (MSWiA) sanctions listing
+        for a KRS company matched by KRS, NIP, or REGON.
+
+        `sanctions` is `null` when the company is not on the list. When present, `entries`
+        include the name on the list, listed and removed dates, restrictive measures, and
+        the legal grounds. Polish text stays in `measures` / `justification`; English and
+        German are in `measures_i18n` / `justification_i18n`.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+      responses:
+        '200':
+          description: Sanctions payload. `sanctions` is null when the company is not listed.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [krs, entity_id]
+                properties:
+                  krs:
+                    type: string
+                  entity_id:
+                    type: string
+                    format: uuid
+                  sanctions:
+                    nullable: true
+                    type: object
+                    properties:
+                      entries:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            source:
+                              type: string
+                              example: pl_mswia
+                            name:
+                              type: string
+                            measures:
+                              type: string
+                              nullable: true
+                              description: Restrictive measures, Polish source text. Lettered items are separated by newlines.
+                            justification:
+                              type: string
+                              nullable: true
+                              description: Legal grounds, Polish source text. Paragraphs are separated by a blank line.
+                            measures_i18n:
+                              type: object
+                              nullable: true
+                              properties:
+                                en:
+                                  type: string
+                                de:
+                                  type: string
+                            justification_i18n:
+                              type: object
+                              nullable: true
+                              properties:
+                                en:
+                                  type: string
+                                de:
+                                  type: string
+                            listed_on:
+                              type: string
+                              format: date
+                              nullable: true
+                            removed_on:
+                              type: string
+                              format: date
+                              nullable: true
+                            source_url:
+                              type: string
+                              nullable: true
+              example:
+                krs: "0000795863"
+                entity_id: "58142114-9193-42c0-a7e3-1ed189327f2e"
+                sanctions:
+                  entries:
+                    - source: pl_mswia
+                      name: EUROCHEM POLSKA Sp. z o.o.
+                      listed_on: "2022-04-26"
+                      removed_on: null
+                      source_url: https://www.gov.pl/web/mswia/lista-osob-i-podmiotow-objetych-sankcjami
+                      measures: |
+                        a. zamrożenie wszystkich środków finansowych i zasobów gospodarczych,
+                        b. zakaz udostępniania podmiotowi wpisanemu na listę – bezpośrednio lub pośrednio – jakichkolwiek środków finansowych lub zasobów gospodarczych,
+                        c. zakaz świadomego i umyślnego udziału w działaniach, których celem lub skutkiem jest ominięcie środków wskazanych w lit. a i b,
+                        d. wykluczenie z postępowania o udzielenie zamówienia publicznego lub konkursu
+                      justification: |
+                        A. Melniczenko jest rosyjskim przemysłowcem, właścicielem przedsiębiorstwa EuroChem, będącego jednym z głównych producentów nawozów i przedsiębiorstwa węglowego SUEK. Należy do kręgu najbardziej wpływowych rosyjskich przedsiębiorców, mających bliskie powiązania z rządem rosyjskim. Działa zatem w sektorach gospodarczych zapewniających istotne źródło dochodów rządowi Federacji Rosyjskiej, odpowiedzialnemu za aneksję Krymu i agresję przeciwko Ukrainie. Andriej Melniczenko objęty jest sankcjami na podstawie rozporządzenia Rady (UE) nr 269/2014, zał. I, poz. 721. A ponadto sankcje na wymienionego nałożyła Wielka Brytania oraz Ukraina.
+
+                        EUROCHEM POLSKA sp. z o. o. wytransferowała do spółki EuroChem Group AG ponad 30% przychodu osiągniętego w 2020 r.
+
+                        Nałożenie sankcji na spółkę EuroChem Polska sp. z o.o. przyczyni się do zmniejszenia przychodów wymienionej firmy oraz podmiotów osiągających korzyści z jej działalności, a tym samym pośrednio wpłynie na zmniejszenie przychodów podmiotu powiązanego z A. Melniczenką.
+                      measures_i18n:
+                        en: |
+                          a. freezing of all funds and economic resources,
+                          b. prohibition on making available to the listed entity – directly or indirectly – any funds or economic resources,
+                          c. prohibition on knowingly and intentionally participating in activities whose purpose or effect is to circumvent the measures specified in lit. a and b,
+                          d. exclusion from a public procurement procedure or competition
+                        de: |
+                          a. Einfrieren aller Gelder und wirtschaftlichen Ressourcen,
+                          b. Verbot der unmittelbaren oder mittelbaren Bereitstellung jeglicher Gelder oder wirtschaftlicher Ressourcen für die gelistete Einrichtung,
+                          c. Verbot der wissentlichen und vorsätzlichen Beteiligung an Handlungen, deren Zweck oder Wirkung die Umgehung der in lit. a und b genannten Maßnahmen ist,
+                          d. Ausschluss von einem Verfahren zur Vergabe eines öffentlichen Auftrags oder von einem Wettbewerb
+                      justification_i18n:
+                        en: |
+                          A. Melniczenko is a Russian industrialist and the owner of EuroChem, one of the main fertiliser producers, and the coal company SUEK. He is among the most influential Russian businesspeople with close ties to the Russian government. He is therefore active in economic sectors that provide a significant source of revenue to the government of the Russian Federation, which is responsible for the annexation of Crimea and the aggression against Ukraine. Andriej Melniczenko is subject to sanctions under Council Regulation (EU) No 269/2014, Annex I, entry 721. In addition, the United Kingdom and Ukraine have imposed sanctions on him.
+
+                          EUROCHEM POLSKA sp. z o. o. transferred more than 30% of the revenue it earned in 2020 r. to EuroChem Group AG.
+
+                          Imposing sanctions on EuroChem Polska sp. z o.o. will reduce the revenue of that company and of entities benefiting from its activities, and will thereby indirectly reduce the revenue of an entity linked to A. Melniczenko.
+                        de: |
+                          A. Melniczenko ist ein russischer Industrieller und Eigentümer von EuroChem, einem der wichtigsten Düngemittelhersteller, sowie des Kohleunternehmens SUEK. Er gehört zum Kreis der einflussreichsten russischen Unternehmer mit engen Verbindungen zur russischen Regierung. Er ist somit in Wirtschaftssektoren tätig, die der Regierung der Russischen Föderation, die für die Annexion der Krim und die Aggression gegen die Ukraine verantwortlich ist, eine wesentliche Einnahmequelle bieten. Andriej Melniczenko unterliegt Sanktionen gemäß der Verordnung (EU) Nr. 269/2014 des Rates, Anhang I, Eintrag 721. Darüber hinaus haben das Vereinigte Königreich und die Ukraine Sanktionen gegen ihn verhängt.
+
+                          EUROCHEM POLSKA sp. z o. o. überwies mehr als 30 % der im Jahr 2020 r. erzielten Einnahmen an EuroChem Group AG.
+
+                          Die Verhängung von Sanktionen gegen EuroChem Polska sp. z o.o. wird dazu beitragen, die Einnahmen dieses Unternehmens und der Einrichtungen, die von seiner Tätigkeit profitieren, zu verringern und damit mittelbar die Einnahmen einer mit A. Melniczenko verbundenen Einrichtung zu senken.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
   /companies/krs/{krs}/gpw:
     get:
       tags:
@@ -1048,9 +1188,9 @@ paths:
 
         Not an official GPW licensed feed. `gpw` is `null` when the company is not listed / not matched.
 
-        Optional history (still capped – never the full MAX chart):
-        - `include=series` – daily OHLCV, default 250 bars, max 2000 (`series_limit`)
-        - `include=intraday` – 1-minute bars for the last 10 calendar days
+        Optional history (still capped — never the full MAX chart):
+        - `include=series` — daily OHLCV, default 250 bars, max 2000 (`series_limit`)
+        - `include=intraday` — 1-minute bars for the last 10 calendar days
         - combine as `include=series,intraday`
       security:
       - ApiKeyAuth: []
