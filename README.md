@@ -86,28 +86,49 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 
 ## Endpoints
 
+<!-- endpoints:start -->
 | Method | Path | Description |
 |--------|------|-------------|
-| `GET` | `/companies` | Search & filter Polish companies (3M+ records, KRS & CEIDG) |
-| `GET` | `/companies/count` | Count matching companies without fetching rows |
-| `GET` | `/companies/export` | Same filters as `/companies`, page size up to **500** (cursor paging) |
-| `GET` | `/companies/krs/{krs}` | Full company profile by KRS number |
-| `GET` | `/companies/krs/{krs}/financial-statements` | Multi-year financial statements only |
-| `GET` | `/companies/krs/{krs}/financial-documents` | Inventory of filed financial documents (metadata) |
-| `GET` | `/companies/krs/{krs}/structure-people` | Ownership & management structure only |
-| `GET` | `/companies/krs/{krs}/connections` | Related companies and people (shared roles / ownership) |
-| `GET` | `/companies/krs/{krs}/statistics` | Peer benchmarks and rank (PKD / region / Poland) |
-| `GET` | `/companies/krs/{krs}/news` | Company news and UGC (where published) |
-| `GET` | `/companies/krs/{krs}/gpw` | Warsaw Stock Exchange listing + delayed quotes |
-| `GET` | `/companies/krs/{krs}/status` | Lightweight legal status check |
-| `GET` | `/ceidg/nip/{nip}` | CEIDG sole-proprietor profile by NIP |
-| `GET` | `/persons/search` | Search natural persons by name |
-| `GET` | `/persons/{personId}/connections` | Companies linked to a person |
-| `GET` | `/watchlist` | List watchlist for the account on the API key |
-| `POST` | `/watchlist/krs/{krs}` | Add a company to the watchlist |
-| `DELETE` | `/watchlist/krs/{krs}` | Remove a company from the watchlist |
-| `GET` | `/usage` | Monthly quota usage for the current API key |
-| `GET` | `/health` | Public uptime check (no key required) |
+| `GET` | `/health` | API v1 health |
+| `GET` | `/companies` | Search and list companies |
+| `GET` | `/companies/count` | Count companies for current filters |
+| `GET` | `/companies/krs/{krs}` | Full company profile |
+| `GET` | `/companies/krs/{krs}/financial-statements` | Financial statements |
+| `GET` | `/companies/krs/{krs}/structure-people` | Structure & People |
+| `GET` | `/companies/krs/{krs}/connections` | Company connections |
+| `GET` | `/companies/krs/{krs}/statistics` | Peer statistics & rankings |
+| `GET` | `/companies/krs/{krs}/financial-documents` | Financial document inventory |
+| `GET` | `/companies/krs/{krs}/news` | Company news & UGC |
+| `GET` | `/companies/krs/{krs}/sanctions` | MSWiA sanctions listing |
+| `GET` | `/companies/krs/{krs}/gpw` | Warsaw Stock Exchange (GPW) |
+| `GET` | `/companies/krs/{krs}/status` | Legal status |
+| `GET` | `/companies/krs/{krs}/nfz-contracts` | NFZ contracts |
+| `GET` | `/companies/krs/{krs}/nfz-queues` | NFZ waiting lists |
+| `GET` | `/companies/krs/{krs}/beneficiaries` | Beneficial owners (CRBR) |
+| `GET` | `/companies/krs/{krs}/court-gazette` | Court and Commercial Gazette notices (MSiG) |
+| `GET` | `/companies/krs/{krs}/energy-licenses` | Energy concessions (URE) |
+| `GET` | `/companies/krs/{krs}/eu-funds` | European Funds projects (FE) |
+| `GET` | `/companies/krs/{krs}/eu-grants` | European Commission grants (FTS) |
+| `GET` | `/companies/krs/{krs}/financial-licenses` | Financial supervision entries (KNF) |
+| `GET` | `/companies/krs/{krs}/insolvency` | Insolvency and restructuring proceedings (KRZ) |
+| `GET` | `/companies/krs/{krs}/public-aid` | Public aid received (SUDOP) |
+| `GET` | `/companies/krs/{krs}/real-estate` | Real estate (financial statements) |
+| `GET` | `/companies/krs/{krs}/secured-liabilities` | Secured liabilities (mortgages and pledges) |
+| `GET` | `/companies/krs/{krs}/tenders` | Public procurement of a company (BZP + TED) |
+| `GET` | `/companies/krs/{krs}/waste-registry` | Waste and packaging register (BDO) |
+| `GET` | `/companies/export` | Bulk company search export page |
+| `GET` | `/ceidg/nip/{nip}` | CEIDG profile by NIP |
+| `GET` | `/ceidg/nip/{nip}/nfz-queues` | NFZ waiting lists by NIP |
+| `GET` | `/news` | Latest company news feed |
+| `GET` | `/tenders` | Public tenders in Poland (BZP + TED) |
+| `GET` | `/tenders/awards` | Largest recent contract awards |
+| `GET` | `/watchlist` | List watchlist |
+| `POST` | `/watchlist/krs/{krs}` | Add company to watchlist |
+| `DELETE` | `/watchlist/krs/{krs}` | Remove company from watchlist |
+| `GET` | `/persons/search` | Search persons by name |
+| `GET` | `/persons/{personId}/connections` | Company connections for a person |
+| `GET` | `/usage` | Monthly quota usage for this API key |
+<!-- endpoints:end -->
 
 ---
 

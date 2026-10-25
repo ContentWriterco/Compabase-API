@@ -61,6 +61,10 @@ tags:
 - name: Health
 - name: Usage
 - name: Companies
+- name: Registers
+  description: Public-register data of one company (CRBR, MSiG, KRZ, URE, BDO, SUDOP, KNF, FE, FTS, BZP/TED, real estate, secured liabilities).
+- name: Tenders
+- name: News
 - name: Watchlist
 - name: Persons
 paths:
@@ -165,12 +169,16 @@ paths:
       - $ref: '#/components/parameters/CompanyFilterEstimatedValueMax'
       - $ref: '#/components/parameters/CompanyFilterRegistrationYearMin'
       - $ref: '#/components/parameters/CompanyFilterRegistrationYearMax'
+      - $ref: '#/components/parameters/CompanyFilterRegistrationDateMin'
+      - $ref: '#/components/parameters/CompanyFilterRegistrationDateMax'
       - $ref: '#/components/parameters/CompanyFilterLastReportYearMin'
       - $ref: '#/components/parameters/CompanyFilterLastReportYearMax'
       - $ref: '#/components/parameters/CompanyFilterStatusActive'
       - $ref: '#/components/parameters/CompanyFilterLegalForm'
       - $ref: '#/components/parameters/CompanyFilterHasEmail'
       - $ref: '#/components/parameters/CompanyFilterHasWebsite'
+      - $ref: '#/components/parameters/CompanySort'
+      - $ref: '#/components/parameters/CompanySortDir'
       responses:
         '200':
           description: 'Paginated search results: **`data`** is an array of companies (one object per row on this page).
@@ -356,6 +364,8 @@ paths:
       - $ref: '#/components/parameters/CompanyFilterEstimatedValueMax'
       - $ref: '#/components/parameters/CompanyFilterRegistrationYearMin'
       - $ref: '#/components/parameters/CompanyFilterRegistrationYearMax'
+      - $ref: '#/components/parameters/CompanyFilterRegistrationDateMin'
+      - $ref: '#/components/parameters/CompanyFilterRegistrationDateMax'
       - $ref: '#/components/parameters/CompanyFilterLastReportYearMin'
       - $ref: '#/components/parameters/CompanyFilterLastReportYearMax'
       - $ref: '#/components/parameters/CompanyFilterStatusActive'
@@ -1285,6 +1295,604 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/nfz-contracts:
+    get:
+      tags:
+      - Companies
+      summary: NFZ contracts
+      description: |
+        NFZ (National Health Fund) contracts of a healthcare provider — contract value per year since 2008, types of care
+        with NFZ branch and the largest contracts (PLN). Keyed by the company's NIP. Same data as MCP `get_company_nfz_contracts`.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: NFZ contracts (`nfz` is null when the company has no NFZ contracts).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/nfz-queues:
+    get:
+      tags:
+      - Companies
+      summary: NFZ waiting lists
+      description: |
+        NFZ (National Health Fund) waiting lists of a healthcare provider from the NFZ "Terminy leczenia" API: every NFZ-funded
+        service it runs a waiting list for, per location — NFZ forecast waiting time (stable and urgent case), people waiting,
+        average wait, address, phone, children, accessibility. Sorted by shortest wait. Refreshed twice a week.
+        The forecast is not a booking. Same data as MCP `get_company_nfz_queues`.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      - name: service
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by a fragment of the service name (diacritics optional), e.g. `okulist`, `ortoped`, `rezonans`.
+      - name: town
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by town or district, e.g. `Poznań`.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 50
+          maximum: 400
+      responses:
+        '200':
+          description: NFZ waiting lists (`queues` is null when the provider has none).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                krs: "0000446005"
+                nip: "7792236896"
+                queues:
+                  queues_count: 30
+                  places_count: 2
+                  data_as_of: "2026-10-10"
+                  matched: 30
+                  source_url: https://terminyleczenia.nfz.gov.pl
+                  items:
+                    - benefit: PORADNIA KARDIOCHIRURGICZNA
+                      benefit_display: Poradnia kardiochirurgiczna
+                      town: Poznań-Nowe Miasto
+                      address: Szwajcarska 3
+                      phone: 61 873 98 00
+                      wait_days: 14
+                      wait_label_pl: 14 dni
+                      wait_label_en: 14 days
+                      urgent_wait_label_pl: od ręki
+                      awaiting: 12
+                      average_days: 10
+                      wait_as_of: "2026-10-10"
+                      children: false
+                      access: [ramp, wheelchairs, toilet, car-park]
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/beneficiaries:
+    get:
+      tags:
+      - Registers
+      summary: Beneficial owners (CRBR)
+      description: |
+        Beneficial owners of a KRS company from the Central Register of Beneficial Owners (CRBR) — name, nationality,
+        country of residence and nature/extent of control. PESEL is never returned (birth year only). Sole proprietors are not in CRBR.
+        Same data as MCP `get_company_beneficiaries`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: CRBR filing with the list of beneficial owners.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/court-gazette:
+    get:
+      tags:
+      - Registers
+      summary: Court and Commercial Gazette notices (MSiG)
+      description: |
+        Notices about the company published in the Court and Commercial Gazette (Monitor Sądowy i Gospodarczy) —
+        creditor calls, dissolution, mergers, liquidation, transformations — matched by KRS or NIP.
+        Same data as MCP `get_company_court_gazette`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: MSiG notices, newest first.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/energy-licenses:
+    get:
+      tags:
+      - Registers
+      summary: Energy concessions (URE)
+      description: |
+        Energy Regulatory Office (URE) concessions — electricity, gas, heat and liquid fuels — with validity dates and
+        pending applications. Keyed by the company's NIP.
+        Same data as MCP `get_company_energy_licenses`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: URE concessions (null when the company holds none).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/eu-funds:
+    get:
+      tags:
+      - Registers
+      summary: European Funds projects (FE)
+      description: |
+        EU cohesion-fund projects (Fundusze Europejskie, official MFiPR project lists) — programme, EU co-financing,
+        total value and dates. Keyed by NIP. Not TED procurement, not FTS Commission grants, not SUDOP state aid.
+        Same data as MCP `get_company_eu_funds`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: European Funds projects of the company.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/eu-grants:
+    get:
+      tags:
+      - Registers
+      summary: European Commission grants (FTS)
+      description: |
+        European Commission Financial Transparency System awards — Horizon, LIFE, Erasmus+ and other direct/indirect
+        management grants and contracts. Keyed by NIP (VAT).
+        Same data as MCP `get_company_procurement`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: FTS awards of the company.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/financial-licenses:
+    get:
+      tags:
+      - Registers
+      summary: Financial supervision entries (KNF)
+      description: |
+        Polish Financial Supervision Authority (KNF) registers — licences and entries of banks, payment / e-money
+        institutions, investment firms, insurers, lending institutions and agents, with KNF number, status, registration,
+        decision and strike-off dates and services. Keyed by NIP.
+        Same data as MCP `get_company_financial_supervision`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: KNF entries (null when the company has none).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/insolvency:
+    get:
+      tags:
+      - Registers
+      summary: Insolvency and restructuring proceedings (KRZ)
+      description: |
+        Bankruptcy and restructuring proceedings from the National Debtor Register (Krajowy Rejestr Zadłużonych, KRZ):
+        case numbers, court, proceeding type and status, key dates.
+        Same data as MCP `get_company_debt_registry`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: KRZ proceedings of the company.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/public-aid:
+    get:
+      tags:
+      - Registers
+      summary: Public aid received (SUDOP)
+      description: |
+        Public aid and de minimis aid from SUDOP (UOKiK) — full case list with amount, grantor, aid measure, purpose and
+        date. Keyed by NIP.
+        Same data as MCP `get_company_public_aid`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: Public aid cases of the company.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/real-estate:
+    get:
+      tags:
+      - Registers
+      summary: Real estate (financial statements)
+      description: |
+        Company real estate from the latest financial statement (period ending 2025+): land incl. perpetual usufruct,
+        buildings and premises, investment property (book values in PLN/EUR/USD), plus properties named as mortgage
+        collateral (address, land-register KW numbers, creditor). Micro and small entities have no such breakdown.
+        Same data as MCP `get_company_real_estate`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: Real estate (null when the balance sheet shows none).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/secured-liabilities:
+    get:
+      tags:
+      - Registers
+      summary: Secured liabilities (mortgages and pledges)
+      description: |
+        Secured liabilities disclosed in the notes to the latest financial statement (period ending 2025+): mortgages,
+        registered / financial pledges, transfers of ownership, assignments — with creditor, amount, secured debt, asset and
+        land-register (KW) numbers.
+        Same data as MCP `get_company_secured_liabilities`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: Secured liabilities (null when nothing is disclosed).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/tenders:
+    get:
+      tags:
+      - Registers
+      summary: Public procurement of a company (BZP + TED)
+      description: |
+        Public procurement of one company: national tenders from the Public Procurement Bulletin (BZP) and EU-threshold
+        tenders from TED — as contractor (awards won) and as contracting authority. Returns `national` and `eu` blocks.
+        Same data as MCP `get_company_public_tenders / get_company_eu_tenders`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: "`national` (BZP) and `eu` (TED) procurement of the company."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/waste-registry:
+    get:
+      tags:
+      - Registers
+      summary: Waste and packaging register (BDO)
+      description: |
+        BDO register (waste, products and packaging) — registration number, number of sites, activity flags and decisions
+        with issue and validity dates. Keyed by NIP.
+        Same data as MCP `get_company_waste_registry`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000446005"
+      responses:
+        '200':
+          description: BDO entry (null when the company is not registered).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000446005"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
   /companies/export:
     get:
       tags:
@@ -1629,6 +2237,265 @@ paths:
                   recent_as_buyer: []
         '404':
           $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /ceidg/nip/{nip}/nfz-queues:
+    get:
+      tags:
+      - CEIDG
+      summary: NFZ waiting lists by NIP
+      description: |
+        NFZ (National Health Fund) waiting lists of a healthcare provider by NIP (sole proprietors and any other provider) from the NFZ "Terminy leczenia" API: every NFZ-funded
+        service it runs a waiting list for, per location — NFZ forecast waiting time (stable and urgent case), people waiting,
+        average wait, address, phone, children, accessibility. Sorted by shortest wait. Refreshed twice a week.
+        The forecast is not a booking. Same data as MCP `get_company_nfz_queues`.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: nip
+        in: path
+        required: true
+        schema:
+          type: string
+        example: "7792236896"
+      - name: service
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by a fragment of the service name (diacritics optional), e.g. `okulist`, `ortoped`, `rezonans`.
+      - name: town
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter by town or district, e.g. `Poznań`.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 50
+          maximum: 400
+      responses:
+        '200':
+          description: NFZ waiting lists for the NIP.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /news:
+    get:
+      tags:
+      - News
+      summary: Latest company news feed
+      description: |
+        Latest news published by Polish companies on their own websites, newest first, with the company (KRS) attached.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: since
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Only news published on or after this date (YYYY-MM-DD).
+      - name: pkd
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 2–5 digit prefix of the company main PKD code (e.g. `62` for IT).
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Company seat city.
+      - name: locale
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [en, pl, de]
+        description: Language of the returned titles.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Page size, 1–100 (default 50).
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Zero-based offset (max 5000).
+      responses:
+        '200':
+          description: Page of news articles.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /tenders:
+    get:
+      tags:
+      - Tenders
+      summary: Public tenders in Poland (BZP + TED)
+      description: |
+        Polish public tenders — national notices from the Public Procurement Bulletin (BZP) and EU-threshold notices
+        for Poland from TED — with contracting authority, value, deadlines and (for awarded notices) the winner.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [open, awarded]
+        description: Open tenders or awarded contracts.
+      - name: industry
+        in: query
+        required: false
+        schema:
+          type: string
+        description: CPV group or 2-digit CPV division.
+      - name: source
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [national, eu]
+        description: National (BZP) or EU (TED) notices.
+      - name: region
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Voivodeship.
+      - name: city
+        in: query
+        required: false
+        schema:
+          type: string
+        description: City of the contracting authority.
+      - name: postal
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Postal code prefix.
+      - name: kind
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [supplies, services, works]
+        description: Contract type.
+      - name: value_min
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Minimum estimated value (in `currency`).
+      - name: value_max
+        in: query
+        required: false
+        schema:
+          type: number
+        description: Maximum estimated value (in `currency`).
+      - name: currency
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [PLN, EUR, USD]
+        description: Currency of value filters and returned values.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          enum: [6, 20]
+        description: Page size.
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Zero-based offset (max 2000).
+      responses:
+        '200':
+          description: Page of tender notices.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /tenders/awards:
+    get:
+      tags:
+      - Tenders
+      summary: Largest recent contract awards
+      description: |
+        Largest recent public contract awards in Poland with the winning company (KRS when matched).
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: industry
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [it, construction, medicine]
+        description: Industry filter.
+      - name: min
+        in: query
+        required: false
+        schema:
+          type: integer
+          enum: [0, 100000, 1000000, 5000000, 10000000]
+        description: Minimum contract value in PLN (default 1000000).
+      responses:
+        '200':
+          description: Recent awards, largest first.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2663,7 +3530,7 @@ components:
     CompanyFilterRegistrationYearMin:
       name: registration_year_min
       in: query
-      description: 'Earliest **registration** year (`state_date` filter): companies with `state_date` on or after `YYYY-01-01`.
+      description: 'Earliest **registration** year (`registration_date` filter): companies registered on or after `YYYY-01-01`.
 
         '
       schema:
@@ -2672,9 +3539,52 @@ components:
     CompanyFilterRegistrationYearMax:
       name: registration_year_max
       in: query
-      description: Latest registration year (`state_date` on or before `YYYY-12-31`).
+      description: Latest registration year (`registration_date` on or before `YYYY-12-31`).
       schema:
         type: integer
+    CompanyFilterRegistrationDateMin:
+      name: registration_date_min
+      in: query
+      description: 'Earliest exact **registration date** (`registration_date` on or after this day, inclusive), format `YYYY-MM-DD`.
+        Takes precedence over `registration_year_min`. For companies registered today, pass today''s date as both
+        `registration_date_min` and `registration_date_max`. Applies to KRS companies and to JDG (CEIDG) rows merged into browse results.
+
+        '
+      schema:
+        type: string
+        format: date
+      example: '2026-10-07'
+    CompanyFilterRegistrationDateMax:
+      name: registration_date_max
+      in: query
+      description: Latest exact registration date (`registration_date` on or before this day, inclusive), format `YYYY-MM-DD`. Takes precedence over `registration_year_max`.
+      schema:
+        type: string
+        format: date
+      example: '2026-10-07'
+    CompanySort:
+      name: sort
+      in: query
+      description: 'Sort the result set by one column (default: completeness / revenue ranking). Rows without a value in that
+        column are excluded while sorting. Text columns (`name`, `nip`, `regon`, `city`, `region`, `postal_code`) sort alphabetically;
+        `registration_date` with `dir=desc` lists the newest registrations first (future-dated register errors are skipped);
+        `revenue_growth` with `dir=desc` lists the fastest-growing companies (y/y revenue growth in %, latest vs previous
+        financial year from KRS statements; combine with `revenue_min` to skip small companies).
+        Not applied to free-text (`q`) or `keywords` searches, which keep relevance order.
+
+        '
+      schema:
+        type: string
+        enum: [revenue, profit_net, estimated_value, total_assets, operating_costs_total, fixed_assets, current_assets, equity, liabilities_and_provisions, capital, registration_date, revenue_growth, name, nip, regon, city, region, postal_code]
+      example: registration_date
+    CompanySortDir:
+      name: dir
+      in: query
+      description: Sort direction for `sort` (`asc` or `desc`, default `desc`).
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
     CompanyFilterLastReportYearMin:
       name: last_report_year_min
       in: query
