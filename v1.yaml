@@ -1772,6 +1772,42 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/website-facts:
+    get:
+      tags:
+      - Registers
+      summary: Facts from the company website
+      description: |
+        Opening hours, branches, offer (CPV divisions and product/service names in PL/EN/DE), certifications, website
+        technology and clients/partners linked from the site (matched to KRS companies), read from the company's own website.
+        Same data as MCP `get_company_website_facts`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000957390"
+      responses:
+        '200':
+          description: Website facts (null when nothing has been read from the website).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
   /companies/krs/{krs}/procurement-counterparties:
     get:
       tags:
@@ -2322,6 +2358,38 @@ paths:
           $ref: '#/components/responses/NotFound'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /ceidg/nip/{nip}/website-facts:
+    get:
+      tags:
+      - CEIDG
+      summary: Facts from the website by NIP
+      description: |
+        Same as `/companies/krs/{krs}/website-facts` for sole proprietors with a public profile (and any company) by NIP.
+        Same data as MCP `get_company_website_facts`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: nip
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 10-digit NIP (non-digits are stripped).
+      responses:
+        '200':
+          description: Website facts.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '404':
+          $ref: '#/components/responses/NotFound'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '429':
