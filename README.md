@@ -113,11 +113,14 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 | `GET` | `/companies/krs/{krs}/insolvency` | Insolvency and restructuring proceedings (KRZ) |
 | `GET` | `/companies/krs/{krs}/public-aid` | Public aid received (SUDOP) |
 | `GET` | `/companies/krs/{krs}/real-estate` | Real estate (financial statements) |
+| `GET` | `/companies/krs/{krs}/procurement-counterparties` | Public procurement counterparties |
+| `GET` | `/companies/krs/{krs}/filing-timeliness` | Financial statement filing timeliness |
 | `GET` | `/companies/krs/{krs}/secured-liabilities` | Secured liabilities (mortgages and pledges) |
 | `GET` | `/companies/krs/{krs}/tenders` | Public procurement of a company (BZP + TED) |
 | `GET` | `/companies/krs/{krs}/waste-registry` | Waste and packaging register (BDO) |
 | `GET` | `/companies/export` | Bulk company search export page |
 | `GET` | `/ceidg/nip/{nip}` | CEIDG profile by NIP |
+| `GET` | `/ceidg/nip/{nip}/procurement-counterparties` | Public procurement counterparties by NIP |
 | `GET` | `/ceidg/nip/{nip}/nfz-queues` | NFZ waiting lists by NIP |
 | `GET` | `/news` | Latest company news feed |
 | `GET` | `/tenders` | Public tenders in Poland (BZP + TED) |

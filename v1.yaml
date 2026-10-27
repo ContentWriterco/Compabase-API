@@ -1772,6 +1772,89 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/procurement-counterparties:
+    get:
+      tags:
+      - Registers
+      summary: Public procurement counterparties
+      description: |
+        Buyers the company most often wins public contracts from, contractors it most often awards contracts to, and
+        consortium partners — from BZP, TED and CRU. Each with KRS (when known), number of contracts, total value
+        (PLN/EUR/USD) and years; top 20 per role plus totals.
+        Same data as MCP `get_company_procurement_counterparties`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000122099"
+      responses:
+        '200':
+          description: Counterparties (null when the company has no public procurement).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000122099"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/filing-timeliness:
+    get:
+      tags:
+      - Registers
+      summary: Financial statement filing timeliness
+      description: |
+        For each recent financial year: period end, the date the annual financial statement was filed (KRS register
+        entries and the Financial Document Repository), the statutory deadline (year end + 6 months + 15 days; +3 months
+        for 2019–2020), days late or not filed, and whether a statutory auditor's report was filed. Also `overdue_year`
+        when the latest statement is past its deadline and missing.
+        Same data as MCP `get_company_filing_timeliness`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000033391"
+      responses:
+        '200':
+          description: Filing timeliness (null when the company has never filed a financial statement).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                properties:
+                  krs:
+                    type: string
+                    example: "0000033391"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
   /companies/krs/{krs}/secured-liabilities:
     get:
       tags:
@@ -2235,6 +2318,41 @@ paths:
                       counterparty_name: Port Lotniczy Gdynia
                       source_url: https://ted.europa.eu/pl/notice/-/detail/564833-2026
                   recent_as_buyer: []
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /ceidg/nip/{nip}/procurement-counterparties:
+    get:
+      tags:
+      - CEIDG
+      summary: Public procurement counterparties by NIP
+      description: |
+        Buyers, contractors and consortium partners of a company or a sole proprietor (public CEIDG profile) by NIP, from BZP,
+        TED and CRU. Same data as MCP `get_company_procurement_counterparties`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: nip
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 10-digit NIP (non-digits are stripped).
+        example: "5250008040"
+      responses:
+        '200':
+          description: Counterparties.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
