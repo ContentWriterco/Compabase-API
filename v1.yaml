@@ -61,8 +61,10 @@ tags:
 - name: Health
 - name: Usage
 - name: Companies
+- name: Financials
+  description: Financial statements, original filings and financial statistics of one company.
 - name: Registers
-  description: Public-register data of one company (CRBR, MSiG, KRZ, URE, BDO, SUDOP, KNF, FE, FTS, BZP/TED, real estate, secured liabilities).
+  description: Public-register data of one company (CRBR, MSiG, KRZ, URE, BDO, SUDOP, KNF, FE, FTS, BZP/TED, NFZ contracts and waiting lists, sanctions and PEP lists, Warsaw Stock Exchange, real estate, secured liabilities, website facts).
 - name: Tenders
 - name: News
 - name: Watchlist
@@ -197,115 +199,13 @@ paths:
                   company_name_display: Orlen
                   nip: null
                   regon: null
-                  registry_number: '0000028860'
+                  registry_number: "0000028860"
                   legal_form: SPÓŁKA AKCYJNA
                   is_active: true
                   latest_snapshot_id: 1956bcf0-34f4-4ab1-98af-eddf75c0d40a
                   extracted_at: '2026-03-19T13:41:20.998732+00:00'
                   state_date: null
-                  postal_code: 09-411
-                  city: PŁOCK
-                  region: mazowieckie
-                  revenue_total: 304668000000
-                  revenue_total_usd: 76338762214.98372
-                  profit_net: 1383000000
-                  profit_net_usd: 346529691.80656475
-                  operating_costs_total: 301809000000
-                  operating_costs_total_usd: 75622400400.90202
-                  total_assets: 255368000000
-                  total_assets_usd: 63985968428.96517
-                  fixed_assets: 186761000000
-                  fixed_assets_usd: 46795539964.921074
-                  current_assets: 68607000000
-                  current_assets_usd: 17190428464.044098
-                  equity: 146689000000
-                  equity_usd: 36754948634.42746
-                  liabilities_and_provisions: 108679000000
-                  liabilities_and_provisions_usd: 27231019794.53771
-                  has_email: true
-                  has_website: true
-                  full_address: 09-411 Płock, Poland
-                  email: zarzad@orlen.pl
-                  website: orlen.pl
-                  logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/ad2ae683-ccbd-49c6-a85c-648024435cb5.ico
-                  currency: PLN
-                  period_to: null
-                - entity_id: e51db361-6d35-4e91-af8c-5cb8115e1475
-                  company_name: TAURON POLSKA ENERGIA SPÓŁKA AKCYJNA
-                  company_name_display: Tauron Polska Energia
-                  nip: null
-                  regon: null
-                  registry_number: '0000271562'
-                  legal_form: SPÓŁKA AKCYJNA
-                  is_active: true
-                  latest_snapshot_id: 3742a994-dfd1-49a7-bb76-033bf524373d
-                  extracted_at: '2026-03-16T23:08:00.733285+00:00'
-                  state_date: null
-                  postal_code: 40-202
-                  city: KATOWICE
-                  region: śląskie
-                  revenue_total: 35573000000
-                  revenue_total_usd: 8913304936.10624
-                  profit_net: 590000000
-                  profit_net_usd: 147832623.402656
-                  operating_costs_total: 32922000000
-                  operating_costs_total_usd: 8249060385.868203
-                  total_assets: 45714000000
-                  total_assets_usd: 11454272112.25257
-                  fixed_assets: 38069000000
-                  fixed_assets_usd: 9538712102.230017
-                  current_assets: 7645000000
-                  current_assets_usd: 1915560010.0225508
-                  equity: 17754000000
-                  equity_usd: 4448509145.57755
-                  liabilities_and_provisions: 27960000000
-                  liabilities_and_provisions_usd: 7005762966.675019
-                  has_email: true
-                  has_website: true
-                  full_address: 40-202 Katowice, Poland
-                  email: kancelaria@tauron.pl
-                  website: tauron.pl
-                  logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/e51db361-6d35-4e91-af8c-5cb8115e1475.ico
-                  currency: PLN
-                  period_to: null
-                - entity_id: 264b49ba-4c4d-4a04-9eb1-1010a57fecdf
-                  company_name: GRUPA LOTOS SPÓŁKA AKCYJNA
-                  company_name_display: Grupa Lotos
-                  nip: '5830000960'
-                  regon: '19054163600000'
-                  registry_number: '0000106150'
-                  legal_form: SPÓŁKA AKCYJNA
-                  is_active: true
-                  latest_snapshot_id: a368e255-5022-4f02-998b-379609886f51
-                  extracted_at: '2025-12-13T21:23:49.997737+00:00'
-                  state_date: '2025-11-20'
-                  postal_code: 80-718
-                  city: GDAŃSK
-                  region: pomorskie
-                  revenue_total: 33616400000
-                  revenue_total_usd: 8697870578.798935
-                  profit_net: 3211800000
-                  profit_net_usd: 831017620.1195374
-                  operating_costs_total: 28871200000
-                  operating_costs_total_usd: 7470102719.345908
-                  total_assets: 25964800000
-                  total_assets_usd: 6718103961.29266
-                  fixed_assets: 14525600000
-                  fixed_assets_usd: 3758337861.2641983
-                  current_assets: 11439200000
-                  current_assets_usd: 2959766100.0284615
-                  equity: 14793900000
-                  equity_usd: 3827757509.8967633
-                  liabilities_and_provisions: 11170900000
-                  liabilities_and_provisions_usd: 2890346451.3958964
-                  has_email: true
-                  has_website: true
-                  full_address: 80-718 Gdańsk, Poland
-                  email: lotos@grupalotos.pl
-                  website: lotos.pl
-                  logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/264b49ba-4c4d-4a04-9eb1-1010a57fecdf.png
-                  currency: PLN
-                  period_to: null
+                  postal_code: "09-411"
                 pagination:
                   limit: 3
                   offset: 0
@@ -440,26 +340,6 @@ paths:
                   registry_number: "0000028860"
                   company_name: ORLEN SPÓŁKA AKCYJNA
                   company_name_display: Orlen
-                  logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/ad2ae683-ccbd-49c6-a85c-648024435cb5.ico
-                  nip: "7740001454"
-                  regon: "61018820100000"
-                  full_address: CHEMIKÓW 7, 09-411 Płock, PL
-                  street: CHEMIKÓW
-                  building_no: "7"
-                  city: PŁOCK
-                  region: mazowieckie
-                  country: PL
-                  legal_form: SPÓŁKA AKCYJNA
-                  activities:
-                  - code_full: "19.20.Z"
-                    is_primary: true
-                    description: Manufacture of refined petroleum products
-                  - code_full: "20.1"
-                    is_primary: false
-                    description: Manufacture of basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms
-                  - code_full: "35.1"
-                    is_primary: false
-                    description: Electric power generation, transmission, distribution and trade
                 details:
                   legalForm: SPÓŁKA AKCYJNA
                   operational_status: active
@@ -468,33 +348,20 @@ paths:
                     emailGated: false
                     phone: null
                     phoneGated: false
-                    website: orlen.pl
-                    emailDeliverabilityVerified: true
-                    emailInactive: false
-                    websiteInactive: false
                   vat:
                     status: Czynny
                     status_date: "2024-03-01"
                     accounts:
                     - "25114020040000380284611780"
-                  filings: []
                 companySummary:
                   pl: ORLEN S.A. to jedna z największych zintegrowanych grup multienergetycznych w Europie Środkowej.
                   en: ORLEN S.A. is one of the largest integrated multi-energy groups in Central Europe.
                   de: ORLEN S.A. ist eine der größten integrierten Multi-Energie-Gruppen in Mitteleuropa.
                 roles:
                 - party:
-                    name: "ALEJANDRO  MARTINEZ RUIZ"
+                    name: ALEJANDRO  MARTINEZ RUIZ
                     display_name: Alejandro Martinez Ruiz
                   role_name: President of the Management Board
-                - party:
-                    name: MARCIN ANDRZEJ DREKSLER
-                    display_name: Marcin Andrzej Dreksler
-                  role_name: Management Board Member
-                - party:
-                    name: "IVÁN  LIRÓN PORTILLA"
-                    display_name: Iván Lirón Portilla
-                  role_name: Management Board Member
                 ownership:
                 - owner:
                     name: RYSZARD CIEŚLAR
@@ -503,83 +370,21 @@ paths:
                   holding_text: 100 shares with a total value of PLN 5,000.00
                   has_all_shares: true
                   holding_percent: 100
-                  holding_value_pln: 5000
-                  holding_value_usd: 1350.621285791464
-                  holding_value_eur: 1204.2389210019267
-                  holding_share_count: 100
                 financials:
                   years:
                   - "2024"
-                  - "2023"
-                  - "2022"
                   byYear:
                     "2024":
                     - sf_period_from: "2024-01-01"
                       sf_period_to: "2024-12-31"
                       currency: PLN
                       roa: 0.5415713793427525
-                      asset_turnover: 1.1930547288618778
-                      revenue_total: 304668000000
-                      revenue_total_usd: 76338762214.98372
-                      revenue_total_eur: 70672233820.45929
-                      profit_net: 1383000000
-                      profit_net_usd: 346529691.80656475
-                      profit_net_eur: 320807237.2999304
-                      total_assets: 255368000000
-                      total_assets_usd: 63985968428.96517
-                      total_assets_eur: 59236372071.44514
-                      fixed_assets_eur: 43321967061.00673
-                      current_assets_eur: 15914405010.438414
-                      equity_eur: 34026675945.25632
-                      liabilities_and_provisions_eur: 25209696126.18882
                     "2023":
                     - sf_period_from: "2023-01-01"
                       sf_period_to: "2023-12-31"
                       currency: PLN
                       roa: 7.845846361165577
-                      asset_turnover: 1.4862592645867558
-                      revenue_total: 392637000000
-                      revenue_total_usd: 93438280859.57022
-                      revenue_total_eur: 86430615479.43999
-                      profit_net: 20727000000
-                      profit_net_usd: 4932533733.133433
-                      profit_net_eur: 4562604561.063662
-                      total_assets: 264178000000
-                      total_assets_usd: 62868089764.64149
-                      total_assets_eur: 58153121422.91098
-                      fixed_assets_eur: 37596856564.23351
-                      current_assets_eur: 20556264858.677467
-                      equity_eur: 33719292066.566875
-                      liabilities_and_provisions_eur: 24433829356.344105
-                      has_esf_xml: true
-                      esf_statement_lines:
-                        rzis:
-                          A: 304668000000
-                        bilans:
-                          Aktywa: 255368000000
-                        statement_profile:
-                          bilans_form: jednostka_inna
-                          rzis_layout: jednostka_inna
                 hasStatistics: true
-                krz:
-                  checked_at: "2026-07-18T03:00:49.323Z"
-                  has_proceedings: false
-                  has_active_proceedings: false
-                  proceedings_count: 0
-                  proceedings: []
-                  source_url: https://krz.ms.gov.pl/
-                similarCompanies:
-                - entity_id: 39c4a3d7-144c-45c2-9713-ecd3e8895d4a
-                  registry_number: "0000287699"
-                  company_name: WARTER FUELS SPÓŁKA AKCYJNA
-                  company_name_display: Warter Fuels
-                  legal_form: SPÓŁKA AKCYJNA
-                  website: warterfuels.pl
-                  logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/39c4a3d7-144c-45c2-9713-ecd3e8895d4a.png
-                  revenue_total: 224545986
-                  revenue_total_usd: 56263088.449010275
-                  revenue_total_eur: 52086751.565762006
-                  revenue_operating: 223609024
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -591,7 +396,7 @@ paths:
   /companies/krs/{krs}/financial-statements:
     get:
       tags:
-      - Companies
+      - Financials
       summary: Financial statements
       description: |
         Returns financial metrics only (without company profile or document files),
@@ -777,6 +582,50 @@ paths:
             application/json:
               schema:
                 type: object
+              example:
+                entity_id: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                registry_number: "0000028860"
+                company_name: Orlen
+                company_name_display: Orlen
+                legal_form: SPÓŁKA AKCYJNA
+                logo_url: https://img.compabase.com/storage/v1/object/public/company-logos/ad2ae683-ccbd-49c6-a85c-648024435cb5.webp
+                website: orlen.pl
+                show_logo: true
+                logo_stored_priority: true
+                people:
+                - person_id: a0afa35d-c36f-4e7b-a97f-35992dd7e061
+                  display_name: Robert Soszyński
+                  birth_year: 1964
+                  age: 62
+                  relationships:
+                  - kind: management
+                    role: "167"
+                  display_role: WICEPREZES ZARZĄDU DS. OPERACYJNYCH
+                  has_other_connections: true
+                  other_companies_count: 2
+                  other_companies:
+                  - entity_id: 6de105f8-9075-4040-9b05-ea7382a28fff
+                    registry_number: "0000154129"
+                    name: Intelli
+                    company_name_display: Intelli
+                    legal_form: SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+                    role: PREZES ZARZĄDU
+                    linkable: true
+                    show_logo: true
+                    logo_stored_priority: false
+                graph:
+                  nodes:
+                  - id: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                    type: company
+                    name: Orlen
+                    krs: "0000028860"
+                  edges:
+                  - source: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                    target: a0afa35d-c36f-4e7b-a97f-35992dd7e061
+                    sourceType: company
+                    targetType: person
+                    role: "167"
+                    relationship_kind: management
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -788,7 +637,7 @@ paths:
   /companies/krs/{krs}/statistics:
     get:
       tags:
-      - Companies
+      - Financials
       summary: Peer statistics & rankings
       description: |
         Industry / region / country peer benchmarks and the company's rank positions.
@@ -827,61 +676,14 @@ paths:
                 hasData: true
                 company:
                   registry_number: "0001088645"
-                  primary_pkd: "73.11.Z"
+                  primary_pkd: 73.11.Z
                   region: wielkopolskie
                   period_to: "2025-12-31"
-                  revenue_total:
-                    PLN: 723679.14
-                    EUR: 171325.55
-                    USD: 181737.60
-                  profit_net:
-                    PLN: -220414.61
-                    EUR: -52181.49
-                    USD: -55352.74
-                  total_assets:
-                    PLN: 1132090.39
-                    EUR: 268013.82
-                    USD: 284301.96
-                  operating_costs_total:
-                    PLN: 932271.28
-                    EUR: 220708.16
-                    USD: 234121.37
                 scopes:
                 - scope_type: pkd_full
-                  scope_key: "73.11.Z"
+                  scope_key: 73.11.Z
                   label: Advertising agencies
                   rank_position: 2811
-                  total_in_scope: 6860
-                  top_percent: 40.98
-                  period_to: "2025-12-31"
-                - scope_type: pkd_division
-                  scope_key: "73"
-                  label: Advertising, market research and public relations
-                  rank_position: 3104
-                  total_in_scope: 7518
-                  top_percent: 41.29
-                  period_to: "2025-12-31"
-                - scope_type: pkd_section
-                  scope_key: N
-                  label: "N – Professional, scientific and technical activities"
-                  rank_position: 8606
-                  total_in_scope: 21505
-                  top_percent: 40.02
-                  period_to: "2025-12-31"
-                - scope_type: region
-                  scope_key: wielkopolskie
-                  label: Wielkopolskie
-                  rank_position: 24802
-                  total_in_scope: 47950
-                  top_percent: 51.72
-                  period_to: "2025-12-31"
-                - scope_type: country
-                  scope_key: PL
-                  label: Polska
-                  rank_position: 237072
-                  total_in_scope: 479838
-                  top_percent: 49.41
-                  period_to: "2025-12-31"
                 benchmarks:
                   pkd_full::73.11.Z:
                     label: Advertising agencies
@@ -892,35 +694,23 @@ paths:
                           median: 437040.24
                           mean: 4143982.87
                           winsor_mean: 2544201.61
-                          p25: 108193.55
-                          p75: 1894511.26
-                          p90: 6629544.52
                         EUR:
                           n_companies: 6857
                           median: 101158.92
                           mean: 963908.02
-                          winsor_mean: 590328.70
-                          p25: 25095.97
-                          p75: 437657.96
-                          p90: 1533970.41
+                          winsor_mean: 590328.7
                       profit_net:
                         PLN:
                           n_companies: 6859
-                          median: 15200.40
-                          mean: 288817.10
+                          median: 15200.4
+                          mean: 288817.1
                           winsor_mean: 160485.18
-                          p25: -6171.84
-                          p75: 118829.62
-                          p90: 495890.18
                       total_assets:
                         PLN:
                           n_companies: 6811
-                          median: 230483.30
+                          median: 230483.3
                           mean: 2547678.84
                           winsor_mean: 1277411.54
-                          p25: 52561.04
-                          p75: 930692.26
-                          p90: 3296511.39
                   country::PL:
                     label: Polska
                     metrics:
@@ -930,9 +720,6 @@ paths:
                           median: 695181.35
                           mean: 15874161.59
                           winsor_mean: 6549627.07
-                          p25: 104280.08
-                          p75: 3937961.66
-                          p90: 16531070.23
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -944,7 +731,7 @@ paths:
   /companies/krs/{krs}/financial-documents:
     get:
       tags:
-      - Companies
+      - Financials
       summary: Financial document inventory
       description: |
         Metadata list of financial documents for the company (periods, types, names).
@@ -986,14 +773,20 @@ paths:
                 krs: "0000028860"
                 entity_id: ad2ae683-ccbd-49c6-a85c-648024435cb5
                 documents:
-                - id: abe77c20-f518-4f20-a57a-a78cae7e135d
-                  document_type_ui: Dokument RDF (rodzaj 18)
-                  period_to: "2024-12-31"
-                  files: []
+                - id: b20af05c-b310-46d8-a68c-827209257fed
+                  document_type_ui: Dokument RDF PDF (rodzaj 9)
+                  period_from: "2025-01-01"
+                  period_to: "2025-12-31"
+                  extracted_at: '2026-10-12T09:04:04.965Z'
+                - id: fbb530f9-4c6a-4331-af77-073d20146d70
+                  document_type_ui: Dokument RDF (rodzaj 22)
+                  period_from: "2025-01-01"
+                  period_to: "2025-12-31"
+                  extracted_at: '2026-08-17T15:14:26.060Z'
                 pagination:
                   docsLimit: 25
                   docsOffset: 0
-                  hasMore: false
+                  hasMore: true
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1005,7 +798,7 @@ paths:
   /companies/krs/{krs}/news:
     get:
       tags:
-      - Companies
+      - News
       summary: Company news & UGC
       description: |
         Published news articles and optional claimed description / logo from company UGC.
@@ -1019,7 +812,7 @@ paths:
         required: true
         schema:
           type: string
-        example: "0000028860"
+        example: "0000057567"
       - name: locale
         in: query
         required: false
@@ -1034,11 +827,24 @@ paths:
               schema:
                 type: object
               example:
-                krs: "0001088645"
-                entity_id: "00000000-0000-0000-0000-000000000000"
-                description: null
-                logo_url: null
-                newsArticles: []
+                krs: "0000057567"
+                entity_id: 6fbbff6c-f836-4d5e-b5d4-9833b1fb1840
+                newsArticles:
+                - id: 941a76b0-7187-42be-8798-7341a61a3a30
+                  title: Comarch official sponsor of Mateusz Kusznierewicz's SSL Team Poland crew at the sailing world championship
+                    in Rio
+                  url: https://www.comarch.pl/o-firmie/centrum-prasowe/aktualnosci/korporacja/comarch-oficjalnym-sponsorem-zalogi-mateusza-kusznierewicza-ssl-team-poland-na-zeglarski-mundial-w-rio/
+                  imageUrl: http://www.comarch.pl/files-pl/miniatures/file_1201/Internet_SSL_Poland_Lodka_030_RHajduk.600x315.5f4506ae.jpg
+                  publishedAt: "2026-11-03"
+                  section: o-firmie
+                  language: pl
+                - id: c9b6ba08-0db2-4d70-8233-9207ef515c4a
+                  title: Accounting firms implement AI Agents from Comarch ERP
+                  url: https://www.comarch.pl/erp/aktualnosci/biura-rachunkowe-wdrazaja-agentow-ai-od-comarch-erp/
+                  imageUrl: http://www.comarch.pl/files-pl/miniatures/file_1202/Biura_rachunkowe_wdrazaja_Agentow_AI_od_Comarch_ERP.600x315.e20689ac.jpg
+                  publishedAt: "2026-11-03"
+                  section: o-firmie
+                  language: pl
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1050,7 +856,7 @@ paths:
   /companies/krs/{krs}/sanctions:
     get:
       tags:
-      - Companies
+      - Registers
       summary: MSWiA sanctions listing
       description: |
         Official Polish Ministry of the Interior and Administration (MSWiA) sanctions listing
@@ -1135,49 +941,31 @@ paths:
                               nullable: true
               example:
                 krs: "0000795863"
-                entity_id: "58142114-9193-42c0-a7e3-1ed189327f2e"
+                entity_id: 58142114-9193-42c0-a7e3-1ed189327f2e
                 sanctions:
                   entries:
-                    - source: pl_mswia
-                      name: EUROCHEM POLSKA Sp. z o.o.
-                      listed_on: "2022-04-26"
-                      removed_on: null
-                      source_url: https://www.gov.pl/web/mswia/lista-osob-i-podmiotow-objetych-sankcjami
-                      measures: |
-                        a. zamrożenie wszystkich środków finansowych i zasobów gospodarczych,
-                        b. zakaz udostępniania podmiotowi wpisanemu na listę – bezpośrednio lub pośrednio – jakichkolwiek środków finansowych lub zasobów gospodarczych,
-                        c. zakaz świadomego i umyślnego udziału w działaniach, których celem lub skutkiem jest ominięcie środków wskazanych w lit. a i b,
-                        d. wykluczenie z postępowania o udzielenie zamówienia publicznego lub konkursu
-                      justification: |
-                        A. Melniczenko jest rosyjskim przemysłowcem, właścicielem przedsiębiorstwa EuroChem, będącego jednym z głównych producentów nawozów i przedsiębiorstwa węglowego SUEK. Należy do kręgu najbardziej wpływowych rosyjskich przedsiębiorców, mających bliskie powiązania z rządem rosyjskim. Działa zatem w sektorach gospodarczych zapewniających istotne źródło dochodów rządowi Federacji Rosyjskiej, odpowiedzialnemu za aneksję Krymu i agresję przeciwko Ukrainie. Andriej Melniczenko objęty jest sankcjami na podstawie rozporządzenia Rady (UE) nr 269/2014, zał. I, poz. 721. A ponadto sankcje na wymienionego nałożyła Wielka Brytania oraz Ukraina.
-
-                        EUROCHEM POLSKA sp. z o. o. wytransferowała do spółki EuroChem Group AG ponad 30% przychodu osiągniętego w 2020 r.
-
-                        Nałożenie sankcji na spółkę EuroChem Polska sp. z o.o. przyczyni się do zmniejszenia przychodów wymienionej firmy oraz podmiotów osiągających korzyści z jej działalności, a tym samym pośrednio wpłynie na zmniejszenie przychodów podmiotu powiązanego z A. Melniczenką.
-                      measures_i18n:
-                        en: |
-                          a. freezing of all funds and economic resources,
-                          b. prohibition on making available to the listed entity – directly or indirectly – any funds or economic resources,
-                          c. prohibition on knowingly and intentionally participating in activities whose purpose or effect is to circumvent the measures specified in lit. a and b,
-                          d. exclusion from a public procurement procedure or competition
-                        de: |
-                          a. Einfrieren aller Gelder und wirtschaftlichen Ressourcen,
-                          b. Verbot der unmittelbaren oder mittelbaren Bereitstellung jeglicher Gelder oder wirtschaftlicher Ressourcen für die gelistete Einrichtung,
-                          c. Verbot der wissentlichen und vorsätzlichen Beteiligung an Handlungen, deren Zweck oder Wirkung die Umgehung der in lit. a und b genannten Maßnahmen ist,
-                          d. Ausschluss von einem Verfahren zur Vergabe eines öffentlichen Auftrags oder von einem Wettbewerb
-                      justification_i18n:
-                        en: |
-                          A. Melniczenko is a Russian industrialist and the owner of EuroChem, one of the main fertiliser producers, and the coal company SUEK. He is among the most influential Russian businesspeople with close ties to the Russian government. He is therefore active in economic sectors that provide a significant source of revenue to the government of the Russian Federation, which is responsible for the annexation of Crimea and the aggression against Ukraine. Andriej Melniczenko is subject to sanctions under Council Regulation (EU) No 269/2014, Annex I, entry 721. In addition, the United Kingdom and Ukraine have imposed sanctions on him.
-
-                          EUROCHEM POLSKA sp. z o. o. transferred more than 30% of the revenue it earned in 2020 r. to EuroChem Group AG.
-
-                          Imposing sanctions on EuroChem Polska sp. z o.o. will reduce the revenue of that company and of entities benefiting from its activities, and will thereby indirectly reduce the revenue of an entity linked to A. Melniczenko.
-                        de: |
-                          A. Melniczenko ist ein russischer Industrieller und Eigentümer von EuroChem, einem der wichtigsten Düngemittelhersteller, sowie des Kohleunternehmens SUEK. Er gehört zum Kreis der einflussreichsten russischen Unternehmer mit engen Verbindungen zur russischen Regierung. Er ist somit in Wirtschaftssektoren tätig, die der Regierung der Russischen Föderation, die für die Annexion der Krim und die Aggression gegen die Ukraine verantwortlich ist, eine wesentliche Einnahmequelle bieten. Andriej Melniczenko unterliegt Sanktionen gemäß der Verordnung (EU) Nr. 269/2014 des Rates, Anhang I, Eintrag 721. Darüber hinaus haben das Vereinigte Königreich und die Ukraine Sanktionen gegen ihn verhängt.
-
-                          EUROCHEM POLSKA sp. z o. o. überwies mehr als 30 % der im Jahr 2020 r. erzielten Einnahmen an EuroChem Group AG.
-
-                          Die Verhängung von Sanktionen gegen EuroChem Polska sp. z o.o. wird dazu beitragen, die Einnahmen dieses Unternehmens und der Einrichtungen, die von seiner Tätigkeit profitieren, zu verringern und damit mittelbar die Einnahmen einer mit A. Melniczenko verbundenen Einrichtung zu senken.
+                  - source: pl_mswia
+                    name: EUROCHEM POLSKA Sp. z o.o.
+                    listed_on: "2022-04-26"
+                    removed_on: null
+                    source_url: https://www.gov.pl/web/mswia/lista-osob-i-podmiotow-objetych-sankcjami
+                    measures: 'a. zamrożenie wszystkich środków finansowych i zasobów gospodarczych,
+              
+                      b. zakaz udostępniania podmiotowi wpisanemu na listę – bezpośrednio…'
+                    justification: A. Melniczenko jest rosyjskim przemysłowcem, właścicielem przedsiębiorstwa EuroChem, będącego
+                      jednym z głównych producentów nawozów i prz…
+                    measures_i18n:
+                      en: 'a. freezing of all funds and economic resources,
+              
+                        b. prohibition on making available to the listed entity – directly or indirectly – any f…'
+                      de: 'a. Einfrieren aller Gelder und wirtschaftlichen Ressourcen,
+              
+                        b. Verbot der unmittelbaren oder mittelbaren Bereitstellung jeglicher Gelder…'
+                    justification_i18n:
+                      en: A. Melniczenko is a Russian industrialist and the owner of EuroChem, one of the main fertiliser producers,
+                        and the coal company SUEK. He…
+                      de: A. Melniczenko ist ein russischer Industrieller und Eigentümer von EuroChem, einem der wichtigsten Düngemittelhersteller,
+                        sowie des Kohle…
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1189,7 +977,7 @@ paths:
   /companies/krs/{krs}/gpw:
     get:
       tags:
-      - Companies
+      - Registers
       summary: Warsaw Stock Exchange (GPW)
       description: |
         Listing snapshot for a KRS company matched to GPW Main Market, NewConnect, or GlobalConnect:
@@ -1298,7 +1086,7 @@ paths:
   /companies/krs/{krs}/nfz-contracts:
     get:
       tags:
-      - Companies
+      - Registers
       summary: NFZ contracts
       description: |
         NFZ (National Health Fund) contracts of a healthcare provider — contract value per year since 2008, types of care
@@ -1313,7 +1101,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000289698"
       responses:
         '200':
           description: NFZ contracts (`nfz` is null when the company has no NFZ contracts).
@@ -1322,6 +1110,83 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+              example:
+                krs: "0000289698"
+                registry_number: "0000289698"
+                nip: "1070008817"
+                nfz:
+                  first_year: 2008
+                  last_year: 2026
+                  last_year_amount_pln: 239063649.22
+                  last_year_amount_eur: 57577950.2
+                  last_year_amount_usd: 64576890.65
+                  last_year_agreements: 14
+                  total_amount_pln: 2438520775.35
+                  total_amount_eur: 567681870.45
+                  total_amount_usd: 656685758.69
+                  by_year:
+                  - year: 2008
+                    amount_pln: 37732374.69
+                    amount_eur: 10743536.52
+                    amount_usd: 15646848.3
+                    agreements: 12
+                  - year: 2009
+                    amount_pln: 67409041.98
+                    amount_eur: 15577621.61
+                    amount_usd: 21631808.6
+                    agreements: 19
+                  services:
+                  - service_name: Świadczenia zdrowotne kontraktowane odrębnie
+                    service_name_i18n:
+                      en: Separately contracted healthcare services
+                      de: Gesondert vertraglich vereinbarte Gesundheitsleistungen
+                    service_type: "11"
+                    branch: "15"
+                    branch_name: wielkopolskie
+                    amount_pln: 28766082.75
+                    amount_eur: 6928247.29
+                    amount_usd: 7770416.73
+                    agreements: 1
+                  - service_name: Ambulatoryjna opieka specjalistyczna
+                    service_name_i18n:
+                      en: Outpatient specialist care
+                      de: Ambulante fachärztliche Versorgung
+                    service_type: "02"
+                    branch: "11"
+                    branch_name: pomorskie
+                    amount_pln: 28558657.78
+                    amount_eur: 6878289.45
+                    amount_usd: 7714386.22
+                    agreements: 1
+                  agreements:
+                  - agreement_id: 4acca177-d87b-dd0b-fa8a-adc31e40d87c
+                    code: "150007850260001"
+                    year: 2026
+                    branch: "15"
+                    branch_name: wielkopolskie
+                    service_name: Świadczenia zdrowotne kontraktowane odrębnie
+                    service_name_i18n:
+                      en: Separately contracted healthcare services
+                      de: Gesondert vertraglich vereinbarte Gesundheitsleistungen
+                    amount_pln: 28766082.75
+                    provider_name: AFFIDEA
+                    provider_place: WARSZAWA
+                  - agreement_id: a24d8e04-e1d7-ce37-d46c-f478169575be
+                    code: 11/001132/ASDK/25/26
+                    year: 2026
+                    branch: "11"
+                    branch_name: pomorskie
+                    service_name: Ambulatoryjna opieka specjalistyczna
+                    service_name_i18n:
+                      en: Outpatient specialist care
+                      de: Ambulante fachärztliche Versorgung
+                    amount_pln: 28558657.78
+                    provider_name: AFFIDEA SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+                    provider_place: WARSZAWA
+                  refreshed_at: '2026-11-10T04:40:57.597Z'
+                  source_url: https://aplikacje.nfz.gov.pl/umowy/
+                source: Informator o umowach NFZ (api.nfz.gov.pl)
+                see_also: get_company_nfz_queues — NFZ waiting lists with forecast waiting times
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1397,7 +1262,7 @@ paths:
   /companies/krs/{krs}/nfz-queues:
     get:
       tags:
-      - Companies
+      - Registers
       summary: NFZ waiting lists
       description: |
         NFZ (National Health Fund) waiting lists of a healthcare provider from the NFZ "Terminy leczenia" API: every NFZ-funded
@@ -1452,20 +1317,22 @@ paths:
                   matched: 30
                   source_url: https://terminyleczenia.nfz.gov.pl
                   items:
-                    - benefit: PORADNIA KARDIOCHIRURGICZNA
-                      benefit_display: Poradnia kardiochirurgiczna
-                      town: Poznań-Nowe Miasto
-                      address: Szwajcarska 3
-                      phone: 61 873 98 00
-                      wait_days: 14
-                      wait_label_pl: 14 dni
-                      wait_label_en: 14 days
-                      urgent_wait_label_pl: od ręki
-                      awaiting: 12
-                      average_days: 10
-                      wait_as_of: "2026-10-10"
-                      children: false
-                      access: [ramp, wheelchairs, toilet, car-park]
+                  - benefit: PORADNIA KARDIOCHIRURGICZNA
+                    benefit_display: Poradnia kardiochirurgiczna
+                    town: Poznań-Nowe Miasto
+                    address: Szwajcarska 3
+                    phone: "61 873 98 00"
+                    wait_days: 14
+                    wait_label_pl: 14 dni
+                    wait_label_en: 14 days
+                    urgent_wait_label_pl: od ręki
+                    awaiting: 12
+                    average_days: 10
+                    wait_as_of: "2026-10-10"
+                    children: false
+                    access:
+                    - ramp
+                    - wheelchairs
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1506,6 +1373,71 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000446005"
+                registry_number: "0000446005"
+                nip: "7792236896"
+                crbr:
+                  checked_at: '2026-08-05T22:11:49.260Z'
+                  has_beneficiaries: true
+                  beneficiaries_count: 2
+                  company_name: NIEPUBLICZNY ZAKŁAD OPIEKI ZDROWOTNEJ EUROMED SP. Z O. O.
+                  status: IstniejaInformacje
+                  source_url: https://www.podatki.gov.pl/crbr/
+                  beneficiaries:
+                  - content_hash: 71a0df1e46c6270daccc4a7aa8d7672941cf15ba
+                    first_name: KAZIMIERZ
+                    last_name: JANICKI
+                    age: 64
+                    birth_year: 1962
+                    citizenship_code: PL
+                    citizenship_name: POLSKA
+                    residence_country_code: PL
+                    residence_country_name: POLSKA
+                    rights_summary: wspólnik spółki z o.o. 60000.0 PLN
+                    rights_i18n:
+                      pl: Wspólnik spółki z o.o. 60000.0 PLN
+                      en: Shareholder of a limited liability company, 60000.0 PLN
+                      de: Gesellschafter einer GmbH, 60000.0 PLN
+                    shares:
+                    - direct_ownership:
+                        amount: 60000
+                        unit_code: "02"
+                        unit_name: PLN
+                        rights_code: "006"
+                        rights_name: wspólnik spółki z o.o.
+                    display_name: Kazimierz Janicki
+                    citizenship_name_display: Polska
+                    in_krs: true
+                    krs_match_key: JANICKI KAZIMIERZ
+                    person_slug: kazimierz-janicki-10652dc4
+                  - content_hash: 312ab52ca74b3c722e4edc6c0d5e715964e610fa
+                    first_name: PIOTR
+                    middle_names: JÓZEF
+                    last_name: OLBROMSKI
+                    age: 40
+                    birth_year: 1986
+                    citizenship_code: PL
+                    citizenship_name: POLSKA
+                    residence_country_code: PL
+                    residence_country_name: POLSKA
+                    rights_summary: wspólnik spółki z o.o. 100000.0 PLN
+                    rights_i18n:
+                      pl: Wspólnik spółki z o.o. 100000.0 PLN
+                      en: Shareholder of a limited liability company, 100000.0 PLN
+                      de: Gesellschafter einer GmbH, 100000.0 PLN
+                    shares:
+                    - direct_ownership:
+                        amount: 100000
+                        unit_code: "02"
+                        unit_name: PLN
+                        rights_code: "006"
+                        rights_name: wspólnik spółki z o.o.
+                    display_name: Piotr Józef Olbromski
+                    citizenship_name_display: Polska
+                    in_krs: true
+                    krs_match_key: JÓZEF OLBROMSKI PIOTR
+                    person_slug: piotr-jozef-olbromski-e10fa654
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1533,7 +1465,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000269394"
       responses:
         '200':
           description: MSiG notices, newest first.
@@ -1546,6 +1478,92 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000269394"
+                registry_number: "0000269394"
+                nip: "5272528605"
+                msig:
+                  checked_at: '2026-08-27T01:04:29.078Z'
+                  notices_count: 2
+                  first_publication_date: "2019-12-11"
+                  last_publication_date: "2020-03-27"
+                  source_url: https://wyszukiwarka-msig.ms.gov.pl/
+                  items:
+                  - id: 2401946
+                    issue_id: 483
+                    sequence_number: 34
+                    notice_number: "16664"
+                    publication_date: "2020-03-27"
+                    monitor_number: 61/2020
+                    chapter_name: I. OGŁOSZENIA WYMAGANE PRZEZ KODEKS SPÓŁEK HANDLOWYCH/2. Spółki z ograniczoną odpowiedzialnością
+                    notice_type: merger
+                    entity_name: TREGA INVESTMENTS SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ w Warszawie.
+                    krs: "0000269394"
+                    page: 8
+                    title: Poz. 16664. TREGA INVESTMENTS SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ w Warszawie. KRS 0000269394.
+                      SĄD REJONOWY DLA M.ST. WARSZAWY W WARS…
+                    body_text: Plan połączenia spółek z ograniczoną odpowiedzialnością Trega Investments i Leanmed Niniejszy plan
+                      połączenia („Plan połączenia”) został…
+                    source_url: https://wyszukiwarka-msig.ms.gov.pl/?notice=2401946
+                    pdf_url: https://wyszukiwarka-msig.ms.gov.pl/api/Monitor/Download?id=483&fileId=true
+                    facts:
+                    - key: issue
+                      value: 61/2020
+                    - key: court
+                      value: Sąd Rejonowy dla M.St. Warszawy w Warszawie, XII Wydział Gospodarczy Krajowego Rejestru Sądowego
+                    facts_linked:
+                    - key: acquiring
+                      parts:
+                      - text: z ograniczoną odpowiedzialnością Trega Investments i Leanmed Niniejszy plan połączenia („Plan połączenia”)
+                          został uzgodniony i sporządzon…
+                      value: z ograniczoną odpowiedzialnością Trega Investments i Leanmed Niniejszy plan połączenia („Plan połączenia”)
+                        został uzgodniony i sporządzon…
+                    - key: acquired
+                      parts:
+                      - text: Spółka Przejmowana nazywane dalej Spółkami. Typ, firma i siedziba Spółek a. Spółka Przejmująca spółka
+                          z ograniczoną odpowiedzialnością; T…
+                      value: Spółka Przejmowana nazywane dalej Spółkami. Typ, firma i siedziba Spółek a. Spółka Przejmująca spółka
+                        z ograniczoną odpowiedzialnością; T…
+                    body_paragraphs:
+                    - Plan połączenia spółek z ograniczoną odpowiedzialnością Trega Investments i Leanmed Niniejszy plan połączenia
+                      („Plan połączenia”) został…
+                    has_original_body: true
+                  - id: 3532703
+                    issue_id: 682
+                    sequence_number: 4
+                    notice_number: "63941"
+                    publication_date: "2019-12-11"
+                    monitor_number: 239/2019
+                    chapter_name: I. OGŁOSZENIA WYMAGANE PRZEZ KODEKS SPÓŁEK HANDLOWYCH/2. Spółki z ograniczoną odpowiedzialnością
+                    notice_type: merger
+                    entity_name: TREGA INVESTMENTS SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ w Warszawie.
+                    krs: "0000269394"
+                    page: 12
+                    title: Poz. 63941. TREGA INVESTMENTS SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ w Warszawie. KRS 0000269394.
+                      SĄD REJONOWY DLA M.ST. WARSZAWY W WARS…
+                    body_text: Plan połączenia spółek z ograniczoną odpowiedzialnością Trega Investments oraz Leanmed Niniejszy
+                      plan połączenia („Plan połączenia”) zost…
+                    source_url: https://wyszukiwarka-msig.ms.gov.pl/?notice=3532703
+                    pdf_url: https://wyszukiwarka-msig.ms.gov.pl/api/Monitor/Download?id=682&fileId=true
+                    facts:
+                    - key: issue
+                      value: 239/2019
+                    - key: court
+                      value: Sąd Rejonowy dla M.St. Warszawy w Warszawie, XII Wydział Gospodarczy Krajowego Rejestru Sądowego
+                    facts_linked:
+                    - key: acquiring
+                      parts:
+                      - krs: "0000269394"
+                        text: z ograniczoną odpowiedzialnością Trega Investments
+                      value: z ograniczoną odpowiedzialnością Trega Investments
+                    - key: acquired
+                      parts:
+                      - text: Leanmed Niniejszy plan połączenia („Plan połączenia”) został uzgodniony i sporządzony dnia
+                      value: Leanmed Niniejszy plan połączenia („Plan połączenia”) został uzgodniony i sporządzony dnia
+                    body_paragraphs:
+                    - Plan połączenia spółek z ograniczoną odpowiedzialnością Trega Investments oraz Leanmed Niniejszy plan połączenia
+                      („Plan połączenia”) zost…
+                    has_original_body: true
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1573,7 +1591,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000028860"
       responses:
         '200':
           description: URE concessions (null when the company holds none).
@@ -1586,6 +1604,49 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000028860"
+                registry_number: "0000028860"
+                nip: "7740001454"
+                ure:
+                  checked_at: '2026-10-19T09:14:39.768Z'
+                  has_concessions: true
+                  concessions_count: 12
+                  applications_count: 2
+                  active_count: 12
+                  items_count: 14
+                  dkn: 554
+                  company_name: ORLEN S.A.
+                  source_url: https://www.ure.gov.pl
+                  items:
+                  - content_hash: 9e971541e6839ed2ec6b62926d76031f4b00786e
+                    kind: concession
+                    source_dataset: fuel
+                    dkn: 554
+                    license_type: OPZ
+                    issued_at: "2015-02-03"
+                    valid_from: "2015-02-05"
+                    valid_to: "2040-12-31"
+                    pdf_url: https://api.ure.gov.pl/api/ConcessionFuel/download/B0F4E6D8-FFE6-4823-9E4C-14D99624DCD9
+                    cn_codes: benzyny ciężkie (pirolityczne):2710 12 11,2710 12 15;benzyny lotnicze:2710 12 31;benzyny silnikowe:2207
+                      20 00,2207 20 00 (z wyłączeniem,…
+                    is_active: true
+                  - content_hash: 46f018e03deeee4a6267c6d970abe4073fce95dd
+                    kind: concession
+                    source_dataset: fuel
+                    dkn: 554
+                    license_type: PPC
+                    issued_at: "2013-11-21"
+                    valid_from: "2013-11-22"
+                    valid_to: "2030-12-31"
+                    pdf_url: https://api.ure.gov.pl/api/ConcessionFuel/download/E415248A-B4D3-48CC-9C26-F351DE679EE3
+                    cn_codes: benzyny silnikowe:2710 12 25 (z wyłączeniem, o którym mowa w zm. RMKiŚ w § 1 pkt. a),2710 12 41,2710
+                      12 45,2710 12 49,2710 12 90;lekkie o…
+                    is_active: true
+                items_list:
+                  returned: 14
+                  total: 14
+                  truncated: false
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1613,7 +1674,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000028860"
       responses:
         '200':
           description: European Funds projects of the company.
@@ -1626,6 +1687,103 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000028860"
+                registry_number: "0000028860"
+                nip: "7740001454"
+                fe:
+                  checked_at: '2026-08-31T12:54:07.477Z'
+                  projects_count: 5
+                  total_eu_pln: 31401940.08
+                  total_project_pln: 65639557.26
+                  total_eu_usd: 8158001.071382766
+                  total_eu_eur: 6963519.028168512
+                  first_start_date: "2017-09-01"
+                  last_end_date: "2023-12-31"
+                  source_url: https://www.funduszeunijne.gov.pl/strony/o-funduszach/projekty/lista-projektow/lista-projektow-realizowanych-z-funduszy-europejskich-w-polsce-w-latach-2014-2020/
+                  source_as_of: "2026-08-03"
+                  projects:
+                  - content_hash: faf33bbb12508b9bdb9c24e450cca9c18a9797e32df107a52ecf3de4a89f9e77
+                    period: "2014-2020"
+                    contract_number: POIR.01.01.01-00-0022/21
+                    project_name: Opracowanie i wdrożenie systemu wysokosprawnego wytwarzania wodoru wysokiej czystości w elektrolizerze
+                      stałotlenkowym.
+                    project_name_i18n:
+                      en: Development and implementation of a system for highly efficient production of high-purity hydrogen in
+                        a solid oxide electrolyzer.
+                      de: Entwicklung und Implementierung eines Systems zur hocheffizienten Herstellung von hochreinem Wasserstoff
+                        in einem Festoxid-Elektrolyseur.
+                    programme_i18n:
+                      en: Operational Programme Smart Growth
+                      de: Operationelles Programm Intelligentes Wachstum
+                    measure_i18n:
+                      en: 1.1. Enterprise R&D projects / 1.1.1. Industrial research and experimental development carried out by
+                        enterprises
+                      de: 1.1. Forschungs- und Entwicklungsprojekte von Unternehmen / 1.1.1. Industrielle Forschung und experimentelle
+                        Entwicklung durch Unternehmen
+                    project_summary: 'Numer_referencyjny_programu_pomocowego: SA.41471(2015/X) Przeznaczenie_pomocy_publicznej:
+                      art: 25 rozporządzenia KE nr 651/2014 z dnia 17…'
+                    has_original_summary: false
+                    programme: Program Operacyjny Inteligentny Rozwój
+                    fund: EFRR
+                    measure: 1.1. Projekty B+R przedsiębiorstw / 1.1.1. Badania przemysłowe i prace rozwojowe realizowane przez
+                      przedsiębiorstwa
+                    location: 'WOJ.: MAŁOPOLSKIE, POW.: Kraków | WOJ.: PODKARPACKIE, POW.: jasielski | WOJ.: PODKARPACKIE, POW.:
+                      rzeszowski'
+                    start_date: "2021-09-01"
+                    end_date: "2023-12-31"
+                    project_value_pln: 9555114.63
+                    eu_cofinancing_pln: 7804534.52
+                    eu_cofinancing_usd: 2019336.7279877875
+                    eu_cofinancing_eur: 1708747.7602136882
+                    project_value_usd: 2472279.911511294
+                    project_value_eur: 2092024.922275255
+                    eu_cofinancing_rate: 81.68
+                    source_url: https://www.funduszeunijne.gov.pl/strony/o-funduszach/projekty/lista-projektow/lista-projektow-realizowanych-z-funduszy-europejskich-w-polsce-w-latach-2014-2020/
+                    match_method: full_unique_nip
+                    sort_rank: 11
+                  - content_hash: 0d0d817ba4542112ec97e3ede44f349c65a6dec530564575a908bd2034335832
+                    period: "2014-2020"
+                    contract_number: POIS.01.01.01-00-0020/21
+                    project_name: Budowa farmy fotowoltaicznej na terenie Zakładu Produkcyjnego w Płocku (wykorzystanie nieruchomości
+                      własnych) o mocy około 4,8 MWp z wyko…
+                    project_name_i18n:
+                      en: Construction of a photovoltaic farm on the premises of the production plant in Płock (using owned property),
+                        with a capacity of approxima…
+                      de: Bau eines Photovoltaikparks auf dem Gelände des Produktionswerks in Płock (Nutzung eigener Grundstücke)
+                        mit einer Leistung von ca. 4,8 MW…
+                    programme_i18n:
+                      en: Infrastructure and Environment Operational Programme 2014-2020
+                      de: Operationelles Programm Infrastruktur und Umwelt 2014-2020
+                    measure_i18n:
+                      en: 1.1. Supporting the production and distribution of energy from renewable sources / 1.1.1. Supporting
+                        investments in energy production fro…
+                      de: 1.1. Förderung der Erzeugung und Verteilung von Energie aus erneuerbaren Quellen / 1.1.1. Förderung
+                        von Investitionen in die Energieerzeu…
+                    project_summary: Głównym celem projektu, polegającego na budowie Farmy Fotowoltaicznej PV Płock, jest zwiększenie
+                      produkcji energii elektrycznej pochodząc…
+                    has_original_summary: false
+                    programme: Program Operacyjny Infrastruktura i Środowisko 2014-2020
+                    fund: FS
+                    measure: 1.1. Wspieranie wytwarzania i dystrybucji energii pochodzącej ze źródeł odnawialnych / 1.1.1. Wspieranie
+                      inwestycji dotyczących wytwarzan…
+                    location: 'WOJ.: MAZOWIECKIE, POW.: Płock'
+                    start_date: "2021-08-01"
+                    end_date: "2023-12-31"
+                    project_value_pln: 29559492.45
+                    eu_cofinancing_pln: 10850300
+                    eu_cofinancing_usd: 2807394.7579497527
+                    eu_cofinancing_eur: 2375596.619520953
+                    project_value_usd: 7648190.755258868
+                    project_value_eur: 6471842.284450673
+                    eu_cofinancing_rate: 60.21
+                    source_url: https://www.funduszeunijne.gov.pl/strony/o-funduszach/projekty/lista-projektow/lista-projektow-realizowanych-z-funduszy-europejskich-w-polsce-w-latach-2014-2020/
+                    match_method: full_unique_nip
+                    sort_rank: 13
+                projects_list:
+                  returned: 5
+                  total: 5
+                  truncated: false
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1653,7 +1811,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000008820"
       responses:
         '200':
           description: FTS awards of the company.
@@ -1666,6 +1824,71 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000008820"
+                registry_number: "0000008820"
+                nip: "5260204995"
+                fts:
+                  checked_at: '2026-08-31T13:07:18.703Z'
+                  awards_count: 44
+                  total_eur: 7898362.6502
+                  total_pln: 33074989.72231278
+                  total_usd: 9870405.196263457
+                  first_year: 2009
+                  last_year: 2025
+                  source_url: https://ec.europa.eu/budget/financial-transparency-system/
+                  source_as_of: "2026-06-30"
+                  awards:
+                  - content_hash: 14ea2bbfd7f672ceef5aad5260a73c524136565b47151ec67b7bb25e5306a293
+                    year: 2025
+                    subject: INTEGRATIVE EPC FOR BUILDING RENOVATION ACCELERATION
+                    subject_i18n:
+                      de: Integratives EPC zur Beschleunigung der Gebäudesanierung
+                      pl: Integracyjne EPC na rzecz przyspieszenia renowacji budynków
+                    programme: 3.2.21 - Programme for Environment and Climate Action (LIFE)
+                    budget_line_name: Clean energy transition
+                    contract_type: Action Grant
+                    management_type: Direct management
+                    responsible_department: CINEA - Climate Infrastr&Envir EA
+                    project_id: "101215069"
+                    project_acronym: LIFE24-CET-I-EBRA
+                    city: WARSZAWA
+                    start_date: "2026-01-01"
+                    end_date: "2028-12-31"
+                    amount_eur: 187036.02
+                    amount_pln: 790040.14848
+                    amount_usd: 198402.8499447514
+                    coordinator: false
+                    source_url: https://ec.europa.eu/budget/financial-transparency-system/
+                    match_method: vat_krs
+                    sort_rank: 1
+                  - content_hash: 344901969adf646dc30f417f618787e09bff60d11e797e79179376620e72f7bf
+                    year: 2025
+                    subject: ACTION GRANT
+                    subject_i18n:
+                      de: Maßnahmenzuschuss
+                      pl: Dotacja na działanie
+                    programme: 1.0.11 - Horizon Europe
+                    budget_line_name: Cluster `Climate, Energy and Mobility-
+                    contract_type: Action Grant
+                    management_type: Direct management
+                    responsible_department: CINEA - Climate Infrastr&Envir EA
+                    project_id: "101235920"
+                    project_acronym: DTERBIM
+                    city: WARSZAWA
+                    start_date: "2025-10-01"
+                    end_date: "2029-03-31"
+                    amount_eur: 278625.08
+                    amount_pln: 1176912.33792
+                    amount_usd: 295558.0959116022
+                    coordinator: false
+                    source_url: https://ec.europa.eu/budget/financial-transparency-system/
+                    match_method: vat_krs
+                    sort_rank: 2
+                awards_list:
+                  returned: 44
+                  total: 44
+                  truncated: false
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1694,7 +1917,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000028860"
       responses:
         '200':
           description: KNF entries (null when the company has none).
@@ -1707,6 +1930,39 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000028860"
+                registry_number: "0000028860"
+                nip: "7740001454"
+                knf:
+                  checked_at: '2026-10-06T11:45:15.127Z'
+                  has_entry: true
+                  entries_count: 2
+                  company_name: ORLEN SPÓŁKA AKCYJNA
+                  source_url: https://www.knf.gov.pl/podmioty/wyszukiwarka_podmiotow
+                  items:
+                  - content_hash: 51f6495d1e33238f5f2f4e5685b96b0c6bfbba5a
+                    source: erup
+                    kind: limited_network
+                    kind_label: Podmioty prowadzące działalność określoną w art. 6 pkt 11 ustawy o usługach płatniczych (Limited
+                      Network)
+                    knf_number: LN10/2025
+                    status_label: Wpisany
+                    is_active: true
+                    registered_at: "2025-10-21"
+                    source_record_id: "686790"
+                    detail_url: https://e-rup.knf.gov.pl/
+                  - content_hash: 098bbd2846c3f23e9fe54a6bf8d13afb4348ddf6
+                    source: erup
+                    kind: agent
+                    kind_label: Agent podmiotu wpisanego do rejestru
+                    status_label: Wpisany
+                    is_active: true
+                    source_record_id: "132141"
+                    detail_url: https://e-rup.knf.gov.pl/
+                    services:
+                    - Świadczenie usługi przekazu pieniężnego
+                    parent_name: BillBird S.A.
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1734,7 +1990,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000026438"
       responses:
         '200':
           description: KRZ proceedings of the company.
@@ -1747,6 +2003,30 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000026438"
+                registry_number: "0000026438"
+                nip: "5250007738"
+                krz:
+                  checked_at: '2026-10-28T22:05:15.707Z'
+                  has_proceedings: true
+                  has_active_proceedings: false
+                  proceedings_count: 1
+                  entity_name: Powszechna Kasa Oszczędności Bank Polski  Spółka Akcyjna
+                  source_url: https://krz.ms.gov.pl/
+                  proceedings:
+                  - proceeding_external_id: 23b75f35-d01a-40a7-9d5a-6c65c025dc36
+                    case_signature: GKm 93/21
+                    folder_type: Umorzone postępowania egzekucyjne
+                    proceeding_type_code: PE-upe
+                    proceeding_type_title: umorzone postępowanie egzekucyjne
+                    registration_date: "2023-12-29"
+                    start_date: "2023-12-29"
+                    end_date: "2025-04-08"
+                    status: zakończone
+                    is_active: false
+                    authority_name: Komornik Sądowy przy Sądzie Rejonowym w Prudniku Katarzyna Dziedzic Kancelaria Komornicza
+                      nr II w Prudniku
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1774,7 +2054,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000028860"
       responses:
         '200':
           description: Public aid cases of the company.
@@ -1787,6 +2067,101 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000028860"
+                registry_number: "0000028860"
+                nip: "7740001454"
+                sudop:
+                  checked_at: '2026-10-09T19:33:59.610Z'
+                  has_aid: true
+                  cases_count: 304
+                  total_nominal_pln: 3179602231.03
+                  total_gross_pln: 3170397095.76
+                  total_nominal_usd: 776125922.8889643
+                  total_gross_usd: 774061065.2689552
+                  total_nominal_eur: 719361034.9755267
+                  total_gross_eur: 713909605.65
+                  beneficiary_name: Polski Koncern  Naftowy S.A.
+                  source_url: https://sudop.uokik.gov.pl/search/aidBeneficiary
+                  cases:
+                  - content_hash: 35e2d033878474bdf46e8b3e168a4c114d992219
+                    granted_at: "2026-09-15"
+                    grantor_nip: "5262748966"
+                    grantor_name: Polskie Sieci Elektroenergetyczne S.A.
+                    grantor_krs: "0000197596"
+                    grantor_ceidg: false
+                    measure_number: SA.46100(2017/N)
+                    measure_name: Polski mechanizm rynku mocy
+                    measure_name_i18n:
+                      en: Polish capacity market mechanism
+                      de: Polnischer Kapazitätsmarktmechanismus
+                    legal_basis_i18n:
+                      en: Act of 8 December 2017 on the capacity market
+                      de: Gesetz vom 8. Dezember 2017 über den Kapazitätsmarkt
+                    sector_name_i18n:
+                      en: Building and repair of ships
+                      de: Bau und Reparatur von Schiffen
+                    purpose_code: a2.16
+                    purpose_name: pomoc na rzecz bezpieczeństwa dostaw energii elektrycznej, w tym pomoc na zapewnienie wystarczalności
+                      mocy wytwórczych
+                    form_code: A1.1
+                    form_name: dotacja lub inne bezzwrotne świadczenie
+                    sector_code: "35.11"
+                    sector_name: Wytwarzanie energii elektrycznej
+                    municipality_code: "1462011"
+                    municipality_name: PŁOCK
+                    beneficiary_size_code: "3"
+                    beneficiary_size_name: beneficjent nienależący do kategorii określonych kodem od 0 do 2
+                    legal_basis_2a_code: "2.68"
+                    legal_basis_2a_name: ustawa z dnia 8 grudnia 2017 r. o rynku mocy
+                    legal_basis_2c: art. 41 w zw. z art. 44 ust. 2
+                    act_symbol: Umowa mocowa nr AG/2026/1676
+                    sector_pkd_slug: "35-11"
+                    source_url: https://sudop.uokik.gov.pl/search/aidBeneficiary
+                    nominal_pln: 14948901.7
+                    gross_pln: 14948901.7
+                    gross_eur: 3440879.66
+                  - content_hash: 32b8c2cab1f77f66637e7add46a9805751efbe99
+                    granted_at: "2026-09-15"
+                    grantor_nip: "5262748966"
+                    grantor_name: Polskie Sieci Elektroenergetyczne S.A.
+                    grantor_krs: "0000197596"
+                    grantor_ceidg: false
+                    measure_number: SA.46100(2017/N)
+                    measure_name: Polski mechanizm rynku mocy
+                    measure_name_i18n:
+                      en: Polish capacity market mechanism
+                      de: Polnischer Kapazitätsmarktmechanismus
+                    legal_basis_i18n:
+                      en: Act of 8 December 2017 on the capacity market
+                      de: Gesetz vom 8. Dezember 2017 über den Kapazitätsmarkt
+                    sector_name_i18n:
+                      en: Building and repair of ships
+                      de: Bau und Reparatur von Schiffen
+                    purpose_code: a2.16
+                    purpose_name: pomoc na rzecz bezpieczeństwa dostaw energii elektrycznej, w tym pomoc na zapewnienie wystarczalności
+                      mocy wytwórczych
+                    form_code: A1.1
+                    form_name: dotacja lub inne bezzwrotne świadczenie
+                    sector_code: "35.11"
+                    sector_name: Wytwarzanie energii elektrycznej
+                    municipality_code: "1462011"
+                    municipality_name: PŁOCK
+                    beneficiary_size_code: "3"
+                    beneficiary_size_name: beneficjent nienależący do kategorii określonych kodem od 0 do 2
+                    legal_basis_2a_code: "2.68"
+                    legal_basis_2a_name: ustawa z dnia 8 grudnia 2017 r. o rynku mocy
+                    legal_basis_2c: art. 41 w zw. z art. 44 ust. 2
+                    act_symbol: Umowa mocowa nr AD/2026/04/4517
+                    sector_pkd_slug: "35-11"
+                    source_url: https://sudop.uokik.gov.pl/search/aidBeneficiary
+                    nominal_pln: 13582402.64
+                    gross_pln: 13582402.64
+                    gross_eur: 3126344.26
+                cases_list:
+                  returned: 304
+                  total: 304
+                  truncated: false
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1815,7 +2190,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000057567"
       responses:
         '200':
           description: Real estate (null when the balance sheet shows none).
@@ -1828,6 +2203,20 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000057567"
+                registry_number: "0000057567"
+                nip: "6770065406"
+                real_estate:
+                  period_to: "2025-12-31"
+                  land:
+                    pln: 30705000
+                    eur: 7269176.14
+                    usd: 7710949.27
+                  buildings:
+                    pln: 169463000
+                    eur: 40119081.44
+                    usd: 42557257.66
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1855,7 +2244,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000957390"
+        example: "0000008820"
       responses:
         '200':
           description: Website facts (null when nothing has been read from the website).
@@ -1864,6 +2253,48 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+              example:
+                krs: "0000008820"
+                registry_number: "0000008820"
+                nip: "5260204995"
+                website_facts:
+                  branches:
+                  - city: Warszawa
+                    label: Oddział Warszawa
+                    street: ul. Konstruktorska 12A
+                    postal_code: "02-673"
+                  - city: Sopot
+                    label: Oddział Sopot
+                    street: ul. Rzemieślnicza 17/19
+                    postal_code: "81-855"
+                  offer:
+                    cpv:
+                    - "45"
+                    - "44"
+                    items_de:
+                    - Wohngebäude
+                    - Industriegebäude
+                    items_en:
+                    - Residential buildings
+                    - Industrial buildings
+                    items_pl:
+                    - Budynki mieszkalne
+                    - Obiekty przemysłowe
+                  tech_stack:
+                  - apache
+                  - ga4
+                  website_clients:
+                  - krs: "0000053358"
+                    name: AMK Kraków
+                    domain: amk.krakow.pl
+                    logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/60566700-c03c-406e-9dcf-187b4fa65cd5.png
+                    legal_form: SPÓŁKA AKCYJNA
+                  - krs: "0000037333"
+                    name: Mostostal Kielce
+                    domain: mostostal-kielce.com.pl
+                    logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/ff2a2eba-1956-42f3-81e1-582031aa262e.png
+                    legal_form: SPÓŁKA AKCYJNA
+                  checked_at: '2026-10-28T18:48:05.627Z'
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1892,7 +2323,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000122099"
+        example: "0000001764"
       responses:
         '200':
           description: Counterparties (null when the company has no public procurement).
@@ -1905,6 +2336,66 @@ paths:
                   krs:
                     type: string
                     example: "0000122099"
+              example:
+                krs: "0000001764"
+                registry_number: "0000001764"
+                nip: "5261003187"
+                procurement_counterparties:
+                  buyers:
+                  - krs: "0000759991"
+                    nip: "7010894497"
+                    name: Centralny Port Komunikacyjny
+                    count: 15
+                    last_on: "2026-10-07"
+                    sources:
+                      bzp: 0
+                      cru: 0
+                      ted: 15
+                    first_on: "2024-01-05"
+                    logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/69ac6f58-2c11-483f-8929-2244a10e7619.png
+                    value_eur: 27287266
+                    value_pln: 113296729
+                    value_usd: 30604195
+                    legal_form: SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+                  - nip: "5841008907"
+                    name: 17. Terenowy Oddział Lotniskowy
+                    count: 12
+                    last_on: "2026-10-01"
+                    sources:
+                      bzp: 0
+                      cru: 0
+                      ted: 12
+                    first_on: "2024-04-16"
+                    value_eur: 169192611
+                    value_pln: 702487721
+                    value_usd: 189758974
+                  partners:
+                  - krs: "0000385656"
+                    nip: "5272653629"
+                    name: Budimex Kolejnictwo
+                    count: 1
+                    last_on: "2026-08-23"
+                    sources:
+                      cru: 0
+                      ted: 1
+                    first_on: "2026-08-23"
+                    logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/8b93f997-37af-4df7-9cac-37b5c0cd9e32.png
+                    legal_form: SPÓŁKA AKCYJNA
+                  - krs: "0000026184"
+                    nip: "5221054994"
+                    name: Porr
+                    count: 1
+                    last_on: "2026-06-30"
+                    sources:
+                      cru: 0
+                      ted: 1
+                    first_on: "2026-06-30"
+                    logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/4938e810-2dcf-4900-8f38-a22b1b5cac76.ico
+                    legal_form: SPÓŁKA AKCYJNA
+                  buyers_count: 91
+                  contractors_count: 0
+                  partners_count: 7
+                  refreshed_at: '2026-11-10T05:25:19.494Z'
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1934,7 +2425,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000033391"
+        example: "0000057567"
       responses:
         '200':
           description: Filing timeliness (null when the company has never filed a financial statement).
@@ -1947,6 +2438,31 @@ paths:
                   krs:
                     type: string
                     example: "0000033391"
+              example:
+                krs: "0000057567"
+                registry_number: "0000057567"
+                nip: "6770065406"
+                filing_timeliness:
+                  late_last_5y: 1
+                  counted_last_5y: 5
+                  audited_latest: true
+                  next_due: "2027-07-15"
+                  years:
+                  - year: 2025
+                    period_to: "2025-12-31"
+                    filed_at: "2026-07-15"
+                    due: "2026-07-15"
+                    days_late: 0
+                    missing: false
+                    audited: true
+                  - year: 2024
+                    period_to: "2024-12-31"
+                    filed_at: "2025-07-23"
+                    due: "2025-07-15"
+                    days_late: 8
+                    missing: false
+                    audited: true
+                  checked_at: '2026-10-27T13:48:00.380Z'
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -1975,7 +2491,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000759658"
       responses:
         '200':
           description: Secured liabilities (null when nothing is disclosed).
@@ -1988,6 +2504,42 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000759658"
+                registry_number: "0000759658"
+                nip: "8762459238"
+                secured_liabilities:
+                  period_from: "2025-01-01"
+                  period_to: "2025-12-31"
+                  summary: Spółka ustanowiła zabezpieczenia zobowiązań kredytowych innych spółek z Grupy wobec mBank S.A. i Bank
+                    Polska Opieki S.A. Obejmują one wek…
+                  items:
+                  - type: weksel
+                    form: Weksel in blanco
+                    amount: 330000000
+                    currency: PLN
+                    creditor: mBank S.A., Bank Polska Opieki S.A.
+                    secured_liability: Zobowiązania finansowe spółek z Grupy z tytułu umów kredytowych
+                    owner: spolka
+                    creditors:
+                    - name: mBank
+                      krs: "0000025237"
+                      logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/b0d23962-4bdc-499a-b3a2-3cee326e3a67.png
+                    - name: Bank Polska Opieki S.A.
+                  - type: zastaw
+                    form: Zastawy na rachunkach bankowych, zastawy rejestrowe i zastawy finansowe
+                    amount: 734700000
+                    currency: PLN
+                    creditor: mBank S.A., Bank Polska Opieki S.A.
+                    secured_liability: Zobowiązania finansowe spółek z Grupy z tytułu umów kredytowych
+                    asset: Rachunki bankowe oraz inne przedmioty zastawu
+                    owner: spolka
+                    creditors:
+                    - name: mBank
+                      krs: "0000025237"
+                      logo_url: https://db.compabase.com/storage/v1/object/public/company-logos/b0d23962-4bdc-499a-b3a2-3cee326e3a67.png
+                    - name: Bank Polska Opieki S.A.
+                  extracted_at: '2026-11-04T20:18:57.763Z'
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -2015,7 +2567,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000028860"
       responses:
         '200':
           description: "`national` (BZP) and `eu` (TED) procurement of the company."
@@ -2028,6 +2580,32 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000028860"
+                national:
+                  registry_number: "0000028860"
+                  nip: "7740001454"
+                  bzp:
+                    checked_at: '2026-10-26T22:01:13.017Z'
+                    as_contractor_awards_count: 1035
+                    as_contractor_notices_count: 885
+                    as_buyer_notices_count: 0
+                  awards_list:
+                    returned: 887
+                    total: 887
+                    truncated: false
+                eu:
+                  registry_number: "0000028860"
+                  nip: "7740001454"
+                  ted:
+                    checked_at: '2026-10-26T21:48:48.049Z'
+                    as_winner_awards_count: 149
+                    as_winner_notices_count: 158
+                    as_buyer_notices_count: 1
+                  awards_list:
+                    returned: 159
+                    total: 150
+                    truncated: false
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -2055,7 +2633,7 @@ paths:
         schema:
           type: string
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
-        example: "0000446005"
+        example: "0000028860"
       responses:
         '200':
           description: BDO entry (null when the company is not registered).
@@ -2068,6 +2646,54 @@ paths:
                   krs:
                     type: string
                     example: "0000446005"
+              example:
+                krs: "0000028860"
+                registry_number: "0000028860"
+                nip: "7740001454"
+                bdo:
+                  checked_at: '2026-10-09T19:34:18.194Z'
+                  details_fetched_at: '2026-10-09T19:34:18.194Z'
+                  has_entry: true
+                  bdo_number: "000007103"
+                  company_name: ORLEN S.A.
+                  application_id: cc72edd7-c4a1-42a1-8717-c0d695e7ac1c
+                  eup_count: 2182
+                  decisions_count: 21
+                  activity_flags:
+                  - waste_treatment
+                  - waste_generation
+                  source_url: https://rejestr-bdo.mos.gov.pl/Registry/Index
+                  items:
+                  - content_hash: d86eb9da33f80adcb475835d82de894d549be873
+                    decision_id: 577905e6-80ad-4371-81a2-73f2e4cea9ee
+                    issue_date: "2026-05-05"
+                    no_expiration: true
+                    issuing_authority: Marszałek Województwa Mazowieckiego
+                    decision_sign: PZ-OP-II.7222.116.2025.PB
+                    kind_flags:
+                    - waste_treatment
+                    - waste_generation
+                    eup_id: 54fc6fe0-2b24-4291-952e-935f33d835dd
+                    eup_name: Zakład Produkcyjny w Płocku - Siedziba
+                    primary_kind: integrated_permit
+                    is_latest_in_kind: true
+                  - content_hash: ff957ee78e448740c3f623827a980c6acb22460c
+                    decision_id: f1613425-ed5b-468d-a7f3-107495d0cdcc
+                    issue_date: "2026-04-07"
+                    no_expiration: true
+                    issuing_authority: Marszałek Województwa Mazowieckiego
+                    decision_sign: PZ-OP-II.7222.104.2025.PB
+                    kind_flags:
+                    - waste_treatment
+                    - waste_generation
+                    eup_id: 54fc6fe0-2b24-4291-952e-935f33d835dd
+                    eup_name: Zakład Produkcyjny w Płocku - Siedziba
+                    primary_kind: integrated_permit
+                    is_latest_in_kind: false
+                items_list:
+                  returned: 21
+                  total: 21
+                  truncated: false
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -2117,6 +2743,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CompanyListResponse'
+              example:
+                data:
+                - entity_id: 48bbbfa6-6b85-46fd-80ec-16c5da9dc4d6
+                  company_name: POWSZECHNA KASA OSZCZĘDNOŚCI BANK POLSKI SPÓŁKA AKCYJNA
+                  company_name_display: Powszechna Kasa Oszczędności Bank Polski
+                  nip: "5250007738"
+                  regon: "01629826300000"
+                  registry_number: "0000026438"
+                  legal_form: SPÓŁKA AKCYJNA
+                  latest_snapshot_id: 4f520c54-1079-4c82-a6da-76c19f1622d6
+                  extracted_at: '2026-10-29T12:29:45.060Z'
+                  state_date: "2026-10-28"
+                  postal_code: "00-116"
+                  city: Warszawa
+                pagination:
+                  limit: 3
+                  offset: 0
+                  total: 4
+                  hasMore: true
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2174,66 +2819,10 @@ paths:
                 type: object
               example:
                 company:
-                  ceidg_id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  ceidg_id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
                   nip: "7712488697"
                   regon: "022456789"
                   company_name: Michał Ryszka MCR
-                  company_name_display: Michał Ryszka MCR
-                  legal_form: JEDNOOSOBOWA DZIAŁALNOŚĆ GOSPODARCZA
-                  status: AKTYWNY
-                  is_active: true
-                  registration_date: "2015-03-12"
-                  suspended_on: null
-                  closure_date: null
-                  deregistration_date: null
-                  resumed_on: null
-                  succession_mgmt_start_date: null
-                  succession_mgmt_end_date: null
-                  address:
-                    street: ul. Legnicka
-                    building_no: "48"
-                    building_unit: null
-                    city: Wrocław
-                    postal_code: "54-206"
-                    country: PL
-                    region: dolnośląskie
-                    county: Wrocław
-                    municipality: Wrocław-Fabryczna
-                    full: "ul. Legnicka 48, 54-206 Wrocław, PL"
-                  additional_addresses: []
-                  correspondence_address: null
-                  primary_pkd: "66.19.Z"
-                  primary_pkd_description: Other activities auxiliary to financial services, except insurance and pension funding
-                  all_pkd_codes:
-                    - "66.19.Z"
-                    - "62.01.Z"
-                  primary_activities:
-                    - code_full: "66.19.Z"
-                      description: Other activities auxiliary to financial services, except insurance and pension funding
-                      is_primary: true
-                  secondary_activities:
-                    - code_full: "62.01.Z"
-                      description: Computer programming activities
-                      is_primary: false
-                  contacts:
-                    email: kontakt@mcr-example.pl
-                    emailGated: false
-                    phone: null
-                    phoneGated: true
-                    website: mcr-example.pl
-                    websiteInactive: false
-                    emailDeliverabilityVerified: true
-                    emailInactive: false
-                    emailInactiveReason: null
-                  logo_url: null
-                  show_logo: true
-                  roles:
-                    - role_name: WŁAŚCICIEL
-                      party:
-                        type: person
-                        display_name: Michał Ryszka
-                        first_name: Michał
-                        last_name: Ryszka
                 primaryPkdDescription: Other activities auxiliary to financial services, except insurance and pension funding
                 companySummary:
                   en: Michał Ryszka MCR provides financial intermediation and IT services for SMEs in Lower Silesia.
@@ -2243,181 +2832,21 @@ paths:
                     status_date: "2024-06-15"
                     removal_date: null
                     removal_basis: null
-                    checked_at: "2026-08-01T10:15:00.000Z"
-                    accounts:
-                      - "87105014451000002364817493"
                 similarCompanies:
-                  - ceidg_id: "b2c3d4e5-f6a7-8901-bcde-f12345678901"
-                    nip: "8171895344"
-                    company_name: EL-CAR Elżbieta Janik
-                    company_name_display: EL-CAR Elżbieta Janik
-                    legal_form: JEDNOOSOBOWA DZIAŁALNOŚĆ GOSPODARCZA
-                    city: Złotniki
-                    region: podkarpackie
-                    postal_code: "36-060"
-                    primary_pkd: "46.90.Z"
-                    website: null
-                    logo_url: null
-                    show_logo: true
-                    status: AKTYWNY
+                - ceidg_id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+                  nip: "8171895344"
+                  company_name: EL-CAR Elżbieta Janik
+                  company_name_display: EL-CAR Elżbieta Janik
                 changeHistory:
-                  - id: "c3d4e5f6-a7b8-9012-cdef-123456789012"
-                    history_entry_id: "CEIDG-HIST-20231102-001"
-                    operation_type: zmiana
-                    application_number: "W/1234567/2023"
-                    author: CEIDG
-                    change_effective_on: "2023-11-02"
-                    entry_at: "2023-11-02T14:22:11.000Z"
-                    has_diff: true
-                    details:
-                      - section: Adres wykonywania działalności
-                        section_operation: zmiana
-                        field: ulica
-                        operation: zmiana
-                        old_value: ul. Stara 1
-                        new_value: ul. Legnicka 48
+                - id: c3d4e5f6-a7b8-9012-cdef-123456789012
+                  history_entry_id: CEIDG-HIST-20231102-001
+                  operation_type: zmiana
+                  application_number: W/1234567/2023
                 sudop:
-                  checked_at: "2026-07-20T08:00:00.000Z"
+                  checked_at: '2026-07-20T08:00:00.000Z'
                   has_aid: false
                   cases_count: 0
                   total_nominal_pln: null
-                  total_gross_pln: null
-                  total_nominal_usd: null
-                  total_gross_usd: null
-                  total_nominal_eur: null
-                  total_gross_eur: null
-                  beneficiary_name: null
-                  source_url: https://sudop.uokik.gov.pl
-                  cases: []
-                bzp:
-                  checked_at: "2026-07-22T12:30:00.000Z"
-                  as_contractor_awards_count: 2
-                  as_contractor_notices_count: 3
-                  as_buyer_notices_count: 0
-                  as_contractor_awards_total_pln: 185000
-                  as_contractor_awards_total_usd: 46250
-                  as_contractor_awards_total_eur: 42500
-                  first_publication_date: "2022-04-11"
-                  last_publication_date: "2025-09-03"
-                  source_url: https://ezamowienia.gov.pl
-                  recent_awards:
-                    - object_id: "ocds-148610-example-001"
-                      lot_index: 1
-                      notice_type: ContractAwardNotice
-                      notice_number: "2025/BZP 00012345/01"
-                      bzp_number: "2025/BZP 00012345"
-                      publication_date: "2025-09-03T10:00:00.000Z"
-                      order_object: Delivery of IT equipment
-                      cpv_code: "30200000-1"
-                      procedure_result: awarded
-                      role: contractor
-                      is_award: true
-                      award_value_pln: 120000
-                      award_value_usd: 30000
-                      award_value_eur: 27600
-                      estimated_value_pln: 130000
-                      estimated_value_usd: 32500
-                      estimated_value_eur: 29900
-                      amounts_currency: PLN
-                      counterparty_name: Gmina Example
-                      counterparty_nip: "5250000000"
-                      counterparty_krs: "0000123456"
-                      counterparty_ceidg: false
-                      source_url: https://ezamowienia.gov.pl
-                  recent_as_buyer: []
-                ure:
-                  checked_at: "2026-08-16T12:00:00.000Z"
-                  has_concessions: false
-                  concessions_count: 0
-                  applications_count: 0
-                  active_count: 0
-                  items_count: 0
-                  dkn: null
-                  company_name: null
-                  source_url: https://www.ure.gov.pl
-                  items: []
-                bdo:
-                  checked_at: "2026-08-20T12:00:00.000Z"
-                  has_entry: true
-                  bdo_number: "000007103"
-                  company_name: PKN ORLEN
-                  application_id: "045fe2b9-9077-4e2e-ba62-7e07aeaba020"
-                  eup_count: 2177
-                  decisions_count: 5
-                  activity_flags: ["waste_generation", "waste_treatment"]
-                  source_url: https://rejestr-bdo.mos.gov.pl/Registry/Index
-                  items: []
-                gpw:
-                  checked_at: "2026-09-01T16:30:00.000Z"
-                  ticker: PKN
-                  isin: PLPKN0000018
-                  market: main
-                  listed_name: ORLEN
-                  shares_outstanding: 1163856079
-                  last_close: 78.12
-                  last_close_date: "2026-09-01"
-                  prev_close: 77.40
-                  change_abs: 0.72
-                  change_pct: 0.93
-                  market_cap: 90919000000
-                  last_volume: 1250000
-                  eps: 8.41
-                  pe_ratio: 9.29
-                  dividend_per_share: 4.15
-                  dividend_yield: 5.31
-                  dividend_year: 2025
-                  dividend_ex_date: "2025-08-13"
-                  source_url: https://www.gpw.pl/list-of-companies
-                  currency: PLN
-                  delayed_minutes: 15
-                  recent:
-                    - trade_date: "2026-09-01"
-                      open: 77.50
-                      high: 78.40
-                      low: 77.20
-                      close: 78.12
-                      volume: 1250000
-                msig:
-                  checked_at: "2026-08-24T12:00:00.000Z"
-                  notices_count: 1
-                  first_publication_date: "2026-08-24"
-                  last_publication_date: "2026-08-24"
-                  source_url: https://wyszukiwarka-msig.ms.gov.pl/
-                  items:
-                    - id: 19396258
-                      issue_id: 8958
-                      notice_number: "39248"
-                      publication_date: "2026-08-24"
-                      monitor_number: "163/2026"
-                      notice_type: dissolution_without_liquidation
-                      entity_name: AGS TEAM POLAND SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
-                      krs: "0000813406"
-                      source_url: https://wyszukiwarka-msig.ms.gov.pl/
-                      pdf_url: https://wyszukiwarka-msig.ms.gov.pl/api/Monitor/Download?id=8958&fileId=true
-                ted:
-                  checked_at: "2026-08-17T12:00:00.000Z"
-                  as_winner_awards_count: 2
-                  as_winner_notices_count: 2
-                  as_buyer_notices_count: 0
-                  as_winner_awards_total_pln: 64504059.09
-                  as_winner_awards_total_usd: 16126014.77
-                  as_winner_awards_total_eur: 14828526.00
-                  first_publication_date: "2022-03-11"
-                  last_publication_date: "2026-08-10"
-                  source_url: https://ted.europa.eu/
-                  recent_awards:
-                    - publication_number: "564833-2026"
-                      notice_type: can-standard
-                      title: Przebudowa drogi startowej
-                      role: winner
-                      is_award: true
-                      award_value: 64504059.09
-                      award_value_usd: 16126014.77
-                      award_value_eur: 14828526.00
-                      amounts_currency: PLN
-                      counterparty_name: Port Lotniczy Gdynia
-                      source_url: https://ted.europa.eu/pl/notice/-/detail/564833-2026
-                  recent_as_buyer: []
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -2429,7 +2858,7 @@ paths:
   /ceidg/nip/{nip}/website-facts:
     get:
       tags:
-      - CEIDG
+      - Registers
       summary: Facts from the website by NIP
       description: |
         Same as `/companies/krs/{krs}/website-facts` for sole proprietors with a public profile (and any company) by NIP.
@@ -2452,6 +2881,45 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+              example:
+                nip: "5223233873"
+                website_facts:
+                  opening_hours:
+                    days:
+                      fr:
+                      - - "08:00"
+                        - "18:00"
+                      mo:
+                      - - "08:00"
+                        - "18:00"
+                      th:
+                      - - "08:00"
+                        - "18:00"
+                      tu:
+                      - - "08:00"
+                        - "18:00"
+                      we:
+                      - - "08:00"
+                        - "18:00"
+                    source: ai
+                    label_pl: Kontakt
+                  offer:
+                    cpv:
+                    - "39"
+                    - "19"
+                    items_de:
+                    - Schutzmatte für Tische
+                    - Weiches Glas nach Maß
+                    items_en:
+                    - Protective table mat
+                    - Soft glass cut to size
+                    items_pl:
+                    - Mata ochronna na stół
+                    - Miękkie szkło na wymiar
+                  tech_stack:
+                  - gtm
+                  - nextjs
+                  checked_at: '2026-11-05T03:29:25.496Z'
         '404':
           $ref: '#/components/responses/NotFound'
         '401':
@@ -2461,7 +2929,7 @@ paths:
   /ceidg/nip/{nip}/procurement-counterparties:
     get:
       tags:
-      - CEIDG
+      - Registers
       summary: Public procurement counterparties by NIP
       description: |
         Buyers, contractors and consortium partners of a company or a sole proprietor (public CEIDG profile) by NIP, from BZP,
@@ -2476,7 +2944,7 @@ paths:
         schema:
           type: string
         description: 10-digit NIP (non-digits are stripped).
-        example: "5250008040"
+        example: "7352731108"
       responses:
         '200':
           description: Counterparties.
@@ -2485,6 +2953,38 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+              example:
+                nip: "7352731108"
+                procurement_counterparties:
+                  buyers:
+                  - nip: "7780173262"
+                    name: Teatr Muzyczny w Poznaniu
+                    count: 2
+                    last_on: "2026-10-28"
+                    sources:
+                      bzp: 0
+                      cru: 2
+                      ted: 0
+                    first_on: "2026-10-08"
+                    value_eur: 55
+                    value_pln: 228
+                    value_usd: 62
+                  - nip: "5250005900"
+                    name: Mazowiecki Instytut Kultury
+                    count: 1
+                    last_on: "2026-09-09"
+                    sources:
+                      bzp: 0
+                      cru: 1
+                      ted: 0
+                    first_on: "2026-09-09"
+                    value_eur: 19
+                    value_pln: 80
+                    value_usd: 22
+                  buyers_count: 4
+                  contractors_count: 0
+                  partners_count: 0
+                  refreshed_at: '2026-11-10T05:25:19.494Z'
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -2496,7 +2996,7 @@ paths:
   /ceidg/nip/{nip}/nfz-queues:
     get:
       tags:
-      - CEIDG
+      - Registers
       summary: NFZ waiting lists by NIP
       description: |
         NFZ (National Health Fund) waiting lists of a healthcare provider by NIP (sole proprietors and any other provider) from the NFZ "Terminy leczenia" API: every NFZ-funded
@@ -2512,7 +3012,7 @@ paths:
         required: true
         schema:
           type: string
-        example: "7792236896"
+        example: "1130018111"
       - name: service
         in: query
         required: false
@@ -2540,6 +3040,78 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+              example:
+                nip: "1130018111"
+                queues:
+                  queues_count: 11
+                  places_count: 4
+                  data_as_of: "2026-11-08"
+                  data_as_of_label: "08.11.2026"
+                  refreshed_at: '2026-11-10T01:38:05.815Z'
+                  source_url: https://terminyleczenia.nfz.gov.pl
+                  matched: 11
+                  items:
+                  - benefit: PORADNIA PROTETYKI STOMATOLOGICZNEJ
+                    benefit_display: Poradnia protetyki stomatologicznej
+                    benefit_i18n:
+                      en: Prosthodontics clinic
+                      de: Sprechstunde für zahnärztliche Prothetik
+                    town: Warszawa Praga-Południe
+                    place_label: Fieldorfa 5
+                    address: Fieldorfa 5
+                    address_line: Warszawa Praga-Południe, Fieldorfa 5
+                    wait_days: 10
+                    wait_label_pl: 10 dni
+                    wait_label_en: 10 days
+                    wait_label_de: 10 Tage
+                    urgent_wait_days: 0
+                    urgent_wait_label_pl: od ręki
+                    urgent_wait_label_en: no wait
+                    urgent_wait_label_de: sofort
+                    awaiting: 7
+                    average_days: 40
+                    wait_as_of: "2026-10-10"
+                    wait_as_of_label: "10.10.2026"
+                    stats_month: "2026-09"
+                    children: true
+                    ages: 0-3, 4-9, 10-15, 16-18
+                    access:
+                    - ramp
+                    - wheelchairs
+                  - benefit: LECZENIE PROTETYCZNE
+                    benefit_display: Leczenie protetyczne
+                    benefit_i18n:
+                      en: Prosthetic treatment
+                      de: Prothetische Behandlung
+                    town: Warszawa Praga-Południe
+                    place_label: Poradnia Stomatologiczna dla Dorosłych
+                    place_name: Poradnia Stomatologiczna dla Dorosłych
+                    address: Fieldorfa 5
+                    address_line: Warszawa Praga-Południe, Fieldorfa 5
+                    wait_days: 11
+                    wait_label_pl: 11 dni
+                    wait_label_en: 11 days
+                    wait_label_de: 11 Tage
+                    urgent_wait_days: 0
+                    urgent_wait_label_pl: od ręki
+                    urgent_wait_label_en: no wait
+                    urgent_wait_label_de: sofort
+                    awaiting: 1
+                    average_days: 45
+                    wait_as_of: "2026-10-28"
+                    wait_as_of_label: "28.10.2026"
+                    stats_month: "2026-09"
+                    children: false
+                    access:
+                    - ramp
+                    - wheelchairs
+                note: wait_label / wait_days = NFZ forecast of the time to get the service (stable case; urgent_* = urgent case),
+                  not a booking. Patients regis…
+                source: NFZ API Terminy leczenia 1.4 (apinfz.nfz.gov.pl), stan na data_as_of
+                items_list:
+                  returned: 11
+                  total: 11
+                  truncated: false
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
@@ -2604,6 +3176,33 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+              example:
+                data:
+                - title: We invite government and local administration employees to apply to take part in the E-URZĘDNIK project
+                  url: https://eprosperity.eu/zapraszamy-pracownikow-administracji-rzadowej-i-samorzadowej-do-skladania-zgloszen-do-wziecia-udzialu-w-naszym-projekcie-e-urzednik/
+                  published_at: "2030-11-24"
+                  image_url: https://eprosperity.eu/wp-content/uploads/2024/11/slider-image.webp
+                  language: pl
+                  company:
+                    krs: "0000473705"
+                    nip: "7123281081"
+                    name: Fundacja E-Prosperity
+                    city: Lublin
+                - title: Update 6.9.2 – Ceneo attribute mapping and customer addresses
+                  url: https://www.cstore.pl/updates/aktualizacja-6-9-2-mapowanie-atrybutow-ceneo-oraz-adresy-klientow/
+                  published_at: "2030-06-20"
+                  language: pl
+                  company:
+                    krs: "0000846769"
+                    nip: "5862356855"
+                    name: Centoro
+                    city: Gdynia
+                    pkd: 62.10.B
+                pagination:
+                  limit: 3
+                  offset: 0
+                  returned: 3
+                  hasMore: true
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2707,6 +3306,34 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+              example:
+                notices:
+                - id: 08df390b-1847-1079-e2d6-6b000120cdb6
+                  source: national
+                  title: „Sukcesywna dostawa w latach 2026-2027 własnym transportem oleju opałowego do celów grzewczych budynku
+                    w Mierczycach , 59-430 Mierczyce 34.”
+                  buyer_name: DOM Pomocy Społecznej w Jaworze
+                  buyer_city: Jawor
+                  buyer_nip: "6141180562"
+                  cpv_code: 09135100-5 (Olej opałowy)
+                  publication_date: "2026-11-02"
+                  deadline: '2026-11-10T16:00:00.000Z'
+                  days_left: 0
+                - id: 08df399e-2249-6935-e2d6-6b000120d994
+                  source: national
+                  title: Przedłużenie licencji na aktualizację i wsparcie techniczne FortiGate, FortiMail, FortiAnalyzer oraz
+                    FortiSwitch dla MOPS w Krakowie.
+                  buyer_name: Gmina Miejska Kraków
+                  buyer_city: Kraków
+                  buyer_nip: "6761013717"
+                  cpv_code: 32420000-3 (Urządzenia sieciowe),48761000-0 (Pakiety oprogramowania antywirusowego),48000000-8 (Pakiety
+                    oprogramowania i systemy informat…
+                  publication_date: "2026-11-03"
+                  deadline: '2026-11-11T07:00:00.000Z'
+                  days_left: 1
+                total: 15406
+                limit: 20
+                offset: 0
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2746,6 +3373,18 @@ paths:
               schema:
                 type: object
                 additionalProperties: true
+              example:
+                awards:
+                - winner_name: Panorama Obiekty Sportowe
+                  amount_pln: 1325000
+                  buyer_name: Gmina Brzeszcze
+                  registry_number: "0000438344"
+                  entity_id: dedc4a42-615d-41e9-848f-7233fbcfd252
+                - winner_name: Quoos
+                  amount_pln: 9927501.23
+                  buyer_name: Gmina Bielawa
+                  registry_number: "0001023335"
+                  entity_id: 234b5203-9308-485e-b64b-ca1c20fc0569
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2986,10 +3625,6 @@ paths:
                   display_name: Sebastian Piotr Kowalski
                   birth_year: null
                   company_count: 2
-                - person_id: 048bd9e8-8b0e-446f-8b36-e60f518d3abe
-                  display_name: Henry Kowalski
-                  birth_year: 1972
-                  company_count: 1
                 total: 3
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -3091,6 +3726,12 @@ paths:
                     format: date-time
                     description: When the billing period resets (ISO 8601 datetime with timezone).
                     example: '2026-09-01T00:00:00+00:00'
+              example:
+                used: 1240
+                limit: 10000
+                remaining: 8760
+                monthUtc: "2026-10-28"
+                resetsAtUtc: '2026-11-27T10:35:13.734189+00:00'
         '401':
           $ref: '#/components/responses/Unauthorized'
 components:
