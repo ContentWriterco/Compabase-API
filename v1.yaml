@@ -1330,6 +1330,70 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/group:
+    get:
+      tags:
+      - Companies
+      summary: Corporate group (GLEIF LEI register)
+      description: |
+        Corporate group of a Polish company from the global LEI register run by GLEIF, supplemented with foreign corporate
+        shareholders from KRS matched to the LEI register: direct parent and ultimate parent (name, country, LEI),
+        subsidiaries and other group companies (Polish ones with KRS number, foreign ones with country) and group size.
+        `direct_parent.source = "krs"` means the parent comes from the KRS shareholder list (`pct` = stake). Refreshed daily.
+        Same data as MCP `get_company_group`.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000183975"
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 50
+          maximum: 200
+        description: Max group companies per list.
+      responses:
+        '200':
+          description: Corporate group.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                krs: "0000183975"
+                group:
+                  lei: null
+                  direct_parent:
+                    lei: 529900WYSJTVJY4P6A81
+                    name: Viessmann Holding International GmbH
+                    country: DE
+                    pct: 100
+                    source: krs
+                  ultimate_parent:
+                    lei: 549300JE3W6CWY2NAN77
+                    name: CARRIER GLOBAL CORPORATION
+                    country: US
+                  subsidiaries: []
+                  group_members:
+                    - lei: 5493006LBXW2UPSQNI79
+                      name: Carrier Transicold Polska
+                      country: PL
+                      registry_number: "0000314148"
+                  group_size: 127
+                  members_abroad: 121
+                  members_in_poland: 6
+                source: GLEIF Golden Copy (rejestr LEI, CC0) + wspólnicy z KRS
+        '404':
+          description: No corporate group data for this company.
   /companies/krs/{krs}/nfz-queues:
     get:
       tags:

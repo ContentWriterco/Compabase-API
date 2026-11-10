@@ -103,6 +103,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 | `GET` | `/companies/krs/{krs}/gpw` | Warsaw Stock Exchange (GPW) |
 | `GET` | `/companies/krs/{krs}/status` | Legal status |
 | `GET` | `/companies/krs/{krs}/nfz-contracts` | NFZ contracts |
+| `GET` | `/companies/krs/{krs}/group` | Corporate group (GLEIF LEI register) |
 | `GET` | `/companies/krs/{krs}/nfz-queues` | NFZ waiting lists |
 | `GET` | `/companies/krs/{krs}/beneficiaries` | Beneficial owners (CRBR) |
 | `GET` | `/companies/krs/{krs}/court-gazette` | Court and Commercial Gazette notices (MSiG) |
