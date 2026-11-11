@@ -183,6 +183,13 @@ paths:
       - $ref: '#/components/parameters/CompanySortDir'
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: 'Paginated search results: **`data`** is an array of companies (one object per row on this page).
 
             Fields per row depend on filters and internal path; optional keys may be omitted or null.
@@ -274,6 +281,13 @@ paths:
       - $ref: '#/components/parameters/CompanyFilterHasWebsite'
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Total number of companies matching the request filters.
           content:
             application/json:
@@ -329,6 +343,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Full company profile object resolved from KRS.
           content:
             application/json:
@@ -417,6 +438,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Financial metrics grouped by year.
           content:
             application/json:
@@ -521,6 +549,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Roles and ownership structure.
           content:
             application/json:
@@ -577,6 +612,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Connections payload.
           content:
             application/json:
@@ -665,6 +707,13 @@ paths:
           default: en
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: |
             Rankings (`scopes`) plus peer distributions (`benchmarks` keyed by
             `scope_type::scope_key`). Company figures are the latest indexed snapshot.
@@ -764,6 +813,13 @@ paths:
           default: 0
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Document metadata page.
           content:
             application/json:
@@ -821,6 +877,13 @@ paths:
           default: en
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: News and optional UGC fields (empty arrays/nulls when none).
           content:
             application/json:
@@ -878,6 +941,13 @@ paths:
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Sanctions payload. `sanctions` is null when the company is not listed.
           content:
             application/json:
@@ -1019,6 +1089,13 @@ paths:
         description: Daily bars when `include` contains `series`. Ignored otherwise.
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Listing snapshot (`gpw` may be null).
           content:
             application/json:
@@ -1065,6 +1142,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Legal status for a company.
           content:
             application/json:
@@ -1104,6 +1188,13 @@ paths:
         example: "0000289698"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: NFZ contracts (`nfz` is null when the company has no NFZ contracts).
           content:
             application/json:
@@ -1227,6 +1318,13 @@ paths:
         description: Max group companies per list.
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Corporate group.
           content:
             application/json:
@@ -1301,6 +1399,13 @@ paths:
           maximum: 400
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: NFZ waiting lists (`queues` is null when the provider has none).
           content:
             application/json:
@@ -1363,6 +1468,13 @@ paths:
         example: "0000446005"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: CRBR filing with the list of beneficial owners.
           content:
             application/json:
@@ -1468,6 +1580,13 @@ paths:
         example: "0000269394"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: MSiG notices, newest first.
           content:
             application/json:
@@ -1594,6 +1713,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: URE concessions (null when the company holds none).
           content:
             application/json:
@@ -1677,6 +1803,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: European Funds projects of the company.
           content:
             application/json:
@@ -1814,6 +1947,13 @@ paths:
         example: "0000008820"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: FTS awards of the company.
           content:
             application/json:
@@ -1920,6 +2060,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: KNF entries (null when the company has none).
           content:
             application/json:
@@ -1993,6 +2140,13 @@ paths:
         example: "0000026438"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: KRZ proceedings of the company.
           content:
             application/json:
@@ -2057,6 +2211,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Public aid cases of the company.
           content:
             application/json:
@@ -2193,6 +2354,13 @@ paths:
         example: "0000057567"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Real estate (null when the balance sheet shows none).
           content:
             application/json:
@@ -2247,6 +2415,13 @@ paths:
         example: "0000008820"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Website facts (null when nothing has been read from the website).
           content:
             application/json:
@@ -2326,6 +2501,13 @@ paths:
         example: "0000001764"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Counterparties (null when the company has no public procurement).
           content:
             application/json:
@@ -2428,6 +2610,13 @@ paths:
         example: "0000057567"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Filing timeliness (null when the company has never filed a financial statement).
           content:
             application/json:
@@ -2494,6 +2683,13 @@ paths:
         example: "0000759658"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Secured liabilities (null when nothing is disclosed).
           content:
             application/json:
@@ -2570,6 +2766,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: "`national` (BZP) and `eu` (TED) procurement of the company."
           content:
             application/json:
@@ -2636,6 +2839,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: BDO entry (null when the company is not registered).
           content:
             application/json:
@@ -2738,6 +2948,13 @@ paths:
       - $ref: '#/components/parameters/CompanyFilterRevenueMax'
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: One page of companies (same shape as `GET /companies`).
           content:
             application/json:
@@ -2812,6 +3029,13 @@ paths:
         example: en
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: CEIDG company profile.
           content:
             application/json:
@@ -2875,6 +3099,13 @@ paths:
         description: 10-digit NIP (non-digits are stripped).
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Website facts.
           content:
             application/json:
@@ -2947,6 +3178,13 @@ paths:
         example: "7352731108"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Counterparties.
           content:
             application/json:
@@ -3034,6 +3272,13 @@ paths:
           maximum: 400
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: NFZ waiting lists for the NIP.
           content:
             application/json:
@@ -3170,6 +3415,13 @@ paths:
         description: Zero-based offset (max 5000).
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Page of news articles.
           content:
             application/json:
@@ -3300,6 +3552,13 @@ paths:
         description: Zero-based offset (max 2000).
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Page of tender notices.
           content:
             application/json:
@@ -3367,6 +3626,13 @@ paths:
         description: Minimum contract value in PLN (default 1000000).
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Recent awards, largest first.
           content:
             application/json:
@@ -3420,6 +3686,13 @@ paths:
           default: 0
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Watchlist page.
           content:
             application/json:
@@ -3451,14 +3724,20 @@ paths:
         The company is identified by **KRS** (Polish court registry number). Digits only;
         leading zeros are optional (normalized to 10 digits server-side).
 
-        If the company is already on the watchlist, the response returns `already_following: true`
-        and does not create a duplicate entry.
+        **Create-or-keep in one call, keyed by KRS:** if the company is already on the watchlist,
+        the response returns `already_following: true` and no duplicate entry is created, so the call
+        is safe to retry. `already_following` tells which branch ran.
+
+        **Reversible:** `DELETE /watchlist/krs/{krs}` removes the entry at any time.
+        Use `dry_run=true` to check the plan limit and the outcome without writing.
 
         Requires an API key associated with a Compabase portal user account (`user_id` on the key).
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
       parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/DryRun'
       - name: krs
         in: path
         required: true
@@ -3469,6 +3748,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Company added to watchlist (or already followed).
           content:
             application/json:
@@ -3513,11 +3799,15 @@ paths:
       summary: Remove company from watchlist
       description: |
         Removes a KRS company from the watchlist of the user linked to the API key.
+        Reverses `POST /watchlist/krs/{krs}`; the company can be added again at any time.
         Idempotent: `removed: false` when the company was not on the list.
+        Use `dry_run=true` to see the outcome (`would_remove`) without writing.
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
       parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      - $ref: '#/components/parameters/DryRun'
       - name: krs
         in: path
         required: true
@@ -3526,6 +3816,13 @@ paths:
         example: "0000028860"
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Removal result.
           content:
             application/json:
@@ -3595,6 +3892,13 @@ paths:
         description: 'Maximum number of persons to return. Capped at **50**.'
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: List of matching persons.
           content:
             application/json:
@@ -3656,6 +3960,13 @@ paths:
         example: 033e6964-179b-4039-86a2-0e0590c56918
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Person connections payload.
           content:
             application/json:
@@ -3699,6 +4010,13 @@ paths:
       - BearerAuth: []
       responses:
         '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
           description: Usage snapshot
           content:
             application/json:
@@ -3734,7 +4052,77 @@ paths:
                 resetsAtUtc: '2026-11-27T10:35:13.734189+00:00'
         '401':
           $ref: '#/components/responses/Unauthorized'
+webhooks:
+  watchlistEvent:
+    post:
+      tags:
+      - Watchlist
+      summary: Watchlist change event
+      description: |
+        Sent to the webhook URL configured in the portal (Settings → Notifications) or with the MCP tool
+        `set_webhook_url`, for every company on your watchlist that changes. Choose which event types
+        you receive in the same settings (default: all).
+
+        **Signature:** header `X-Compabase-Signature: t=<unix>,v1=<hex>`, where `v1` is
+        HMAC-SHA256 of the raw request body with your webhook secret.
+        Respond with any 2xx within 10 seconds; failed deliveries are retried.
+      parameters:
+      - name: X-Compabase-Event
+        in: header
+        required: true
+        description: Event type, same as `event` in the body.
+        schema:
+          type: string
+        example: watchlist.board_changed
+      - name: X-Compabase-Signature
+        in: header
+        required: true
+        description: '`t=<unix timestamp>,v1=<HMAC-SHA256 hex of the raw body>`'
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WatchlistWebhookEvent'
+            example:
+              event: watchlist.board_changed
+              company:
+                entity_id: ad2ae683-ccbd-49c6-a85c-648024435cb5
+                name: Orlen S.A.
+                krs: '0000028860'
+                nip: '7740001454'
+                city: Płock
+                is_active: true
+                revenue_total: 372000000000
+                profit_net: 5600000000
+              detected_at: '2026-11-11T07:30:00Z'
+      responses:
+        '200':
+          description: Delivery accepted. Any 2xx response is treated as success.
 components:
+  headers:
+    X-RateLimit-Limit:
+      description: Requests allowed per minute for this API key.
+      schema:
+        type: integer
+      example: 120
+    X-RateLimit-Remaining:
+      description: Requests left in the current one-minute window.
+      schema:
+        type: integer
+      example: 117
+    X-RateLimit-Reset:
+      description: Seconds until the current one-minute window resets.
+      schema:
+        type: integer
+      example: 42
+    Retry-After:
+      description: Seconds to wait before retrying.
+      schema:
+        type: integer
+      example: 30
   responses:
     BadRequest:
       description: Invalid request parameters.
@@ -3806,7 +4194,18 @@ components:
                 code: NOT_FOUND
                 message: Company not found.
     TooManyRequests:
-      description: Monthly quota exceeded for this API key.
+      description: |
+        Rate limit (120 requests per minute per key) or monthly quota exceeded.
+        `Retry-After` says how many seconds to wait before retrying.
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/Retry-After'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/X-RateLimit-Limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/X-RateLimit-Remaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/X-RateLimit-Reset'
       content:
         application/json:
           schema:
@@ -3820,6 +4219,102 @@ components:
                 code: QUOTA_EXCEEDED
                 message: Monthly quota exceeded for this API key.
   schemas:
+    WatchlistWebhookEvent:
+      type: object
+      description: Payload POSTed to your webhook URL when a watched company changes.
+      required:
+      - event
+      - company
+      - detected_at
+      properties:
+        event:
+          type: string
+          description: Event type (also sent in the `X-Compabase-Event` header).
+          enum:
+          - watchlist.company_changed
+          - watchlist.board_changed
+          - watchlist.ownership_changed
+          - watchlist.status_changed
+          - watchlist.company_removed_from_registry
+          - watchlist.financials_updated
+          - watchlist.filing_overdue
+          - watchlist.insolvency
+          - watchlist.court_gazette
+          - watchlist.secured_liabilities
+          - watchlist.sanctions
+          - watchlist.public_tenders
+          - watchlist.public_aid
+          - watchlist.licenses
+          - watchlist.nfz
+          - watchlist.trademarks
+          - watchlist.job_offers
+          - watchlist.contact_changed
+          - watchlist.company_news
+        company:
+          type: object
+          properties:
+            entity_id:
+              type:
+              - string
+              - 'null'
+              format: uuid
+            name:
+              type:
+              - string
+              - 'null'
+            krs:
+              type:
+              - string
+              - 'null'
+            nip:
+              type:
+              - string
+              - 'null'
+            city:
+              type:
+              - string
+              - 'null'
+            is_active:
+              type:
+              - boolean
+              - 'null'
+            revenue_total:
+              type:
+              - number
+              - 'null'
+            profit_net:
+              type:
+              - number
+              - 'null'
+        detected_at:
+          type: string
+          format: date-time
+        changes:
+          type: array
+          description: Field-level changes, when the event has them.
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              label:
+                type: string
+              old_value: {}
+              new_value: {}
+        registry:
+          type: string
+          description: Source register for registry events (e.g. KRZ, MSiG, BZP).
+        delta:
+          type: number
+          description: Change of the register counter for registry events.
+        filing:
+          type: object
+          description: Newly filed financial statement (financials_updated).
+        news:
+          type: array
+          description: Newest articles (company_news).
+          items:
+            type: object
     ErrorResponse:
       type: object
       required:
@@ -4060,6 +4555,12 @@ components:
           format: date-time
           nullable: true
           description: "When the watchlist entry was created. Null when already_following is true and the original timestamp is unavailable."
+        dry_run:
+          type: boolean
+          description: Present and `true` only for `dry_run=true` requests — nothing was written.
+        would_add:
+          type: boolean
+          description: Only with `dry_run=true` — whether a real request would add the company.
     PersonSearchItem:
       type: object
       required:
@@ -4135,6 +4636,28 @@ components:
       type: http
       scheme: bearer
   parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      description: |
+        Optional idempotency key (1-255 characters, e.g. a UUID). Watchlist writes are keyed by KRS,
+        so repeating the same request — with or without this header — never creates a duplicate entry.
+        The key is echoed back in the `Idempotency-Key` response header.
+      schema:
+        type: string
+        maxLength: 255
+      example: 3f6c2a4e-8d1b-4c39-9f2e-1a7b5d0e9c41
+    DryRun:
+      name: dry_run
+      in: query
+      required: false
+      description: |
+        When `true`, the request is validated (key, KRS, plan limits) and the response says what
+        would happen (`would_add` / `would_remove`), but nothing is written and no webhook fires.
+      schema:
+        type: boolean
+        default: false
     CompanyFilterQ:
       name: q
       in: query
