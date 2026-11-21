@@ -319,7 +319,7 @@ paths:
         - `roles` and `ownership`,
         - `financials.byYear` (metrics + `esf_statement_lines` when present; XML files are on the documents endpoint),
         - `krz` (restructuring/insolvency proceedings summary),
-        - `sanctions` (MSWiA sanctions listing with measures and grounds; omitted when the company is not listed; dedicated read is `/companies/krs/{krs}/sanctions`),
+        - `sanctions` (sanctions and PEP screening of the company and its people; `{ "entries": [] }` when screened with no matches; dedicated read is `/companies/krs/{krs}/sanctions`),
         - `sudop` (public aid / de minimis when checked),
         - `bzp` (public procurement summary when present),
         - `ure` (URE energy concessions when checked),
@@ -928,15 +928,22 @@ paths:
     get:
       tags:
       - Registers
-      summary: MSWiA sanctions listing
+      summary: Sanctions and PEP screening
       description: |
-        Official Polish Ministry of the Interior and Administration (MSWiA) sanctions listing
-        for a KRS company matched by KRS, NIP, or REGON.
+        Sanctions and PEP screening for a KRS company.
 
-        `sanctions` is `null` when the company is not on the list. When present, `entries`
-        include the name on the list, listed and removed dates, restrictive measures, and
-        the legal grounds. Polish text stays in `measures` / `justification`; English and
-        German are in `measures_i18n` / `justification_i18n`.
+        Entries with `kind: entity` (or no `kind`) are the company itself on a sanctions list
+        (MSWiA, EU, US, UK, World Bank), matched by KRS, NIP or REGON: the name on the list,
+        listed and removed dates, restrictive measures and the legal grounds. Polish text stays
+        in `measures` / `justification`; English and German are in `measures_i18n` /
+        `justification_i18n`.
+
+        Entries with `kind: person` are board members, proxies, owners and beneficial owners
+        matched to sanctions lists (EU, UN, US, UK, MSWiA) or to PEP sources (Sejm, Wikidata,
+        boards of companies majority-owned by the State Treasury): `list_kind`, `confidence`,
+        the role in the company and public positions.
+
+        `sanctions` is `null` when nothing matched.
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -956,7 +963,7 @@ paths:
               $ref: '#/components/headers/X-RateLimit-Remaining'
             X-RateLimit-Reset:
               $ref: '#/components/headers/X-RateLimit-Reset'
-          description: Sanctions payload. `sanctions` is null when the company is not listed.
+          description: Sanctions and PEP payload. `sanctions` is null when nothing matched.
           content:
             application/json:
               schema:
@@ -1017,6 +1024,58 @@ paths:
                             source_url:
                               type: string
                               nullable: true
+                            kind:
+                              type: string
+                              enum: [entity, person]
+                              description: "`person` = a person linked to the company (board, proxy, owner, beneficial owner)."
+                            list_kind:
+                              type: string
+                              enum: [sanctions, pep]
+                            programme:
+                              type: string
+                              nullable: true
+                              description: Sanctions programme, or the public function for PEP entries.
+                            person_name:
+                              type: string
+                              nullable: true
+                            person_slug:
+                              type: string
+                              nullable: true
+                            person_role:
+                              type: string
+                              nullable: true
+                              description: Role of the person in this company (KRS).
+                            person_current:
+                              type: boolean
+                              description: Whether the role in this company is current.
+                            confidence:
+                              type: string
+                              enum: [confirmed, likely, possible]
+                              description: "`confirmed` = PESEL or full birth date, `likely` = name and birth year, `possible` = name only."
+                            positions:
+                              type: array
+                              description: Public positions behind the PEP status (other than the role in this company).
+                              items:
+                                type: object
+                                properties:
+                                  title:
+                                    type: string
+                                  start:
+                                    type: string
+                                    format: date
+                                    nullable: true
+                                  end:
+                                    type: string
+                                    format: date
+                                    nullable: true
+                            soe_role:
+                              type: string
+                              nullable: true
+                              enum: [president, chair, management, supervisory]
+                              description: For boards of state-owned companies, the board role behind the PEP status.
+                            soe_role_here:
+                              type: boolean
+                              description: The PEP status comes from the role in this company.
               example:
                 krs: "0000795863"
                 entity_id: 58142114-9193-42c0-a7e3-1ed189327f2e

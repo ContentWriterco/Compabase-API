@@ -99,7 +99,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 | `GET` | `/companies/krs/{krs}/statistics` | Peer statistics & rankings |
 | `GET` | `/companies/krs/{krs}/financial-documents` | Financial document inventory |
 | `GET` | `/companies/krs/{krs}/news` | Company news & UGC |
-| `GET` | `/companies/krs/{krs}/sanctions` | MSWiA sanctions listing |
+| `GET` | `/companies/krs/{krs}/sanctions` | Sanctions and PEP screening |
 | `GET` | `/companies/krs/{krs}/gpw` | Warsaw Stock Exchange (GPW) |
 | `GET` | `/companies/krs/{krs}/status` | Legal status |
 | `GET` | `/companies/krs/{krs}/nfz-contracts` | NFZ contracts |
