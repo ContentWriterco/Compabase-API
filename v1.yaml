@@ -2401,6 +2401,197 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/corporate-tax:
+    get:
+      tags:
+      - Registers
+      summary: Corporate income tax (CIT) data
+      description: 'Individual CIT data published by the Ministry of Finance for the largest taxpayers (revenue above EUR 50 million) and tax capital
+        groups:
+
+        revenue, costs, income, loss, tax base and tax due per year (PLN with EUR/USD), effective rate and national rank by tax due.
+
+        Revenue, costs and income are tax-return categories, not accounting figures, so they differ from the financial statement.
+
+        Same data as MCP `get_company_corporate_tax`. One request = one API call from the monthly quota.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: 0000028860
+      responses:
+        '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+          description: CIT data (null when the company is not in the published lists).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                krs: 0000028860
+                registry_number: 0000028860
+                nip: '7740001454'
+                corporate_tax:
+                  kinds:
+                  - pod
+                  first_year: 2020
+                  last_year: 2025
+                  last_revenue_pln: 219310516193.69
+                  last_income_pln: 16291159512.49
+                  last_loss_pln: 0
+                  last_tax_due_pln: 2951964802
+                  last_tax_due_eur: 698855303.5
+                  last_tax_due_usd: 741327172.78
+                  last_effective_rate: 18.12
+                  total_tax_due_pln: 11797974373
+                  rank_tax_due: 2
+                  years:
+                  - year: 2025
+                    kind: pod
+                    period_from: '2025-01-01'
+                    period_to: '2025-12-31'
+                    revenue_pln: 219310516193.69
+                    revenue_eur: 51920103265.55
+                    revenue_usd: 55075468657.38
+                    costs_pln: 203019356681.2
+                    income_pln: 16291159512.49
+                    loss_pln: 0
+                    tax_base_pln: 15652107316
+                    tax_due_pln: 2951964802
+                    tax_due_eur: 698855303.5
+                    tax_due_usd: 741327172.78
+                    effective_rate: 18.12
+                  - year: 2024
+                    kind: pod
+                    period_from: '2024-01-01'
+                    period_to: '2024-12-31'
+                    revenue_pln: 243818620203.73
+                    revenue_eur: 56557323174.14
+                    revenue_usd: 61092112303.62
+                    costs_pln: 235886036718.3
+                    income_pln: 7932583485.43
+                    loss_pln: 0
+                    tax_base_pln: 7132532026
+                    tax_due_pln: 1330881662
+                    tax_due_eur: 308717620.51
+                    tax_due_usd: 333470724.63
+                    effective_rate: 16.78
+                  source_url: https://www.gov.pl/web/finanse/indywidualne-dane-podatnikow-cit
+                note: Amounts in PLN from the CIT return as published by the Ministry of Finance (art. 27b CIT Act); EUR/USD at the annual average
+                  rate. tax_due = tax due after art. 24b. effective_rate = tax_due / income. rank_tax_due = national rank by tax due among published
+                  taxpayers (largest taxpayers and groups) for last_year.
+                source: Ministerstwo Finansów — indywidualne dane podatników CIT
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/public-benefit:
+    get:
+      tags:
+      - Registers
+      summary: Public benefit organisation (OPP) and 1.5% of PIT
+      description: 'Whether the organisation is on the NIW-CRSO list of public benefit organisations eligible for 1.5% of personal income tax, and
+        the amounts
+
+        transferred by tax offices per year with approximate number of donors, national and regional rank and year-on-year change.
+
+        Same data as MCP `get_company_public_benefit`. One request = one API call from the monthly quota.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: 0000037904
+      responses:
+        '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+          description: OPP data (null when the organisation is neither listed nor received transfers).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                krs: 0000037904
+                registry_number: 0000037904
+                public_benefit:
+                  is_listed: true
+                  list_tax_year: 2025
+                  voivodeship: mazowieckie
+                  first_transfer_year: 2019
+                  last_transfer_year: 2026
+                  last_amount_pln: 406577904.79
+                  last_amount_eur: 97923387.47
+                  last_amount_usd: 109826554.51
+                  last_taxpayers: 2514500
+                  last_avg_pln: 161.69
+                  rank_national: 1
+                  rank_voivodeship: 1
+                  change_pct: 8.4
+                  total_amount_pln: 2179534450.15
+                  years:
+                  - transfer_year: 2026
+                    tax_year: 2025
+                    percent: 1.5
+                    amount_pln: 406577904.79
+                    amount_eur: 97923387.47
+                    amount_usd: 109826554.51
+                    taxpayers: 2514500
+                    rank: 1
+                  - transfer_year: 2025
+                    tax_year: 2024
+                    percent: 1.5
+                    amount_pln: 375118495.92
+                    amount_eur: 88806462.1
+                    amount_usd: 94203539.91
+                    taxpayers: 2498000
+                    rank: 1
+                  source_url: https://niw.gov.pl/opp/wykaz-opp/
+                  amounts_source_url: https://www.gov.pl/web/finanse/1-5-procent-podatku-dla-opp
+                note: is_listed = on the current NIW list of organisations eligible for 1.5% of personal income tax (list_tax_year). years = amounts
+                  transferred by tax offices (transfer_year, for tax_year; 1% until 2022, then 1.5%); taxpayers = approximate number of donors (MF
+                  reports thousands). rank = national rank by amount in that year.
+                source: NIW-CRSO wykaz OPP; Ministerstwo Finansów — informacja o części podatku PIT przekazanego OPP
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
   /companies/krs/{krs}/website-facts:
     get:
       tags:

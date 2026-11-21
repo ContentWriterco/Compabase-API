@@ -114,6 +114,8 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 | `GET` | `/companies/krs/{krs}/insolvency` | Insolvency and restructuring proceedings (KRZ) |
 | `GET` | `/companies/krs/{krs}/public-aid` | Public aid received (SUDOP) |
 | `GET` | `/companies/krs/{krs}/real-estate` | Real estate (financial statements) |
+| `GET` | `/companies/krs/{krs}/corporate-tax` | Corporate income tax (CIT) data |
+| `GET` | `/companies/krs/{krs}/public-benefit` | Public benefit organisation (OPP) and 1.5% of PIT |
 | `GET` | `/companies/krs/{krs}/website-facts` | Facts from the company website |
 | `GET` | `/companies/krs/{krs}/procurement-counterparties` | Public procurement counterparties |
 | `GET` | `/companies/krs/{krs}/filing-timeliness` | Financial statement filing timeliness |
