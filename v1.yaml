@@ -1050,8 +1050,8 @@ paths:
                               description: Whether the role in this company is current.
                             confidence:
                               type: string
-                              enum: [confirmed, likely, possible]
-                              description: "`confirmed` = PESEL or full birth date, `likely` = name and birth year, `possible` = name only."
+                              enum: [confirmed, likely]
+                              description: "`confirmed` = PESEL or full birth date, `likely` = name and birth year. Name-only matches are not published."
                             positions:
                               type: array
                               description: Public positions behind the PEP status (other than the role in this company).
