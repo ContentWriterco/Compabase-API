@@ -116,6 +116,11 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 | `GET` | `/companies/krs/{krs}/real-estate` | Real estate (financial statements) |
 | `GET` | `/companies/krs/{krs}/corporate-tax` | Corporate income tax (CIT) data |
 | `GET` | `/companies/krs/{krs}/public-benefit` | Public benefit organisation (OPP) and 1.5% of PIT |
+| `GET` | `/companies/krs/{krs}/rail-punctuality` | Train punctuality (rail carriers) |
+| `GET` | `/companies/krs/{krs}/trademarks` | Trademarks |
+| `GET` | `/companies/krs/{krs}/articles` | Articles of association / statute |
+| `GET` | `/companies/krs/{krs}/public-contracts` | Public contracts (CRU) |
+| `GET` | `/companies/krs/{krs}/procurement-disputes` | Procurement disputes (KIO) |
 | `GET` | `/companies/krs/{krs}/facilities` | Pharmacies and educational institutions |
 | `GET` | `/companies/krs/{krs}/website-facts` | Facts from the company website |
 | `GET` | `/companies/krs/{krs}/procurement-counterparties` | Public procurement counterparties |
