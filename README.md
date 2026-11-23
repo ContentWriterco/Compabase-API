@@ -127,10 +127,12 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 | `GET` | `/companies/krs/{krs}/filing-timeliness` | Financial statement filing timeliness |
 | `GET` | `/companies/krs/{krs}/secured-liabilities` | Secured liabilities (mortgages and pledges) |
 | `GET` | `/companies/krs/{krs}/tenders` | Public procurement of a company (BZP + TED) |
+| `GET` | `/companies/krs/{krs}/transport-licenses` | Road transport licences (KREPTD) |
 | `GET` | `/companies/krs/{krs}/waste-registry` | Waste and packaging register (BDO) |
 | `GET` | `/companies/export` | Bulk company search export page |
 | `GET` | `/ceidg/nip/{nip}` | CEIDG profile by NIP |
 | `GET` | `/ceidg/nip/{nip}/facilities` | Pharmacies and educational institutions (sole proprietorship) |
+| `GET` | `/ceidg/nip/{nip}/transport-licenses` | Road transport licences (KREPTD) by NIP |
 | `GET` | `/ceidg/nip/{nip}/website-facts` | Facts from the website by NIP |
 | `GET` | `/ceidg/nip/{nip}/procurement-counterparties` | Public procurement counterparties by NIP |
 | `GET` | `/ceidg/nip/{nip}/nfz-queues` | NFZ waiting lists by NIP |

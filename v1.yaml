@@ -3553,6 +3553,97 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/transport-licenses:
+    get:
+      tags:
+      - Registers
+      summary: Road transport licences (KREPTD)
+      description: |
+        KREPTD register of road transport undertakings (GITD) — EU community licences (goods over / up to 3.5 t,
+        passengers) and national road carrier permits with number, status (`valid`, `suspended`, `withdrawn`,
+        `revoked`, `expired`, …), issue and expiry dates, issuing authority, vehicle counts, current certified
+        copies (wypisy) and `fleet_estimate` (max of permit vehicles, licence vehicles and current certified copies).
+        Keyed by NIP. Same data as MCP `get_company_transport_licenses`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: "0000044183"
+      responses:
+        '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+          description: KREPTD entry (`transport` is null when the company holds no licence or permit).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                krs: "0000044183"
+                registry_number: "0000044183"
+                nip: "7810020506"
+                transport:
+                  checked_at: '2026-11-23T15:17:07.198Z'
+                  has_active: true
+                  items_count: 2
+                  active_count: 2
+                  licence_vehicles: 159
+                  permit_vehicles: 360
+                  extracts_active_count: 263
+                  extracts_heavy_active: 263
+                  extracts_light_active: 0
+                  fleet_estimate: 360
+                  managers_count: 1
+                  source_url: https://kreptd.gitd.gov.pl/
+                  items:
+                  - content_hash: 65fcb07120467ce3ce311098d862ba30b82f32b4
+                    kind: licence
+                    scope: goods_heavy
+                    number: TU-000164
+                    status: valid
+                    is_active: true
+                    issuing_authority: null
+                    issued_at: "2002-02-28"
+                    valid_from: "2002-02-28"
+                    valid_to: "2052-02-28"
+                    vehicles_count: 159
+                    extracts_active_count: 263
+                    extracts_total_count: 1105
+                  - content_hash: b64d9dabded87136811f5ee2fcd8cf940ae928d3
+                    kind: permit
+                    scope: goods
+                    number: "0058554"
+                    status: valid
+                    is_active: true
+                    issuing_authority: Starostwo Powiatowe w Poznaniu
+                    issued_at: "2003-12-31"
+                    vehicles_count: 360
+                    extracts_active_count: 0
+                    extracts_total_count: 0
+                items_list:
+                  returned: 2
+                  total: 2
+                  truncated: false
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
   /companies/krs/{krs}/waste-registry:
     get:
       tags:
@@ -3895,6 +3986,93 @@ paths:
                   institutions where the company is the founding/running body). active = currently operating. students = number of students reported
                   to SIO.
                 source: Rejestr Aptek (Centrum e-Zdrowia); Rejestr Szkół i Placówek Oświatowych (MEN)
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /ceidg/nip/{nip}/transport-licenses:
+    get:
+      tags:
+      - Registers
+      summary: Road transport licences (KREPTD) by NIP
+      description: |
+        Same as `/companies/krs/{krs}/transport-licenses` for sole proprietors with a public profile (and any company) by NIP.
+        Same data as MCP `get_company_transport_licenses`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: nip
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 10-digit NIP (non-digits are stripped).
+        example: "7810020506"
+      responses:
+        '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+          description: KREPTD licences and permits; 404 when the NIP is not in KREPTD.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                nip: "7810020506"
+                registry_number: "0000044183"
+                transport:
+                  checked_at: '2026-11-23T15:17:07.198Z'
+                  has_active: true
+                  items_count: 2
+                  active_count: 2
+                  licence_vehicles: 159
+                  permit_vehicles: 360
+                  extracts_active_count: 263
+                  extracts_heavy_active: 263
+                  extracts_light_active: 0
+                  fleet_estimate: 360
+                  managers_count: 1
+                  source_url: https://kreptd.gitd.gov.pl/
+                  items:
+                  - content_hash: 65fcb07120467ce3ce311098d862ba30b82f32b4
+                    kind: licence
+                    scope: goods_heavy
+                    number: TU-000164
+                    status: valid
+                    is_active: true
+                    issuing_authority: null
+                    issued_at: "2002-02-28"
+                    valid_from: "2002-02-28"
+                    valid_to: "2052-02-28"
+                    vehicles_count: 159
+                    extracts_active_count: 263
+                    extracts_total_count: 1105
+                  - content_hash: b64d9dabded87136811f5ee2fcd8cf940ae928d3
+                    kind: permit
+                    scope: goods
+                    number: "0058554"
+                    status: valid
+                    is_active: true
+                    issuing_authority: Starostwo Powiatowe w Poznaniu
+                    issued_at: "2003-12-31"
+                    vehicles_count: 360
+                    extracts_active_count: 0
+                    extracts_total_count: 0
+                items_list:
+                  returned: 2
+                  total: 2
+                  truncated: false
         '404':
           $ref: '#/components/responses/NotFound'
         '400':
