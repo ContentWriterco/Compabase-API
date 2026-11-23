@@ -432,6 +432,10 @@ paths:
         grouped by statement year. Values include PLN/USD/EUR columns from
         `entity_financial_metrics` and structured `esf_statement_lines` when extracted.
         XML files are on the documents endpoint.
+
+        Every row has `insights` — the financial signals shown on the Compabase profile for that
+        year and scope (standalone or consolidated): plain-text sentences in `lang`, with amounts
+        in `currency`; an empty array when there are none.
       security:
       - ApiKeyAuth: []
       - BearerAuth: []
@@ -444,6 +448,22 @@ paths:
         description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
           After normalization, KRS must contain exactly 10 digits; otherwise request fails with `400 INVALID_KRS`.
         example: "0000028860"
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [pl, en, de]
+          default: pl
+        description: Language of `insights`.
+      - name: currency
+        in: query
+        required: false
+        schema:
+          type: string
+          enum: [PLN, EUR, USD]
+          default: PLN
+        description: Currency of amounts inside `insights` (statement figures keep their PLN/USD/EUR columns).
       responses:
         '200':
           headers:
@@ -500,6 +520,9 @@ paths:
                       current_assets_eur: 15914405010.438414
                       equity_eur: 34026675945.25632
                       liabilities_and_provisions_eur: 25209696126.18882
+                      insights:
+                      - "Minimal cash position: At an operating scale of around PLN 216bn in revenue, the company holds just PLN 1.37bn in cash (0.6% of turnover). Day-to-day servicing of liabilities (PLN 41.0bn) therefore rests almost entirely on timely inventory turnover and collection of receivables from counterparties."
+                      - "Capital-intensive profile: Fixed assets make up 77% of total assets (PLN 152bn) – the predominance of fixed over current assets ties up capital long term and entails lower asset turnover than in capital-light models."
                     "2023":
                     - sf_period_from: "2023-01-01"
                       sf_period_to: "2023-12-31"
@@ -2651,6 +2674,96 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /companies/krs/{krs}/facilities:
+    get:
+      tags:
+      - Registers
+      summary: Pharmacies and educational institutions
+      description: 'Pharmacies and pharmacy points from the Pharmacy Register (Centrum e-Zdrowia) and schools, kindergartens and other educational
+        institutions
+
+        from RSPO run by the company: counts, number of students, number of towns and the list of facilities with address and status.
+
+        Same data as MCP `get_company_facilities`. One request = one API call from the monthly quota.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: '0000256037'
+      responses:
+        '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+          description: Facilities (null when the company runs none).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                krs: '0000256037'
+                registry_number: '0000256037'
+                nip: '6782977320'
+                facilities:
+                  pharmacies_active: 65
+                  pharmacies_total: 68
+                  schools_active: 0
+                  schools_total: 0
+                  students_total: 0
+                  cities_count: 25
+                  items:
+                  - kind: pharmacy
+                    id: '1120825'
+                    name: Ziko Apteka
+                    type: Apteka ogólnodostępna
+                    city: Bielsko-Biała
+                    city_slug: bielsko-biala
+                    address: ul. Mostowa 5
+                    active: true
+                    opened_on: '2013-11-21'
+                    students: null
+                    mail_order: false
+                    url: https://rejestry.ezdrowie.gov.pl/registry/ra
+                  - kind: pharmacy
+                    id: '1058015'
+                    name: Ziko Apteka
+                    type: Apteka ogólnodostępna
+                    city: Bielsko-Biała
+                    city_slug: bielsko-biala
+                    address: ul. Leszczyńska 20
+                    active: true
+                    opened_on: '2012-07-30'
+                    students: null
+                    mail_order: false
+                    url: https://rejestry.ezdrowie.gov.pl/registry/ra
+                  source_urls:
+                  - https://rejestry.ezdrowie.gov.pl/registry/ra
+                  - https://rspo.gov.pl/
+                note: kind = pharmacy (pharmacies and pharmacy points, incl. hospital pharmacies) or school (schools, kindergartens and other educational
+                  institutions where the company is the founding/running body). active = currently operating. students = number of students reported
+                  to SIO.
+                source: Rejestr Aptek (Centrum e-Zdrowia); Rejestr Szkół i Placówek Oświatowych (MEN)
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
   /companies/krs/{krs}/website-facts:
     get:
       tags:
@@ -3329,6 +3442,94 @@ paths:
                   has_aid: false
                   cases_count: 0
                   total_nominal_pln: null
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /ceidg/nip/{nip}/facilities:
+    get:
+      tags:
+      - Registers
+      summary: Pharmacies and educational institutions (sole proprietorship)
+      description: 'Pharmacies and pharmacy points from the Pharmacy Register (Centrum e-Zdrowia) and schools, kindergartens and other educational
+        institutions
+
+        from RSPO run by the company: counts, number of students, number of towns and the list of facilities with address and status.
+
+        Same data as MCP `get_company_facilities`. One request = one API call from the monthly quota.
+
+        '
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: nip
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 10-digit NIP of a sole proprietorship (CEIDG).
+        example: '6782977320'
+      responses:
+        '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+          description: Facilities (null when the company runs none).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                nip: '6782977320'
+                facilities:
+                  pharmacies_active: 65
+                  pharmacies_total: 68
+                  schools_active: 0
+                  schools_total: 0
+                  students_total: 0
+                  cities_count: 25
+                  items:
+                  - kind: pharmacy
+                    id: '1120825'
+                    name: Ziko Apteka
+                    type: Apteka ogólnodostępna
+                    city: Bielsko-Biała
+                    city_slug: bielsko-biala
+                    address: ul. Mostowa 5
+                    active: true
+                    opened_on: '2013-11-21'
+                    students: null
+                    mail_order: false
+                    url: https://rejestry.ezdrowie.gov.pl/registry/ra
+                  - kind: pharmacy
+                    id: '1058015'
+                    name: Ziko Apteka
+                    type: Apteka ogólnodostępna
+                    city: Bielsko-Biała
+                    city_slug: bielsko-biala
+                    address: ul. Leszczyńska 20
+                    active: true
+                    opened_on: '2012-07-30'
+                    students: null
+                    mail_order: false
+                    url: https://rejestry.ezdrowie.gov.pl/registry/ra
+                  source_urls:
+                  - https://rejestry.ezdrowie.gov.pl/registry/ra
+                  - https://rspo.gov.pl/
+                note: kind = pharmacy (pharmacies and pharmacy points, incl. hospital pharmacies) or school (schools, kindergartens and other educational
+                  institutions where the company is the founding/running body). active = currently operating. students = number of students reported
+                  to SIO.
+                source: Rejestr Aptek (Centrum e-Zdrowia); Rejestr Szkół i Placówek Oświatowych (MEN)
         '404':
           $ref: '#/components/responses/NotFound'
         '400':

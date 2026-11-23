@@ -116,6 +116,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 | `GET` | `/companies/krs/{krs}/real-estate` | Real estate (financial statements) |
 | `GET` | `/companies/krs/{krs}/corporate-tax` | Corporate income tax (CIT) data |
 | `GET` | `/companies/krs/{krs}/public-benefit` | Public benefit organisation (OPP) and 1.5% of PIT |
+| `GET` | `/companies/krs/{krs}/facilities` | Pharmacies and educational institutions |
 | `GET` | `/companies/krs/{krs}/website-facts` | Facts from the company website |
 | `GET` | `/companies/krs/{krs}/procurement-counterparties` | Public procurement counterparties |
 | `GET` | `/companies/krs/{krs}/filing-timeliness` | Financial statement filing timeliness |
@@ -124,6 +125,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 | `GET` | `/companies/krs/{krs}/waste-registry` | Waste and packaging register (BDO) |
 | `GET` | `/companies/export` | Bulk company search export page |
 | `GET` | `/ceidg/nip/{nip}` | CEIDG profile by NIP |
+| `GET` | `/ceidg/nip/{nip}/facilities` | Pharmacies and educational institutions (sole proprietorship) |
 | `GET` | `/ceidg/nip/{nip}/website-facts` | Facts from the website by NIP |
 | `GET` | `/ceidg/nip/{nip}/procurement-counterparties` | Public procurement counterparties by NIP |
 | `GET` | `/ceidg/nip/{nip}/nfz-queues` | NFZ waiting lists by NIP |
