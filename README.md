@@ -255,10 +255,16 @@ without any profile or metadata. Values are available in PLN, USD and EUR.
 
 All fields are also available with `_usd` and `_eur` suffixes.
 
+**Narratives** (the same sentences as on the Compabase company profile)
+`insights` – financial signals for the year (e.g. negative equity, cash share of current assets),
+`metric_summaries` – the sentences next to each statement line (`revenue_total`, `ebitda`, `equity`, … with y/y change and structure).
+Plain text in `lang` (`pl`, `en`, `de`; default `pl`) with amounts in `currency` (`PLN`, `EUR`, `USD`; default `PLN`),
+separately for standalone and consolidated statements.
+
 </details>
 
 ```bash
-curl "https://compabase.com/api/v1/companies/krs/0000028860/financial-statements" \
+curl "https://compabase.com/api/v1/companies/krs/0000028860/financial-statements?lang=en&currency=EUR" \
   -H "X-API-Key: YOUR_API_KEY"
 ```
 
