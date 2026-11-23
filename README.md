@@ -117,6 +117,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 | `GET` | `/companies/krs/{krs}/corporate-tax` | Corporate income tax (CIT) data |
 | `GET` | `/companies/krs/{krs}/public-benefit` | Public benefit organisation (OPP) and 1.5% of PIT |
 | `GET` | `/companies/krs/{krs}/rail-punctuality` | Train punctuality (rail carriers) |
+| `GET` | `/companies/krs/{krs}/market-environment` | Market environment of the company's industry |
 | `GET` | `/companies/krs/{krs}/trademarks` | Trademarks |
 | `GET` | `/companies/krs/{krs}/articles` | Articles of association / statute |
 | `GET` | `/companies/krs/{krs}/public-contracts` | Public contracts (CRU) |
@@ -133,6 +134,7 @@ curl "https://compabase.com/api/v1/companies/krs/0000028860" \
 | `GET` | `/ceidg/nip/{nip}` | CEIDG profile by NIP |
 | `GET` | `/ceidg/nip/{nip}/facilities` | Pharmacies and educational institutions (sole proprietorship) |
 | `GET` | `/ceidg/nip/{nip}/transport-licenses` | Road transport licences (KREPTD) by NIP |
+| `GET` | `/ceidg/nip/{nip}/market-environment` | Market environment of a sole proprietor's industry by NIP |
 | `GET` | `/ceidg/nip/{nip}/website-facts` | Facts from the website by NIP |
 | `GET` | `/ceidg/nip/{nip}/procurement-counterparties` | Public procurement counterparties by NIP |
 | `GET` | `/ceidg/nip/{nip}/nfz-queues` | NFZ waiting lists by NIP |

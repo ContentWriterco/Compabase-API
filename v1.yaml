@@ -2780,6 +2780,96 @@ paths:
                 note: On time = arrival at the final station less than 6 minutes late (as in UTK statistics); international trains measured at the last station in Poland; cancellations counted separately.
                   national_* = all rail operators in Poland over the same period; rank among carriers_count carriers; peers = other carriers.
                 source: Otwarte Dane Kolejowe PKP Polskie Linie Kolejowe S.A. (processed)
+  /companies/krs/{krs}/market-environment:
+    get:
+      tags:
+      - Registers
+      summary: Market environment of the company's industry
+      description: |
+        Market environment of the company's industry, matched by its NAICS classification (else PKD 2007 class) and offer (CPV):
+        a one-sentence `summary` with `tone` (favourable, unfavourable, mixed, stable) and up to 4 strongest, non-overlapping
+        `indicators`. Each indicator has a `headline`, a concrete `observation` with figures, `impact` on the company
+        (positive, negative, neutral), `source`, `unit` and the time `series`. Indicators: revenue growth and median net margin
+        of comparable companies computed from KRS financial statements (yearly), demand (sales or services volume, output),
+        prices and bankruptcies from Monitly (Eurostat, GUS; monthly or quarterly), retail prices of what the company offers.
+        Texts in `lang` (pl, en, de; default pl). `market_environment` is null when no statistics match the company's industry.
+        Same data as MCP `get_company_market_environment`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: krs
+        in: path
+        required: true
+        schema:
+          type: string
+        description: KRS input is normalized by stripping non-digits and left-padding to 10 digits.
+        example: '0000564138'
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - pl
+          - en
+          - de
+          default: pl
+        description: Language of summary, headlines and observations.
+      responses:
+        '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+          description: Market environment (null when no statistics match the company's industry).
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                krs: '0000564138'
+                registry_number: '0000564138'
+                nip: '7272796488'
+                lang: en
+                market_environment:
+                  summary: 'Conditions in the fuel station industry are mixed: demand is growing (+7.6% y/y) and bankruptcies in trade are falling (−16.2% over 12 months), but company revenue is falling (−3.9% in 2025).'
+                  tone: mixed
+                  indicators:
+                  - headline: Revenue of companies in the fuel station industry is falling
+                    observation: In 2025, revenue of a typical company in the fuel station industry fell 3.9% (a year earlier −2.3%, 5-year average +10.8% a year).
+                    impact: negative
+                    kind: industry_revenue
+                    frequency: A
+                    last_period: '2025'
+                    unit: typical company revenue, first year = 100
+                    source: 'Source: KRS financial statements, n = 46'
+                    series:
+                    - period: '2023'
+                      value: 146.7
+                    - period: '2024'
+                      value: 143.3
+                    - period: '2025'
+                      value: 137.7
+                  - headline: Sales volume in the fuel station industry is rising
+                    observation: Sales volume in the fuel station industry rose 7.6% year on year, faster than the 5-year average (+4.4% a year).
+                    impact: positive
+                    kind: volume
+                    frequency: M
+                    last_period: 09/2026
+                    unit: index, 2021 = 100
+                    source: 'Source: Monitly (Eurostat)'
+                    series:
+                    - period: 08/2026
+                      value: 119.5
+                    - period: 09/2026
+                      value: 109.3
+        '404':
+          description: Company not found.
   /companies/krs/{krs}/trademarks:
     get:
       tags:
@@ -4081,6 +4171,92 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '429':
           $ref: '#/components/responses/TooManyRequests'
+  /ceidg/nip/{nip}/market-environment:
+    get:
+      tags:
+      - Registers
+      summary: Market environment of a sole proprietor's industry by NIP
+      description: |
+        Same as `/companies/krs/{krs}/market-environment` for sole proprietors (CEIDG) with a public profile, matched by
+        the main PKD class (PKD 2007 or PKD 2025). Indicators include the latest-month GUS retail price of what the industry
+        sells (e.g. a men's haircut for hairdressers, a 5 km taxi ride for taxi drivers, bread for bakeries).
+        Same data as MCP `get_company_market_environment` called with `nip`. One request = one API call from the monthly quota.
+      security:
+      - ApiKeyAuth: []
+      - BearerAuth: []
+      parameters:
+      - name: nip
+        in: path
+        required: true
+        schema:
+          type: string
+        description: 10-digit NIP (non-digits are stripped).
+        example: '8982272855'
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - pl
+          - en
+          - de
+          default: pl
+        description: Language of summary, headlines and observations.
+      responses:
+        '200':
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/X-RateLimit-Limit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/X-RateLimit-Remaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/X-RateLimit-Reset'
+          description: Market environment.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                nip: '8982272855'
+                registry_number: null
+                lang: en
+                market_environment:
+                  summary: 'Conditions in the taxi industry are favourable: demand is growing (+5.2% y/y) and company revenue is growing (+12.0% in 2025).'
+                  tone: favourable
+                  indicators:
+                  - headline: Revenue of companies in the taxi industry is growing
+                    observation: In 2025, revenue of a typical company in the taxi industry rose 12.0% (a year earlier +11.1%, 5-year median +18.8% a year).
+                    impact: positive
+                    kind: industry_revenue
+                    frequency: A
+                    last_period: '2025'
+                    unit: typical company revenue, first year = 100
+                    source: 'Source: KRS financial statements, n = 348'
+                    series:
+                    - period: '2024'
+                      value: 179.4
+                    - period: '2025'
+                      value: 201
+                  - headline: The price of a 5 km taxi ride is rising
+                    observation: In October 2026, the price of a 5 km taxi ride rose 8.4% year on year to PLN 28.54, in line with the 5-year median (+6.3% a year).
+                    impact: neutral
+                    kind: retail_price
+                    frequency: M
+                    last_period: 10/2026
+                    unit: price
+                    source: 'Source: Monitly (GUS)'
+                    series:
+                    - period: 09/2026
+                      value: 28.44
+                    - period: 10/2026
+                      value: 28.54
+                source: Compabase (sprawozdania finansowe KRS), Monitly (Eurostat, GUS)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: No public sole-proprietor profile for this NIP or no statistics for its industry.
   /ceidg/nip/{nip}/website-facts:
     get:
       tags:
