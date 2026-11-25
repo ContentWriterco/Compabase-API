@@ -313,6 +313,7 @@ paths:
         Integrations that only have a KRS number can call this directly.
         One request typically covers enrichment for a company. The payload includes:
         - `company` (identifiers, address, PKD, logo, capital),
+        - `companyNiche` (detailed industry in words, an AI classification of what the company actually does, in the `lang` language: pl, en or de) and `companyNaics` (its 6-digit NAICS code),
         - `details.contacts` (email, phone, website, deliverability flags; email/phone revealed for API keys),
         - `details.vat` (VAT whitelist status + bank accounts when known),
         - `details.filings` / attributes / operational status,
@@ -347,8 +348,8 @@ paths:
         schema:
           type: string
           enum: [pl, en, de]
-        description: Language of `company_summary` and of translated labels (default pl for `company_summary`).
-          When the description is missing in that language, `company_summary` falls back to en, pl, de.
+        description: Language of `company_summary`, `companyNiche` and of translated labels (default pl for `company_summary`,
+          en for `companyNiche` and labels). When the description is missing in that language, `company_summary` falls back to en, pl, de.
       responses:
         '200':
           headers:
@@ -369,6 +370,8 @@ paths:
                   registry_number: "0000028860"
                   company_name: ORLEN SPÓŁKA AKCYJNA
                   company_name_display: Orlen
+                companyNiche: Rafineria i sprzedaż paliw
+                companyNaics: "324110"
                 details:
                   legalForm: SPÓŁKA AKCYJNA
                   operational_status: active
